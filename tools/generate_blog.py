@@ -1,0 +1,194 @@
+# -*- coding: utf-8 -*-
+"""WULIX - Generateur page blog HTML"""
+from jinja2 import Template
+import datetime
+
+OUTPUT = r"C:\Users\USER\.claude\projects\projet jarvis\ui\blog.html"
+
+ARTICLES = [
+    {
+        "slug": "automatiser-relances-email-python",
+        "titre": "Comment automatiser vos relances email avec Python en 30 minutes",
+        "date": "15 avril 2026",
+        "temps": "5 min",
+        "categorie": "Python",
+        "extrait": "Les relances email manquelles consomment des heures chaque semaine. Voici comment un script Python de 30 lignes peut s'en charger a votre place, indefiniment.",
+        "contenu": """
+<p>Si vous faites du freelance ou gerer une petite entreprise, vous savez a quel point les relances email sont chronophages. Pourtant, c'est une tache 100% automatisable avec Python.</p>
+<h3>Ce qu'on va faire</h3>
+<p>Un script qui lit une liste de contacts CSV, envoie un email personnalise a chacun, et marque les envoyes pour ne pas les dupliquer.</p>
+<h3>Le code</h3>
+<pre><code>import smtplib, csv
+from email.mime.text import MIMEText
+
+with open('contacts.csv') as f:
+    for row in csv.DictReader(f):
+        if row['statut'] == 'a_relancer':
+            msg = MIMEText(f"Bonjour {row['prenom']},...")
+            # envoyer via SMTP
+</code></pre>
+<p>Ce script fait partie du <strong>Pack Scripts Python WULIX (29€)</strong> avec 5 automatisations completes et documentees.</p>
+<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le pack →</a></p>
+"""
+    },
+    {
+        "slug": "n8n-pipeline-linkedin-automatique",
+        "titre": "Publier automatiquement sur LinkedIn chaque semaine avec n8n",
+        "date": "10 avril 2026",
+        "temps": "7 min",
+        "categorie": "n8n",
+        "extrait": "n8n est l'outil no-code le plus puissant pour l'automatisation. Voici comment l'utiliser pour maintenir une presence LinkedIn reguliere sans y passer du temps.",
+        "contenu": """
+<p>La regularite est la cle sur LinkedIn. Mais poster 3 fois par semaine tout en gerant son activite, c'est difficile. La solution : preparer son contenu en lot et laisser n8n publier automatiquement.</p>
+<h3>Architecture du workflow</h3>
+<p>1. Un Google Sheets avec vos posts (texte + hashtags + statut)<br>
+2. n8n se declenche chaque lundi matin<br>
+3. Il lit le prochain post "a_publier"<br>
+4. Il publie via l'API LinkedIn officielle<br>
+5. Il met a jour le statut dans Sheets</p>
+<h3>Pourquoi n8n ?</h3>
+<p>Gratuit en self-hosted, connecteurs natifs LinkedIn et Google Sheets, interface visuelle intuitive.</p>
+<p>Le <strong>Pipeline LinkedIn WULIX (19€)</strong> est un fichier JSON pret a importer dans n8n avec README d'installation.</p>
+<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le workflow →</a></p>
+"""
+    },
+    {
+        "slug": "5-taches-automatiser-sans-coder",
+        "titre": "5 taches repetitives a automatiser ce weekend (sans coder)",
+        "date": "5 avril 2026",
+        "temps": "6 min",
+        "categorie": "No-code",
+        "extrait": "Pas besoin d'etre developpeur pour recuperer 5h par semaine. Ces 5 automatisations utilisent des outils 100% gratuits et accessibles a tous.",
+        "contenu": """
+<p>L'automatisation n'est pas reservee aux developpeurs. Avec les bons outils gratuits, n'importe qui peut supprimer les taches repetitives de son quotidien.</p>
+<h3>1. Relances email automatiques</h3>
+<p>Gmail + Google Apps Script. Detecte les emails sans reponse depuis X jours et envoie une relance personnalisee.</p>
+<h3>2. Tableau de bord automatique</h3>
+<p>Google Sheets + IMPORTRANGE + QUERY. Votre reporting se met a jour seul chaque matin.</p>
+<h3>3. Posts reseaux sociaux programmes</h3>
+<p>Make.com (gratuit jusqu'a 1000 operations/mois). Publie vos contenus aux meilleurs moments.</p>
+<h3>4. Alertes intelligentes</h3>
+<p>Zapier ou Make.com. Recevez une notification quand un indicateur depasse un seuil.</p>
+<h3>5. Tri de fichiers automatique</h3>
+<p>Un script Python de 20 lignes qui range vos telechargements automatiquement.</p>
+<p>Tout ca est detaille dans le <strong>Guide PDF WULIX (9€)</strong> avec captures d'ecran et exemples prets a copier.</p>
+<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le guide →</a></p>
+"""
+    }
+]
+
+TEMPLATE = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Automatisation IA | WULIX</title>
+  <meta name="description" content="Tutoriels et guides pratiques sur l'automatisation Python, n8n et no-code pour freelances et PME.">
+  <meta property="og:title" content="Blog WULIX — Automatisation IA">
+  <meta property="og:description" content="Tutoriels pratiques : Python, n8n, no-code pour gagner du temps.">
+  <meta property="og:url" content="https://wulix.fr/blog.html">
+  <meta property="og:image" content="https://wulix.fr/og-image.jpg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="canonical" href="https://wulix.fr/blog.html">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#0a0015;color:#e0e0e0;font-family:'Inter',Arial,sans-serif;line-height:1.7}
+    header{background:#0d0020;border-bottom:2px solid #7c3aed;padding:20px 40px;display:flex;align-items:center;justify-content:space-between}
+    header a.logo{color:#00e5ff;text-decoration:none;font-size:24px;font-weight:bold;font-family:'Orbitron',sans-serif}
+    nav a{color:#aaa;text-decoration:none;margin-left:20px;font-size:14px}
+    nav a:hover{color:#00e5ff}
+    .hero{background:linear-gradient(135deg,#0d0020,#1a0030);border-bottom:1px solid #7c3aed;padding:60px 40px;text-align:center}
+    .hero h1{color:#00e5ff;font-size:2.2rem;font-family:'Orbitron',sans-serif;margin-bottom:12px}
+    .hero p{color:#aaa;font-size:16px}
+    .container{max-width:900px;margin:0 auto;padding:50px 20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;margin-bottom:60px}
+    .card{background:#0d0020;border:1px solid #1a0030;border-radius:10px;padding:28px;transition:border-color .2s,transform .2s;cursor:pointer}
+    .card:hover{border-color:#7c3aed;transform:translateY(-3px)}
+    .badge{display:inline-block;background:#7c3aed;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+    .card h2{color:#00e5ff;font-size:1rem;margin-bottom:10px;line-height:1.4}
+    .card p{color:#aaa;font-size:14px;line-height:1.6}
+    .meta{color:#555;font-size:12px;margin-top:14px}
+    .article-section{display:none;background:#0d0020;border:1px solid #7c3aed;border-radius:10px;padding:40px;margin-bottom:40px}
+    .article-section.active{display:block}
+    .article-section h1{color:#00e5ff;font-size:1.6rem;margin-bottom:8px}
+    .article-section .meta{margin-bottom:24px;color:#666;font-size:13px}
+    .article-section p{margin-bottom:14px;font-size:15px}
+    .article-section h3{color:#fff;margin:20px 0 10px;font-size:1rem}
+    pre{background:#0a0015;border:1px solid #1a0030;border-radius:6px;padding:16px;overflow-x:auto;margin:14px 0}
+    code{color:#00e5ff;font-size:13px}
+    .cta{display:inline-block;margin-top:16px;padding:12px 28px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:8px;font-size:14px}
+    .cta:hover{background:#00e5ff;color:#0a0015}
+    .back{color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;display:inline-block}
+    .back:hover{color:#00e5ff}
+    footer{background:#0d0020;border-top:1px solid #1a0030;text-align:center;padding:30px;color:#555;font-size:13px}
+    footer a{color:#7c3aed}
+    @media(max-width:600px){.hero{padding:40px 20px}.container{padding:30px 12px}}
+  </style>
+</head>
+<body>
+<header>
+  <a class="logo" href="/">WULIX</a>
+  <nav>
+    <a href="/">Accueil</a>
+    <a href="/blog.html" style="color:#00e5ff">Blog</a>
+    <a href="https://wulix.gumroad.com" target="_blank">Boutique</a>
+    <a href="mailto:contact@wulix.fr">Contact</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>Blog</h1>
+  <p>Tutoriels pratiques sur l'automatisation Python, n8n et no-code</p>
+</div>
+
+<div class="container">
+  <!-- Liste des articles -->
+  <div id="liste" class="grid">
+    {% for a in articles %}
+    <div class="card" onclick="showArticle('{{ a.slug }}')">
+      <span class="badge">{{ a.categorie }}</span>
+      <h2>{{ a.titre }}</h2>
+      <p>{{ a.extrait }}</p>
+      <div class="meta">{{ a.date }} &middot; {{ a.temps }} de lecture</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Articles individuels -->
+  {% for a in articles %}
+  <div id="art-{{ a.slug }}" class="article-section">
+    <span class="back" onclick="showListe()">← Retour au blog</span>
+    <h1>{{ a.titre }}</h1>
+    <div class="meta">{{ a.date }} &middot; {{ a.temps }} de lecture &middot; <span class="badge">{{ a.categorie }}</span></div>
+    {{ a.contenu }}
+  </div>
+  {% endfor %}
+</div>
+
+<footer>
+  <p>&copy; 2026 WULIX &mdash; <a href="/">wulix.fr</a> &mdash; <a href="mailto:contact@wulix.fr">contact@wulix.fr</a></p>
+  <p style="margin-top:6px"><a href="/cgv.html">CGV</a> &mdash; <a href="/mentions-legales.html">Mentions legales</a></p>
+</footer>
+
+<script>
+function showArticle(slug) {
+  document.getElementById('liste').style.display = 'none';
+  document.querySelectorAll('.article-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('art-' + slug).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showListe() {
+  document.getElementById('liste').style.display = 'grid';
+  document.querySelectorAll('.article-section').forEach(el => el.classList.remove('active'));
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>"""
+
+html = Template(TEMPLATE).render(articles=ARTICLES, year=datetime.date.today().year)
+with open(OUTPUT, 'w', encoding='utf-8') as f:
+    f.write(html)
+print(f"[OK] blog.html genere : {OUTPUT}")
+print(f"     Articles : {len(ARTICLES)}")
