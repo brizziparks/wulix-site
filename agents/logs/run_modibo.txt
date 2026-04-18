@@ -1,0 +1,33 @@
+
+🤖 WULIX Agents — MODIBO
+[2026-04-18 14:31:55] [INFO] [Modibo] Démarrage — mode=mentions
+[2026-04-18 14:32:06] [INFO] [Modibo] Document sauvegardé : C:\Users\USER\.claude\projects\projet jarvis\agents\legal\mentions_legales_20260418_1432.md
+[2026-04-18 14:32:06] [INFO] [Modibo] ✓ Document juridique généré : mentions
+
+⚖️ MODIBO (Juridique) — MENTIONS
+--------------------------------------------------
+Mentions légales de WULIX.fr
+==============================
+
+### Éditeur du site
+
+*   **Informations sur l'éditeur**
+    *   **Nom et prénom** : [Nom d'Omar Sylla]
+    *   **SIRET** : [SIREN d'Omar Sylla]
+    *   **Adresse postale** : [Adresse exacte de WULIX, Siret]
+    *   **Email** : <contact@wulix.fr>
+*   **Informations complémentaires**
+
+### Hébergeur
+
+*   Hébergeur utilisé : [Nom de l'hébergeur, exemple Cloudflare]
+
+### Propriété intellectuelle
+
+*   Le site WULIX.fr et tous les contenus qu'il contient sont la propriété exclusive d'Omar Sylla.
+*   Tout utilisation, reproduction ou diffusion des informations contenues dans le site sans autorisation est strictement interdite.
+
+### Données personnelles (RGPD)
+
+*   En tant qu'auto-entrepreneur, Omar Sylla s'engage à traiter vos données personnelles de manière responsable et conformément au RGPD.
+*   Vos données personnelles sont collectées afin d'établir des relations commercial et de fournir un service de qualité. Vous disposez donc 

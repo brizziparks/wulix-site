@@ -1,0 +1,21 @@
+# ── Core ──────────────────────────────────────────────────────────────────────
+anthropic>=0.40.0          # Claude API
+python-dotenv>=1.0.0       # .env file support
+rich>=13.0.0               # Beautiful terminal UI
+
+# ── Voice ─────────────────────────────────────────────────────────────────────
+edge-tts>=6.1.9            # Microsoft Neural TTS (free, no API key)
+SpeechRecognition>=3.10.0  # Speech-to-text via Google Web Speech API
+
+# ── Audio playback (needed by edge-tts output) ────────────────────────────────
+pygame>=2.5.0              # Cross-platform audio playback
+
+# ── Web search ────────────────────────────────────────────────────────────────
+duckduckgo-search>=6.0.0   # Free web search, no API key required
+
+# ── Optional: better microphone support ───────────────────────────────────────
+# PyAudio>=0.2.14          # Uncomment if SpeechRecognition microphone doesn't work
+#                          # Windows: pip install pipwin && pipwin install pyaudio
+
+# ── Optional: offline TTS fallback ────────────────────────────────────────────
+# pyttsx3>=2.90            # Offline TTS (lower quality than edge-tts)

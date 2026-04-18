@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — AI & Automation Engineer</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --purple: #7b2fff;
+      --cyan: #00e5ff;
+      --bg: #050a0f;
+      --bg2: #0a1520;
+      --bg3: #0f1e30;
+      --text: #e8f0f8;
+      --text-dim: #7a9ab8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Animated background ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(123,47,255,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(201,168,76,.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 60% 30%, rgba(0,229,255,.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Grid pattern ─── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ─── Header ─── */
+    header {
+      padding: 80px 0 60px;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,168,76,.15);
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(201,168,76,.15), rgba(123,47,255,.15));
+      border: 1px solid rgba(201,168,76,.3);
+      color: var(--gold-light);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--cyan) 50%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-dim);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #a07030);
+      color: #000;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,.4); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid rgba(0,229,255,.4);
+    }
+    .btn-secondary:hover { background: rgba(0,229,255,.08); transform: translateY(-2px); }
+
+    /* ─── Skills ─── */
+    .section { padding: 64px 0; }
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: var(--text);
+    }
+    h2 span { color: var(--gold-light); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid rgba(201,168,76,.12);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all .2s;
+    }
+    .skill-card:hover {
+      border-color: rgba(201,168,76,.4);
+      background: var(--bg3);
+      transform: translateY(-3px);
+    }
+    .skill-icon { font-size: 28px; margin-bottom: 10px; }
+    .skill-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .skill-desc { font-size: 13px; color: var(--text-dim); }
+
+    /* ─── Projects ─── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid rgba(201,168,76,.12);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .project-card:hover {
+      border-color: rgba(201,168,76,.35);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    }
+
+    .project-header {
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .project-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .project-title { font-size: 18px; font-weight: 700; }
+    .project-sub { font-size: 13px; color: var(--text-dim); }
+
+    .project-body { padding: 16px 24px 24px; }
+    .project-desc { font-size: 14px; color: var(--text-dim); margin-bottom: 16px; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(123,47,255,.15);
+      color: #a78bfa;
+      border: 1px solid rgba(123,47,255,.25);
+    }
+    .tag.gold { background: rgba(201,168,76,.12); color: var(--gold-light); border-color: rgba(201,168,76,.25); }
+    .tag.cyan { background: rgba(0,229,255,.08); color: var(--cyan); border-color: rgba(0,229,255,.2); }
+
+    /* ─── Services / Gigs ─── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--bg2);
+      border: 1px solid rgba(201,168,76,.12);
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .service-card:hover {
+      border-color: rgba(201,168,76,.35);
+      transform: translateY(-4px);
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .service-card.s1::before { background: linear-gradient(90deg, var(--purple), var(--cyan)); }
+    .service-card.s2::before { background: linear-gradient(90deg, var(--gold), #e09030); }
+    .service-card.s3::before { background: linear-gradient(90deg, var(--cyan), var(--purple)); }
+
+    .service-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+    .service-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .service-desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+    .service-features { list-style: none; }
+    .service-features li {
+      font-size: 14px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .service-features li::before { content: '▹'; color: var(--gold); font-size: 12px; }
+
+    /* ─── Stats ─── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 40px 0;
+      border-top: 1px solid rgba(201,168,76,.1);
+      border-bottom: 1px solid rgba(201,168,76,.1);
+    }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 36px; font-weight: 800; color: var(--gold-light); }
+    .stat-label { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+    /* ─── Contact ─── */
+    .contact-section {
+      text-align: center;
+      padding: 80px 0;
+    }
+    .contact-box {
+      background: var(--bg2);
+      border: 1px solid rgba(201,168,76,.2);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .contact-box h3 { font-size: 28px; margin-bottom: 12px; }
+    .contact-box p { color: var(--text-dim); margin-bottom: 32px; }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      border-top: 1px solid rgba(201,168,76,.1);
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+
+    /* ─── AISATOU live demo banner ─── */
+    .demo-banner {
+      background: linear-gradient(135deg, rgba(123,47,255,.2), rgba(201,168,76,.1));
+      border: 1px solid rgba(201,168,76,.25);
+      border-radius: 12px;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .demo-pulse {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #00ff88;
+      box-shadow: 0 0 10px #00ff88;
+      animation: pulse 2s ease-in-out infinite;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+
+    @media (max-width: 600px) {
+      header { padding: 48px 0 40px; }
+      .section { padding: 40px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header>
+  <div class="container">
+    <div class="badge">🌍 AI & Automation Engineer</div>
+    <h1>Je construis des<br>assistants IA sur mesure</h1>
+    <p class="subtitle">
+      Python · FastAPI · Ollama · Gemini · n8n · Cloudflare<br>
+      Automatisation, bots IA, dashboards futuristes
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://www.fiverr.com" target="_blank">Commander sur Fiverr</a>
+      <a class="btn btn-secondary" href="https://aisatou.rosmedia.fr" target="_blank">Voir AISATOU Live ↗</a>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════ DEMO BANNER ══════════════════ -->
+<div class="container" style="margin-top:48px">
+  <div class="demo-banner">
+    <div>
+      <span class="demo-pulse"></span>
+      <strong>AISATOU</strong> — mon assistant IA personnel est en ligne
+      <div style="font-size:13px;color:var(--text-dim);margin-top:4px">
+        Interface HUD futuriste · Multi-modèles (Ollama, Gemini) · Accès mondial via Cloudflare
+      </div>
+    </div>
+    <a class="btn btn-secondary" href="https://aisatou.rosmedia.fr" target="_blank" style="white-space:nowrap">
+      Demo live →
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════ SKILLS ══════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Stack technique</div>
+    <h2>Ce que je <span>maîtrise</span></h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">🐍</div>
+        <div class="skill-name">Python avancé</div>
+        <div class="skill-desc">FastAPI, asyncio, WebSocket, scripting système</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🤖</div>
+        <div class="skill-name">IA / LLMs</div>
+        <div class="skill-desc">Ollama, Gemini API, Claude API, prompting, agents ReAct</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-name">Automatisation</div>
+        <div class="skill-desc">n8n, PowerShell, scripts batch, tâches planifiées</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">Cloud & Réseau</div>
+        <div class="skill-desc">Cloudflare Tunnel, DNS, NAS, reverse proxy</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🎨</div>
+        <div class="skill-name">UI Web</div>
+        <div class="skill-desc">HTML/CSS/JS vanilla, animations, dashboards HUD</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📧</div>
+        <div class="skill-name">Intégration Email</div>
+        <div class="skill-desc">Outlook Graph API, Gmail API, n8n workflows</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PROJECTS ══════════════════ -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label">Réalisations</div>
+    <h2>Projets <span>phares</span></h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon" style="background:linear-gradient(135deg,#7b2fff22,#00e5ff22)">⚡</div>
+          <div>
+            <div class="project-title">AISATOU HUD</div>
+            <div class="project-sub">Assistant IA personnel Iron Man-style</div>
+          </div>
+        </div>
+        <div class="project-body">
+          <p class="project-desc">
+            Interface holographique futuriste (inspiration Black Panther / Côte d'Ivoire) avec assistant IA vocal.
+            Multi-backends (Ollama local, Gemini 2.5, Claude), accessible partout via Cloudflare Tunnel.
+          </p>
+          <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag cyan">WebSocket</span>
+            <span class="tag gold">Ollama</span>
+            <span class="tag">Gemini API</span>
+            <span class="tag cyan">Cloudflare</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon" style="background:linear-gradient(135deg,#c9a84c22,#e0903022)">🔧</div>
+          <div>
+            <div class="project-title">Automatisation système</div>
+            <div class="project-sub">Scripts PowerShell + NTFS Junctions</div>
+          </div>
+        </div>
+        <div class="project-body">
+          <p class="project-desc">
+            Migration automatisée de ~555 Go de données entre disques avec validation d'intégrité,
+            création de liens NTFS transparents, et log détaillé. Zéro intervention manuelle.
+          </p>
+          <div class="tags">
+            <span class="tag">PowerShell</span>
+            <span class="tag gold">Robocopy</span>
+            <span class="tag">NTFS Junctions</span>
+            <span class="tag cyan">Automatisation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon" style="background:linear-gradient(135deg,#00e5ff22,#7b2fff22)">🔄</div>
+          <div>
+            <div class="project-title">Workflows n8n IA</div>
+            <div class="project-sub">Automatisation email & agenda</div>
+          </div>
+        </div>
+        <div class="project-body">
+          <p class="project-desc">
+            Workflows n8n connectant Gmail, agenda Google, et IA pour triage automatique,
+            résumés intelligents et réponses drafts. Hébergé sur NAS UGREEN.
+          </p>
+          <div class="tags">
+            <span class="tag">n8n</span>
+            <span class="tag gold">Gmail API</span>
+            <span class="tag">Google Calendar</span>
+            <span class="tag cyan">NAS</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ STATS ══════════════════ -->
+<div class="container">
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-number">3+</div>
+      <div class="stat-label">Backends IA intégrés</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">37+</div>
+      <div class="stat-label">Outils disponibles</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Disponibilité mondiale</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">555 Go</div>
+      <div class="stat-label">Données migrées automatiquement</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SERVICES ══════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Services disponibles</div>
+    <h2>Mes <span>offres Fiverr</span></h2>
+    <div class="services-grid">
+
+      <div class="service-card s1">
+        <div class="service-price">À partir de 50€</div>
+        <div class="service-name">Assistant IA personnalisé</div>
+        <div class="service-desc">
+          Je construis ton assistant IA sur mesure avec interface web futuriste,
+          accessible depuis n'importe où.
+        </div>
+        <ul class="service-features">
+          <li>Interface HUD web (style Iron Man)</li>
+          <li>Choix du modèle IA (Ollama, Gemini, Claude)</li>
+          <li>Accès distant via Cloudflare Tunnel</li>
+          <li>Panel de configuration graphique</li>
+          <li>Code source livré</li>
+        </ul>
+      </div>
+
+      <div class="service-card s2">
+        <div class="service-price">À partir de 30€</div>
+        <div class="service-name">Automatisation n8n / Python</div>
+        <div class="service-desc">
+          J'automatise tes tâches répétitives : emails, fichiers,
+          notifications, APIs — sans que tu touches le code.
+        </div>
+        <ul class="service-features">
+          <li>Workflows n8n clés-en-main</li>
+          <li>Intégration Gmail / Outlook</li>
+          <li>Scripts Python / PowerShell</li>
+          <li>Documentation et support</li>
+          <li>Livraison en 3-5 jours</li>
+        </ul>
+      </div>
+
+      <div class="service-card s3">
+        <div class="service-price">À partir de 20€</div>
+        <div class="service-name">Dashboard / HUD web</div>
+        <div class="service-desc">
+          Interface web futuriste sur mesure pour présenter tes données
+          ou ton projet, style Black Panther / Wakanda.
+        </div>
+        <ul class="service-features">
+          <li>Design futuriste unique</li>
+          <li>Animations CSS avancées</li>
+          <li>HTML/CSS/JS vanilla (léger)</li>
+          <li>Responsive mobile</li>
+          <li>Modifications illimitées*</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CONTACT ══════════════════ -->
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-box">
+      <h3>Travaillons ensemble 🤝</h3>
+      <p>
+        Tu as un projet d'automatisation, un assistant IA à créer,
+        ou une interface web futuriste à concevoir ?
+        Contacte-moi sur Fiverr ou directement.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://www.fiverr.com" target="_blank">Mon profil Fiverr</a>
+        <a class="btn btn-secondary" href="https://aisatou.rosmedia.fr" target="_blank">Voir la démo →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Construit avec Python · FastAPI · Ollama · Gemini · n8n · Cloudflare</p>
+    <p style="margin-top:8px;font-size:11px">© 2026 — Tous droits réservés</p>
+  </div>
+</footer>
+
+</body>
+</html>

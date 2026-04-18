@@ -1,0 +1,153 @@
+{
+  "name": "WULIX — Pipeline LinkedIn Automatisé",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "node_cron",
+      "name": "Planificateur (Lundi 9h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "fileSelector": "posts.txt",
+        "options": {
+          "encoding": "utf8"
+        }
+      },
+      "id": "node_read",
+      "name": "Lire fichier posts",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Sépare les posts par --- et retourne le premier non publié\nconst contenu = $input.first().json.data;\nconst posts = contenu.split('---').map(p => p.trim()).filter(p => p.length > 0);\n\n// Retourne tous les posts comme items séparés\nreturn posts.map((post, index) => ({\n  json: {\n    post_text: post,\n    index: index,\n    total: posts.length,\n    date: new Date().toISOString()\n  }\n}));"
+      },
+      "id": "node_parse",
+      "name": "Parser les posts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer VOTRE_ACCESS_TOKEN_ICI"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:person:VOTRE_ID_LINKEDIN\",\n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n        \"text\": \"{{ $json.post_text }}\"\n      },\n      \"shareMediaCategory\": \"NONE\"\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n  }\n}",
+        "options": {}
+      },
+      "id": "node_linkedin",
+      "name": "Publier sur LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true
+          },
+          "conditions": [
+            {
+              "id": "success_check",
+              "leftValue": "={{ $response.statusCode }}",
+              "rightValue": 201,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "node_check",
+      "name": "Vérifier succès",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log de succès\nconst post = $input.first().json;\nconsole.log(`[WULIX] Post LinkedIn publié avec succès`);\nconsole.log(`Date: ${new Date().toLocaleString('fr-FR')}`);\nconsole.log(`Aperçu: ${post.post_text?.substring(0, 100)}...`);\nreturn $input.all();"
+      },
+      "id": "node_success",
+      "name": "Log succès",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log d'erreur\nconst erreur = $input.first().json;\nconsole.error('[WULIX] Erreur publication LinkedIn:', JSON.stringify(erreur));\nreturn $input.all();"
+      },
+      "id": "node_error",
+      "name": "Log erreur",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 400]
+    }
+  ],
+  "connections": {
+    "Planificateur (Lundi 9h)": {
+      "main": [[{"node": "Lire fichier posts", "type": "main", "index": 0}]]
+    },
+    "Lire fichier posts": {
+      "main": [[{"node": "Parser les posts", "type": "main", "index": 0}]]
+    },
+    "Parser les posts": {
+      "main": [[{"node": "Publier sur LinkedIn", "type": "main", "index": 0}]]
+    },
+    "Publier sur LinkedIn": {
+      "main": [[{"node": "Vérifier succès", "type": "main", "index": 0}]]
+    },
+    "Vérifier succès": {
+      "main": [
+        [{"node": "Log succès", "type": "main", "index": 0}],
+        [{"node": "Log erreur", "type": "main", "index": 0}]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "description": "Pipeline LinkedIn automatisé par WULIX — publie automatiquement tes posts chaque lundi à 9h. Nécessite un Access Token LinkedIn OAuth2.",
+    "version": "1.0.0",
+    "author": "WULIX (wulix.fr)"
+  }
+}

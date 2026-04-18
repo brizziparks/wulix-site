@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "C:\Users\USER\.claude\projects\projet jarvis\run_agents.py", line 243, in <module>
+    main()
+  File "C:\Users\USER\.claude\projects\projet jarvis\run_agents.py", line 90, in main
+    result = boss.run({"mode": "daily"})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\.claude\projects\projet jarvis\agents\orchestrator.py", line 142, in run
+    return self.run_daily_routine()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\.claude\projects\projet jarvis\agents\orchestrator.py", line 105, in run_daily_routine
+    results["publisher"] = self.publisher.run({
+                           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\.claude\projects\projet jarvis\agents\publisher_agent.py", line 393, in run
+    self.save_to_queue(results)
+  File "C:\Users\USER\.claude\projects\projet jarvis\agents\publisher_agent.py", line 318, in save_to_queue
+    existing = json.load(f)
+               ^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 335, in loads
+    raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+json.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)

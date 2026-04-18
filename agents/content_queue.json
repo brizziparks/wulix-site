@@ -1,0 +1,137 @@
+[
+  {
+    "id": "li_202604171214",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "Tutoriel IA locale avec Ollama",
+    "content": "\"Qu'est-ce qui se passe lorsque vous voulez créer une intelligence artificielle locale sur votre PC sans envoyer vos données au cloud ? \n\nVous savez que l'IA est souvent associée à des services de cloud, mais ce n'est pas la seule façon d'utiliser cette technologie. Au sein du projet AISATOU, j'ai travaillé sur une solution pour faire tourner une IA locale sur son PC sans avoir besoin de se connecter à un service de cloud. \n\nEn utilisant Ollama, une plateforme open-source d'IA, vous pouvez créer votre propre agent IA qui peut apprendre et s'améliorer sur vos données locales. Mais comment faire ?\n\nDans mon dernier tutoriel, je vous montre étape par étape comment configurer Ollama pour qu'elle fonctionne sur votre PC sans envoyer vos données au cloud. Vous découvrirez comment choisir le bon modèle d'IA, comment entraîner l'algorithme et comment déployer votre propre assistant IA personnalisé.\n\nDécouvrez en profondeur la possibilité de créer une intelligence artificielle locale avec Ollama : [lien vers le tutoriel](https://aisatou.rosmedia.fr) \n\nEt vous, avez-vous déjà essayé de créer une IA locale sur votre PC ? Comment faites-vous pour éviter d'envoyer vos données au cloud ?\n\n#Python #IA #Automatisation #Afrique #Tech\"",
+    "status": "ready",
+    "created_at": "2026-04-17T12:14:28.694060"
+  },
+  {
+    "id": "li_202604171652",
+    "platform": "linkedin",
+    "type": "showcase",
+    "topic": "WULIX en action : automatisation d'un workflow client",
+    "content": "\"Qu'est-ce que vous faites chaque jour pour optimiser votre temps ? 🕒\n\nJe me souviens d'un entrepreneur PME qui décidait de passer son temps à remplir un formulaire papier répétitif pour gérer ses factures. Il était dépassé et recherchait une solution pour automatiser le processus.\n\nC'est là que nous intervenons à WULIX ! 🌟\n\nNous avons créé un workflow automatique qui permet à notre client de télécharger des factures, les convertir en PDF et les stocker dans son système de comptabilité. Voici comment cela fonctionne :\n\nAvant : 30 minutes passées à remplir le formulaire papier\nAprès : 5 secondes pour télécharger et automatiser le processus !\n\nNous avons mis en place une solution basée sur l'IA, avec Python et des outils de reconnaissance d'image. Cela nous a permis de créer un workflow intelligent qui se met en place automatiquement.\n\nSi vous êtes également dépassé par vos workflows manuels, découvrez comment WULIX peut vous aider à automatiser votre temps et augmenter votre productivité. Visitez notre site [WULIX.fr](http://WULIX.fr) pour discuter de votre projet ! #WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-17T16:52:32.777464"
+  },
+  {
+    "id": "li_202604171652",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "Les 5 meilleurs outils IA gratuits en 2025",
+    "content": "\"5 outils IA gratuits qui pourraient changer votre entreprise... sans mettre un sou sur vos comptes ?\n\nVous connaissez déjà les bénéfices de l'IA pour automatiser vos workflows ? Mais avez-vous everiment de recours à des outils gratuits, craintant de vous \"débarrasser\" de la qualité ?\n\nNe craignez pas, nous avons fait tous nos études et avons identifié 5 outils IA gratuits qui sont réellement solides ! Voici quelques-uns d'entre eux :\n\n* Google Colab : un environnement de développement intégré (IDE) complet gratuit pour les projets de machine learning et de deep learning.\n* Microsoft Azure Free Account : une version gratuite des services d'IA du leader du marché, avec accès à la plateforme Azure Machine Learning.\n* Stanford Natural Language Processing Group : un laboratoire de recherche public qui propose des outils de traitement du langage naturel (NLP) gratuits.\n* TensorFlow.org : l'ouvrage officiel de Google sur le framework TensorFlow, ouvert source et complet.\n* Keras.io : un framework de machine learning gratuit pour les projets Python.\n\nAvez-vous déjà utilisé l'un de ces outils ? Comment avez-vous expérimenté avec la technologie IA ?\n\nVoici à vous de découvrir ! 💡💻\"\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-17T16:52:35.885718"
+  },
+  {
+    "id": "li_20260417_0",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "Les 5 meilleurs outils IA gratuits en 2025",
+    "content": "\"Vous voulez bénéficier des avantages de l'Intelligence Artificielle (IA) sans dépasser votre budget ?\n\nLes outils IA gratuits sont là pour vous aider à démarrer ! Mais comment choisir les bons ? Voici les 5 meilleurs outils IA gratuits en 2025 :\n\n 🤖 Google Cloud AI Platform : une plateforme complète pour l'automatisation et la création de modèles d'apprentissage automatique.\n\n 💡 Microsoft Azure Machine Learning : un ensemble d'outils pour créer, entraîner et déployer des modèles d'apprentissage automatique.\n\n 📊 TensorFlow Lite : un framework open-source pour créer des modèles d'apprentissage automatique légèrement optimisés.\n\n 🔍 H2O.ai Driverless AI : une plateforme de machine learning sans code, parfait pour les PME !\n\n 💻 Kite : un assistant de programmation pour Python qui utilise l'IA pour vous aider à écrire du code plus rapidement et plus correctement.\n\nÀ WULIX, nous utilisons ces outils pour aider nos clients PME à automatiser leurs flux de travail. Nous avons créé des agents IA sur-mesure pour chaque entreprise, en vous aidant à optimiser vos processus et à gagner du temps !\n\nVous avez déjà envisagé d'utiliser l'IA dans votre business ? Quels sont les défis que vous rencontrez ? 🤔 C'est là que nous pouvons vous aider ! Contactez-nous pour discuter de votre projet d'automatisation IA !\n\n#WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-17T17:14:59.009946"
+  },
+  {
+    "id": "li_20260417_1",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "SEO + IA : générer du contenu qui ranke sur Google",
+    "content": "\"Est-ce que vous rêvez de voir votre site web en première page sur Google ? 🤔\"\n\nLa recherche de contenu pertinente pour attirer du trafic organique peut sembler impossible, surtout avec l'arrivée des algorithmes de recherche evergreen comme Google et Bing. Mais, voici la bonne nouvelle : avec l'aide de l'intelligence artificielle (IA), vous pouvez générer du contenu qui ranke sur le premier page !\n\nL'IA peut aider à optimiser votre contenu pour les mots-clés précis, en analysant les tendances, les comportements et les préférences de vos visiteurs. De plus, les workflows intelligents peuvent automatiser la mise à jour de votre contenu pour que vous puissiez vous concentrer sur ce qui compte : créer de la valeur pour vos clients !\n\nWULIX, l'agence d'automatisation IA créée par Omar Sylla, peut vous aider à combiner son expertise en SEO et en IA pour générer du contenu qui vous aide à attirer du trafic organique gratuit. Mais, avant de nous contacter, avez-vous déjà essayé de créer un modèle de contenu avec l'aide d'un AI ?\n\nEn savoir plus sur nos services d'automatisation IA : WULIX.fr/offres\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-17T17:15:02.521230"
+  },
+  {
+    "id": "li_20260417_2",
+    "platform": "linkedin",
+    "type": "story",
+    "topic": "Comment on a automatisé une tâche qui prenait 3h/semaine",
+    "content": "**3 heures de tâches ennuyeuses, réduites à zéro ! 🚫**\n\nVous êtes un entrepreneur ou un freelancé qui a dû se lancer dans une nouvelle tâche pour gagner une cliente ? Et vous savez que cette tâche prenait 3 heures chaque semaine ? Je suis là pour vous dire que cela n'est plus nécessaire !\n\nJ'ai travaillé avec une PME qui avait besoin de créer des rapports mensuels pour leurs clients. C'était un défi : 300 pages à imprimer, 10 pages à ajouter, et 100 pages à éditer... ça prenait 3 heures chaque semaine ! Mais après avoir automatisé les étapes avec l'IA, nous ont réduit cette durée à 30 minutes !\n\nNous avons utilisé notre expertise en automatisation IA pour créer un workflow personnalisé. Nous avons importé les données dans Python et créé un script qui a suivi le processus de création des rapports. Cela a été une véritable révolution pour leur entreprise.\n\nMaintenant, je vous pose la question : combien de temps passez-vous chaque semaine à effectuer des tâches manuelles ? Est-ce que cela peut être automatisé ?\n\nDécouvrez comment nous pouvons vous aider à automatiser vos workflows avec l'IA. Visitez notre site web [WULIX.fr](http://WULIX.fr) pour en savoir plus sur nos services d'automatisation IA.\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-17T17:15:20.305763"
+  },
+  {
+    "id": "li_20260417_3",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "Tutoriel IA locale avec Ollama",
+    "content": "**Créez votre propre IA locale gratuitement ! 🤖**\n\nVous avez entendu parler des \"sauvegardes à distance\" et vous vous demandez si c'est vraiment nécessaire pour utiliser une intelligence artificielle (IA). La réponse est non !\n\nMaintenant, vous pouvez créer votre propre IA locale sans envoyer vos données au cloud. C'est possible grâce à Ollama, un agent IA de WULIX, agence d'automatisation IA experte dans la création de workflows intelligents.\n\n**Comment faire tourner une IA gratuitement sur son PC ?**\n\n1. Téléchargez et installez Ollama sur votre ordinateur\n2. Créez une nouvelle instance de l'agent IA avec les paramètres souhaités (pour nous, cela suffit à démarrer)\n3. Utilisez les préférences pour configurer la sauvegarde de vos données locales\n\nEt voilà ! Vous avez maintenant votre propre agent IA local qui fonctionne sans avoir besoin d'un accès aux données au cloud.\n\nAvez-vous déjà utilisé une IA locale ? Partagez vos expériences avec nous et demandez des conseils pour démarrer votre propre projet !\n\nLien vers notre offre exclusive : WULIX.fr/offre\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-17T17:15:23.864472"
+  },
+  {
+    "id": "li_20260417_4",
+    "platform": "linkedin",
+    "type": "value",
+    "topic": "Automatiser les tâches répétitives avec Python",
+    "content": "\"Comment gagner 50% de son temps de travail en automatisant les tâches répétitives ?\n\nVous savez que vous passez plus de la moitié de votre journée à effectuer des tâches manuelles et répétitives, sans vraiment prendre conscience du temps qu'on vous consacre pour vos activités principales ? C'est le cas de bien des PME, freelances et entrepreneurs !\n\nMais qu'en est-il si nous pouvions trouver un moyen d'alléger ce fardeau ?\n\nAvec l'aide de Python, on peut en effet automatiser les tâches répétitives et gagner du temps pour se concentrer sur la croissance de son entreprise.\n\nSelon un study réalisé par WULIX, une agence spécialisée dans l'automatisation IA, les PME qui ont mis en place des workflow intelligents avec Python peuvent espérer gagner jusqu'à 50% de leur temps de travail. Cela équivaut à plus de 100 heures par mois !\n\nImaginez pouvoir passer plus de temps sur vos activités principales, comme développer de nouvelles opportunités ou améliorer votre service client.\n\nAlors, qu'est-ce que vous attendez ? Commencez à automatiser vos tâches répétitives avec Python et découvrez comment gagner du temps pour votre entreprise !\n\n📈✨\n\n#WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-17T17:15:38.251085"
+  },
+  {
+    "id": "li_202604181223",
+    "platform": "linkedin",
+    "type": "value",
+    "topic": "Créer son premier agent IA en 10 minutes",
+    "content": "\"Vous pensez que créer un agent IA prend des mois ? Des années ? Nous avons une bonne nouvelle pour vous : vous pouvez en créer votre premier dans 10 minutes ! 🕒️\n\nOui, c'est possible grâce à notre plateforme de création d'agents IA personnalisés. Avec WULIX, vous pouvez automatiser vos workflows et prendre le contrôle de vos processus sans avoir besoin d'un expert en IA.\n\nNotre mini-tuto est conçu pour les PME, les freelances et les entrepreneurs qui veulent démarrer avec l'IA. Vous apprendrez à créer un agent IA personnalisé en quelques minutes, sans avoir besoin de connaissances spécifiques en programmation.\n\nVoici une petite aperçue de ce que vous pouvez faire avec notre plateforme :\n\n* Créez un agent IA pour automatiser vos tâches répétitives\n* Personnalisez votre agent IA pour qu'il se adapte à vos besoins\n* Intégreriez votre agent IA avec vos outils existants\n\nVous voulez en savoir plus ? Vérifiez notre mini-tuto et commencez à automatiser vos workflows dès aujourd'hui ! [lien vers le mini-tuto] 🤖 #WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-18T12:23:59.037817"
+  },
+  {
+    "id": "li_202604181428",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "SEO + IA : générer du contenu qui ranke sur Google",
+    "content": "\"Se posez cette question : votre site web peut-il parler à vos clients ? 🤔\n\nDans l'ère de l'IA et du contenu généré automatiquement, il est de plus en plus difficile pour les PME et les entrepreneurs de se démarquer sur Google sans avoir un budget énorme.\n\nMais qu'est-ce qui vous empêche de générer du contenu qui vous aide à attirer du trafic organique gratuit ? Est-ce que vous ne savez pas combiner l'IA et le SEO pour créer des contenus personnalisés et adaptés à vos clients ?\n\nÀ WULIX, nous savons que l'intelligence artificielle peut être votre plus grand allié dans ce domaine. Notre équipe d'experts en automatisation IA peut vous aider à générer du contenu qui vous aide à atteindre vos objectifs de marketing.\n\nPour commencer, découvrez notre offre personnalisée d'automatisation IA pour votre site web 📈. Laissez-nous prendre soin de votre contenu et de votre trafic organique !\n\nQu'est-ce que vous attendez ? Découvrez comment combiner l'IA et le SEO pour générer du contenu qui vous aide à réussir sur Google.\n\n#WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-18T14:28:07.068075"
+  },
+  {
+    "id": "li_202604181432",
+    "platform": "linkedin",
+    "type": "value",
+    "topic": "Automatiser les tâches répétitives avec Python",
+    "content": "\"Vous avez 12 heures par mois pour gagner ? 😱\n\nIl s'agit du temps que vous passez à répéter les mêmes tâches manuelles jour après jour. Le temps que vous pourriez consacrer à des activités plus créatives ou stratégiques, mais qui sont souvent oubliées dans la routine.\n\nL'automatisation avec Python peut vous libérer de ces heures et vous permettre de se concentrer sur vos objectifs réels. En effet, les outils d'IA comme Python peuvent automatiser jusqu'à 80% des tâches répétitives, ce qui peut vous aider à gagner environ 12 heures par mois.\n\nEn termes de revenus, c'est une somme considérable. Imaginez pouvoir passer plus de temps sur vos projets passionnants ou développer de nouvelles opportunités commerciales en raison de l'augmentation de votre productivité.\n\nÀ WULIX, nous aidons les PME et les entrepreneurs à automatiser leurs flux de travail avec Python. Notre équipe d'experts peut vous aider à mettre en place des workflows intelligents qui vous permettront de se concentrer sur vos objectifs.\n\nEst-ce que vous savez combien de temps vous passez à répéter les mêmes tâches manuelles ? Partagez avec nous dans les commentaires ci-dessous ! 🤔\n\n📚 Découvrez notre offre d'automatisation Python et commencez à gagner du temps aujourd'hui : https://wulix.fr/offer\"\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-18T14:32:24.282838"
+  },
+  {
+    "id": "li_202604181444",
+    "platform": "linkedin",
+    "type": "value",
+    "topic": "Automatiser les tâches répétitives avec Python",
+    "content": "\"Est-ce que vous passez plus de 10 heures par mois à répéter les mêmes tâches manuellement ? 😱\n\nJe suis certain que vous savez la réponse : OUI ! Les PME et les freelances sont particulièrement touchés par ce phénomène. En fait, selon une étude récente, les entreprises qui automatisent leurs workflows peuvent gagner jusqu'à 30% de plus en productivité.\n\nMais combien de temps exactement ? Disons que si vous passiez 10 heures par mois à répéter des tâches manuellement, vous pourriez gagner entre 2 et 5 jours supplémentaires par an ! C'est une somme significative qui peut être investie dans d'autres activités cruciales pour votre entreprise.\n\nWULIX a développé un expertise en automatisation IA avec Python qui peut vous aider à réaliser cet gain de productivité. Nous sommes spécialisés dans la création de workflows intelligents qui peuvent automatiser les tâches répétitives et libérer vos ressources humaines pour les activités stratégiques.\n\nAvez-vous déjà considéré l'automatisation comme une option pour améliorer votre productivité ? 💡📊 Comment allez-vous commencer à gagner du temps avec l'IA ? 🤔\"\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-18T14:44:16.119515"
+  },
+  {
+    "id": "li_202604181445",
+    "platform": "linkedin",
+    "type": "value",
+    "topic": "Automatiser les tâches répétitives avec Python",
+    "content": "\"Combien de minutes par jour passez-vous à répéter les mêmes tâches ? 🕒️\n\nIl y a quelques années, je pensais que j'étais efficace en termes d'autonomisation. J'avais pris soin de mon équilibre professionnel et personnel, j'avais des heures supplémentaires pour m'appuyer sur mes compétences et développer mon entreprise.\n\nMais voilà, je me suis rendu compte que j'étais plus occupé qu jamais ! Des tâches répétitives, comme la gestion de données ou l'enregistrement des factures, prenaient trop de temps. J'avais 10 heures par jour pour m'occuper de mon entreprise, mais 3 d'entre elles étaient déjà consacrées aux tâches manuelles.\n\nCe n'est que quand j'ai découvert les possibilités de Python en automatisation IA que j'ai compris que je pouvais gagner des heures supplémentaires. En utilisant des outils comme WULIX, j'ai pu automatiser ces tâches et me concentrer sur les activités stratégiques pour mon entreprise.\n\nAvec l'automatisation, je peux maintenant économiser jusqu'à 30 % de temps ! C'est un chiffre concret qui change ma perspective. Je peux m'appuyer sur mon équipe pour développer de nouvelles idées et prendre des décisions plus stratégiques.\n\nSi vous voulez découvrir comment automatiser vos tâches avec Python, je suis là pour vous aider. 🤝 \n\nQuestion pour la communauté : Quelles sont les tâches répétitives que vous avez l'impression d'avoir perdues grâce à l'automatisation ? 🤔\"\n\n#WULIX #IA #Automatisation #Python #PME",
+    "status": "ready",
+    "created_at": "2026-04-18T14:45:39.867988"
+  },
+  {
+    "id": "li_202604181449",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "Tutoriel IA locale avec Ollama",
+    "content": "\"Vous avez entendu parler de l'IA mais ne savez pas comment l'utiliser sans envoyer vos données au cloud ? 🤔 Alors, vous êtes vraiment à la rechette !\n\nMais la bonne nouvelle est que cela n'est plus une question de si ou de non, mais plutôt de comment faire. Et je vais vous montrer comment faire tourner une IA locale sur votre PC sans payer un sou !\n\nJe vous présente Ollama, une plateforme d'automatisation IA gratuite qui vous permet de créer vos propres workflows et de les exécuter localement. C'est simple : vous téléchargez l'application, vous configurez vos données et vous êtes parti ! 🚀\n\nWULIX a été très heureux de découvrir Ollama et avons décidé de l'intégrer dans nos services d'automatisation IA. Nous sommes convaincus que cela changera votre façon de travailler !\n\nAlors, qu'est-ce qui vous retient ? Avez-vous déjà essayé Ollama ? Partagez vos expériences avec nous en commentaire ! 🤓 #WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-18T14:49:18.781817"
+  },
+  {
+    "id": "li_202604181449",
+    "platform": "linkedin",
+    "type": "showcase",
+    "topic": "WULIX en action : automatisation d'un workflow client",
+    "content": "\"Vous pensez que les tâches répétitives sont une partie inévitable de votre travail ? Eh bien, pensez-vous encore qu'il faut passer au moins 4 heures par semaine à gérer vos fichiers et vos rapports ?\n\nÀ WULIX, nous avons vécu cela nous-mêmes. Mais avec notre expertise en automatisation IA, nous avons pu transformer ce temps perdu en plus de temps pour les choses qui comptent !\n\n📈 Voici un exemple concret de nos efforts : nous travaillions avec une PME dans le secteur de la logistique. Les employés étaient chargés de trier les packages, mais cela représentait des heures de travail répétitives et peu productives.\n\n**Avant** : chaque package devait être vérifié à la main pour s'assurer qu'il était complet et correctement emballé.\n\n**Après** : nous avons mis en place une automatisation Python qui permet aux packages d'être triés automatiquement !\n\nAvec notre outil, les employés ont pu se concentrer sur les tâches plus stratégiques, tandis que WULIX s'occupe de l'automatisation. Le résultat ? Une productivité accrue et une réduction des erreurs.\n\nNous voulons vous aider à transformer vos workflows répétitifs en moments de créativité ! 🤔 Comment allez-vous gérer vos tâches manuelles ? Partagez avec nous vos idées !\n\nEnvisagerez-vous d'automatiser votre workflow ? 📈 Découvrez comment WULIX peut vous aider : https://www.wulix.fr/\n\n#WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-18T14:49:41.087332"
+  }
+]

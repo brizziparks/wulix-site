@@ -1,0 +1,13 @@
+# WULIX — Netlify Redirects
+# Boutique
+/boutique        https://wulix.gumroad.com    301
+/shop            https://wulix.gumroad.com    301
+/produits        https://wulix.gumroad.com    301
+
+# Contact
+/contact         mailto:contact@wulix.fr      301
+
+# Pages legales (sans extension)
+/cgv             /cgv.html                    200
+/mentions        /mentions-legales.html       200
+/legal           /mentions-legales.html       301

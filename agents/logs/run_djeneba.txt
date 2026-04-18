@@ -1,0 +1,13 @@
+
+🤖 WULIX Agents — DJENEBA
+[2026-04-18 14:31:55] [INFO] [Djeneba] Démarrage — mode=kpis
+
+📊 DJENEBA (Stratégie) — KPIS
+--------------------------------------------------
+Voici les KPIs stratégiques pour piloter la croissance de WULIX :
+
+| Catégorie | Nom et définition | Fréquence de mesure | Objectif cible (1 mois / 3 mois / 6 mois) | Comment le mesurer concrètement | Action corrective si KPI non atteint |
+| --- | --- | --- | --- | --- | --- |
+| Revenus | CA mensuel stable | Mesi | 1500€/mois (objectif) | - Totalisez les revenus de la période précédente et actuelle pour établir le CA. | Ajuster les tarifs ou proposer des services supplémentaires si nécessaire. |
+| Revenus | Revenu moyen par client | Mois | 250€/mois (objectif) | - Totalisez les revenus de tous clients pour un mois et divisez par le nombre total de clients. | Augmenter la moyenne en proposant des services de plus haute valeur aux clients ou en réduisant les coûts. |
+| Revenus | MRR (Mensual Revenu Retenu) | Mois | 1000€/mois (objectif) | - Totalisez les revenus retenus sur toutes les sous-traitances pour un mois. | Augmenter le MRR en proposant des services de plus haute valeur ou en ré

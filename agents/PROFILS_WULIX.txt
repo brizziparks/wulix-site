@@ -1,0 +1,165 @@
+﻿========================================================
+  WULIX — PROFILS RÉSEAUX SOCIAUX
+  Généré par MARIAMA le 17/04/2026
+========================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🐦  TWITTER / X
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nom affiché   : WULIX
+Nom d'utilisateur : @wulixfr
+Site web      : WULIX.fr
+Localisation  : France 🇫🇷
+
+── BIO (160 car. max) ──────────────────────────────────
+Automatise ton workflow avec l'IA ! 🤖 On aide PME et
+freelances à générer des résultats concrets 💸✨ WULIX.fr
+
+── TEXTE HEADER / BANNIÈRE ─────────────────────────────
+Automatise ton avenir !
+
+── TWEET ÉPINGLÉ (à poster en premier) ─────────────────
+Créez votre automate ! WULIX aide les PME et les
+freelances à automatiser leurs workflows avec l'IA.
+Découvrez comment gagner du temps et de l'efficacité
+sur notre site ! Suivez-nous pour des astuces pratiques.
+
+#IA #Automatisation #WULIX
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💼  LINKEDIN — PAGE ENTREPRISE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nom de la page  : WULIX
+Tagline         : Automatisez votre réussite avec l'IA
+Secteur         : Technologie de l'information
+Taille          : 1-10 employés
+Type            : Travailleur indépendant
+Site web        : https://WULIX.fr
+
+Spécialités à cocher :
+  • Automatisation IA
+  • Agents Python
+  • Workflows
+  • PME
+  • Freelance
+  • ChatGPT
+  • Gemini API
+
+── À PROPOS ────────────────────────────────────────────
+À propos de WULIX
+
+Nous sommes WULIX, une agence d'automatisation IA
+spécialisée dans l'aide des PME, des freelances et des
+entrepreneurs à transformer leurs workflows en opérations
+automatisées. Notre mission est de vous aider à gagner
+plus de temps et à augmenter vos revenus grâce à
+l'intelligence artificielle.
+
+Pour qui ?
+Nous travaillons avec les PME, les freelances et les
+entrepreneurs qui cherchent à améliorer leur efficacité
+et leur productivité.
+
+Comment on travaille ?
+En étroite collaboration avec nos clients pour comprendre
+leurs besoins et leur offrir des solutions personnalisées.
+Notre équipe de développeurs Python expérimentés crée
+des agents IA spécifiques à vos workflows. Concrets,
+rapides et efficaces.
+
+Services principaux :
+- Automatisation de workflows avec l'IA
+- Développement d'agents Python personnalisés
+- Optimisation de flux de travail
+- Intégration avec des systèmes existants
+
+Visitez WULIX.fr ou retrouvez nos services sur Fiverr :
+fiverr.com/richardsylla
+
+── PREMIER POST (lancement de la page) ─────────────────
+Je suis ravi de présenter WULIX, notre agence
+spécialisée dans l'automatisation avec l'IA !
+
+Comme développeur passionné d'IA, j'ai vu les bénéfices
+que peut apporter cette technologie pour les PME et les
+freelances. Mais il manquait des solutions adaptées à
+leurs besoins spécifiques.
+
+C'est pourquoi j'ai créé WULIX. Notre vision : rendre
+l'IA accessible à tous pour automatiser leurs workflows,
+gagner du temps et de la productivité.
+
+Suivez-nous sur LinkedIn et visitez WULIX.fr pour
+découvrir nos services d'automatisation IA. Rejoignez
+notre communauté !
+
+#AutomatisationIA #Productivité #SolutionsIA #WULIX #IA
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛒  FIVERR — @richardsylla
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── BIO PROFIL ──────────────────────────────────────────
+Développeur IA spécialisé dans l'automatisation des
+workflows avec Python, Gemini API, Ollama, FastAPI et n8n.
+J'aide PME et freelances à gagner du temps et augmenter
+leur ROI. Contactez-moi pour discuter de votre projet !
+
+Portfolio : aisatou.rosmedia.fr/portfolio
+
+── COMPÉTENCES À AJOUTER ───────────────────────────────
+Python · Automatisation · Intelligence Artificielle
+API Integration · Chatbot · FastAPI · n8n · Web Scraping
+
+── GIG 1 — TITRE ───────────────────────────────────────
+I will create a custom Python AI agent for your business
+
+Catégorie : Programming & Tech > AI Development
+Tags : python agent, ai automation, chatbot, gemini api,
+       workflow automation
+
+── GIG 1 — DESCRIPTION ─────────────────────────────────
+Je crée des agents IA Python sur-mesure et automatise
+vos workflows répétitifs.
+
+✅ Ce que je livre :
+- Agent IA personnalisé (Python + Gemini API / Ollama)
+- Automatisation de tâches avec scripts Python ou n8n
+- Intégration API et workflows intelligents
+- Documentation et guide d'utilisation
+
+🔧 Technologies : Python, FastAPI, Gemini API, Ollama, n8n
+
+📦 PACKAGES :
+• Basic (50€)   — Script simple, 1 tâche, 3 jours
+• Standard (150€) — Agent complet, 3 fonctions, 7 jours
+• Premium (400€) — Multi-agents, intégrations, 14 jours
+
+❓ FAQ :
+Q : Quels types de tâches peut-on automatiser ?
+R : Emails, rapports, scraping, social media, données —
+    tout ce qui est répétitif.
+
+Q : Faut-il des compétences techniques ?
+R : Non. Je livre avec documentation et guide pas-à-pas.
+
+Q : Mes données sont-elles sécurisées ?
+R : Tout peut tourner en local (Ollama) — aucune donnée
+    envoyée au cloud.
+
+── GIG 2 — TITRE ───────────────────────────────────────
+I will automate your workflow with Python and AI scripts
+
+Catégorie : Programming & Tech > Automation
+Tags : automation, python script, n8n, workflow,
+       make integromat
+
+
+========================================================
+  FIN DU DOCUMENT
+========================================================

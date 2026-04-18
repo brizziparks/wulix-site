@@ -1,0 +1,125 @@
+{
+  "name": "WULIX — Pipeline LinkedIn Automatise",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "weeks", "minutesInterval": 1 }]
+        }
+      },
+      "id": "node_trigger",
+      "name": "Planification hebdomadaire",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300],
+      "notes": "Se declenche chaque lundi a 9h00. Modifie 'interval' selon ton planning."
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "TON_GOOGLE_SHEET_ID", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Posts", "mode": "name" },
+        "options": { "headerRow": true }
+      },
+      "id": "node_sheets",
+      "name": "Lire Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [460, 300],
+      "notes": "Remplace TON_GOOGLE_SHEET_ID par l'ID de ton Google Sheets. Colonnes attendues : statut | texte | hashtags | date_publication"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.statut }}",
+              "rightValue": "a_publier",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "node_filter",
+      "name": "Filtrer : statut = a_publier",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "notes": "Seuls les posts avec statut 'a_publier' passent. Les autres sont ignores."
+    },
+    {
+      "parameters": {
+        "mode": "first"
+      },
+      "id": "node_limit",
+      "name": "Prendre 1 seul post",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "notes": "Publie UN seul post par execution pour eviter le spam."
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst texte = item.texte || '';\nconst hashtags = item.hashtags || '';\nconst post = texte + (hashtags ? '\\n\\n' + hashtags : '');\nreturn [{ json: { post_final: post, ligne_id: item.ligne_id || '' } }];"
+      },
+      "id": "node_compose",
+      "name": "Composer le post final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "notes": "Assemble le texte + hashtags. Modifie ce code pour ajouter une signature, un lien, etc."
+    },
+    {
+      "parameters": {
+        "person": "={{ $json.urn_auteur }}",
+        "text": "={{ $json.post_final }}",
+        "additionalFields": {}
+      },
+      "id": "node_linkedin",
+      "name": "Publier sur LinkedIn",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "notes": "Necessite des credentials LinkedIn OAuth2 dans n8n. Voir README.txt pour la procedure."
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "value": "TON_GOOGLE_SHEET_ID", "mode": "id" },
+        "sheetName": { "__rl": true, "value": "Posts", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "statut": "publie",
+            "date_publication": "={{ $now.format('yyyy-MM-dd HH:mm') }}"
+          },
+          "matchingColumns": ["ligne_id"]
+        }
+      },
+      "id": "node_update",
+      "name": "Marquer comme publie",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1560, 300],
+      "notes": "Met a jour le statut du post a 'publie' dans Google Sheets apres publication."
+    }
+  ],
+  "connections": {
+    "Planification hebdomadaire": { "main": [[{ "node": "Lire Google Sheets", "type": "main", "index": 0 }]] },
+    "Lire Google Sheets":         { "main": [[{ "node": "Filtrer : statut = a_publier", "type": "main", "index": 0 }]] },
+    "Filtrer : statut = a_publier": { "main": [[{ "node": "Prendre 1 seul post", "type": "main", "index": 0 }]] },
+    "Prendre 1 seul post":        { "main": [[{ "node": "Composer le post final", "type": "main", "index": 0 }]] },
+    "Composer le post final":     { "main": [[{ "node": "Publier sur LinkedIn", "type": "main", "index": 0 }]] },
+    "Publier sur LinkedIn":       { "main": [[{ "node": "Marquer comme publie", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "wulix-pipeline-linkedin-v1"
+  }
+}
