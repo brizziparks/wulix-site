@@ -61,4 +61,52 @@ Bug : publisher_agent.py ligne 318 - JSONDecodeError UTF-8 BOM sur content_queue
 - fatou monthly_report : SUCCES - rapport Avril 2026, 0EUR vs objectif 800EUR
 - modibo mentions : SUCCES - mentions legales wulix.fr generees -> agents/legal/mentions_legales_20260418_1432.md
 
+### Session WULIX Build complet — 18/04/2026 nuit (contexte étendu)
+
+**Infrastructure installée :**
+- Node.js v25.9.0 + Netlify CLI + GitHub CLI v2.90.0
+- Docker + n8n (localhost:5678) — volume wulix_n8n_data
+- Tâches planifiées Windows : WULIX_SEO_Check (8h/jour), WULIX_Deploy_Netlify (lundi 9h)
+- n8n sur NAS prévu : --memory=256m --cpus=0.5 (SQLite, pas PostgreSQL)
+
+**Fichiers UI créés (ui/) :**
+- index.html : og:image, Twitter Card, JSON-LD, favicon, nav Blog
+- blog.html : 3 articles SEO (Python relances, n8n LinkedIn, 5 automatisations no-code)
+- a-propos.html : page profil Omar Sylla + valeurs WULIX
+- services.html : 3 offres sur mesure + 3 packs Gumroad + process 4 étapes
+- mentions-legales.html : LCEN complètes
+- cgv.html : CGV auto-entrepreneur
+- 404.html : page d'erreur custom dark theme
+- manifest.json : PWA support
+- netlify.toml : security headers + cache rules
+- robots.txt : Allow all + sitemap
+- sitemap.xml : 4 URLs enrichies
+- _redirects : /boutique → Gumroad, /cgv, /mentions
+- favicon.ico + favicon-192.png : Pillow, W sur fond violet
+- og-image.jpg : Open Graph 1200x630
+- covers/ : 3 visuels produits Gumroad (Pillow)
+
+**Agents de contenu (agents/content/) :**
+- linkedin_posts_4semaines.md : 12 posts Mon/Wed/Fri sur 4 semaines
+- tweets_8semaines.md : 8 tweets prêts, 1/semaine
+- template_proposition_client.md : template devis complet avec ROI
+- email_template_acheteur_gumroad.html : email HTML post-achat Gumroad
+- WULIX_Suivi_Revenus.xlsx : 5 onglets Excel avec graphiques
+- gumroad_pack/ : 5 scripts Python + workflow n8n JSON
+
+**Nettoyage :**
+- C:\Users\USER racine nettoyée : 8 fichiers temporaires supprimés
+- Fichiers systèmes (.claude.json, etc.) remis en place
+
+**Git :**
+- Repo initialisé, commit initial 7c08ca8
+- GitHub CLI installé, auth web lancée (en attente complétion OAuth)
+
+**Non résolu :**
+- n8n login : hash bcrypt $2b vs $2a, login échoue — différé
+- GitHub OAuth : fenêtre ouverte, non complétée
+- Gumroad produit 3 (9€) : à uploader avec ZIP
+- Malt photo : à faire lundi
+- Uptime Kuma : credentials NAS manquants
+
 

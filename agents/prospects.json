@@ -856,5 +856,68 @@
       }
     },
     "created_at": "2026-04-18T14:48:34.087883"
+  },
+  {
+    "agent": "Scout",
+    "status": "success",
+    "mode": "opportunities",
+    "report": {
+      "clients_cibles": [
+        {
+          "nom_client": "Entreprise de gestion de données",
+          "secteur": "Santé",
+          "besoin": "Automatisation de la saisie et traitement de données médicales"
+        },
+        {
+          "nom_client": "Start-up de marketing digitale",
+          "secteur": "Publicité",
+          "besoin": "Création d'un dashboard pour analyser les performances de campagnes publicitaires en ligne"
+        },
+        {
+          "nom_client": "Entreprise de logistique",
+          "secteur": "Transport",
+          "besoin": "Intégration d'une plateforme de gestion de flux de travail automatisé"
+        },
+        {
+          "nom_client": "Institut de recherche scientifique",
+          "secteur": "Recherche",
+          "besoin": "Développement d'un modèle d'IA pour analyser des données bibliographiques"
+        },
+        {
+          "nom_client": "Entreprise de gestion de stock",
+          "secteur": "E-commerce",
+          "besoin": "Création d'un système de gestion de l'inventaire automatique"
+        }
+      ],
+      "plateformes": [
+        {
+          "nom_plateforme": "Fiverr",
+          "strategie": "Créer un profil détaillé et des services clairs pour attirer les clients en secteur de la santé, du marketing et de l'e-commerce"
+        },
+        {
+          "nom_plateforme": "LinkedIn",
+          "strategie": "Utiliser les réseaux sociaux pour partager des contenus pertinents (blog, vidéos) et engager une conversation avec les clients potentiels"
+        },
+        {
+          "nom_plateforme": "Codeur.fr",
+          "strategie": "Participer à des forums de discussion liés aux technologies Python et IA pour établir des relations avec des prospectus"
+        }
+      ],
+      "idees_contenu": [
+        {
+          "titre_contenu": "5 avantages de l'automatisation de la saisie de données médicales",
+          "contenu": "Développez votre entreprise en automatisant la saisie et le traitement de données médicales pour augmenter la productivité et réduire les erreurs"
+        },
+        {
+          "titre_contenu": "Comment créer un dashboard efficace pour analyser les performances de campagnes publicitaires",
+          "contenu": "Découvrez comment intégrer des outils de dashboards dans votre workflow pour prendre des décisions éclairées et améliorer vos résultats"
+        }
+      ],
+      "action_prioritaire": {
+        "titre_action": "Création d'un profil détaillé sur Fiverr",
+        "contenu_action": "Développez un profil détaillé avec des services clairs pour attirer les clients en secteur de la santé, du marketing et de l'e-commerce"
+      }
+    },
+    "created_at": "2026-04-19T10:09:04.347683"
   }
 ]

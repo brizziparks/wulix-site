@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merci pour votre achat — WULIX</title>
+<style>
+  body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f4; }
+  .container { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+  .header { background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 40px 32px; text-align: center; }
+  .header h1 { color: #ffffff; margin: 0; font-size: 26px; font-weight: 700; }
+  .header p { color: #ddd6fe; margin: 8px 0 0; font-size: 15px; }
+  .body { padding: 36px 32px; }
+  .body h2 { color: #1f1f1f; font-size: 20px; margin-top: 0; }
+  .body p { color: #444; line-height: 1.7; font-size: 15px; }
+  .cta-box { background: #f5f3ff; border-left: 4px solid #7c3aed; border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+  .cta-box p { margin: 0; color: #5b21b6; font-weight: 600; font-size: 15px; }
+  .btn { display: inline-block; background: #7c3aed; color: #ffffff !important; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 700; font-size: 15px; margin: 20px 0 8px; }
+  .steps { counter-reset: step; }
+  .step { display: flex; align-items: flex-start; margin: 16px 0; }
+  .step-num { background: #7c3aed; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; margin-right: 14px; margin-top: 2px; }
+  .step-text { color: #444; font-size: 14px; line-height: 1.6; }
+  .divider { border: none; border-top: 1px solid #ede9fe; margin: 28px 0; }
+  .footer { background: #f9fafb; padding: 24px 32px; text-align: center; border-top: 1px solid #e5e7eb; }
+  .footer p { color: #9ca3af; font-size: 12px; margin: 4px 0; }
+  .footer a { color: #7c3aed; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>🎉 Merci pour votre achat !</h1>
+    <p>Votre commande WULIX est confirmée</p>
+  </div>
+
+  <div class="body">
+    <h2>Bonjour {{prenom}} 👋</h2>
+    <p>
+      Merci d'avoir fait confiance à <strong>WULIX</strong> pour automatiser votre activité.
+      Votre fichier est disponible dès maintenant dans votre espace Gumroad.
+    </p>
+
+    <div class="cta-box">
+      <p>📦 Produit : <strong>{{nom_produit}}</strong></p>
+      <p style="margin-top:8px;font-weight:400;color:#6b21a8;">Accédez à votre téléchargement ci-dessous :</p>
+    </div>
+
+    <a href="{{lien_telechargement}}" class="btn">⬇️ Télécharger maintenant</a>
+
+    <hr class="divider">
+
+    <h2>📋 Comment utiliser votre pack</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Téléchargez</strong> le ZIP depuis Gumroad et décompressez-le sur votre bureau.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Lisez</strong> le fichier <code>README.md</code> inclus — il explique chaque script en détail.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Installez</strong> Python 3.10+ si nécessaire, puis lancez <code>pip install -r requirements.txt</code>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Configurez</strong> vos clés API et données dans les fichiers <code>.env</code> ou CSV fournis.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-text"><strong>Lancez</strong> le script de votre choix. En cas de blocage, répondez à cet email — je vous aide.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <h2>💬 Besoin d'aide ?</h2>
+    <p>
+      Répondez directement à cet email avec vos questions.
+      Je réponds sous 24h, du lundi au vendredi.
+    </p>
+    <p>
+      Vous pouvez aussi découvrir nos autres produits et services sur
+      <a href="https://wulix.fr" style="color:#7c3aed;font-weight:600;">wulix.fr</a>.
+    </p>
+
+    <hr class="divider">
+
+    <p style="font-size:13px;color:#9ca3af;text-align:center;">
+      Si vous avez apprécié ce produit, un avis sur Gumroad nous aide énormément 🙏<br>
+      Partagez-le à un ami entrepreneur qui perd du temps sur des tâches répétitives !
+    </p>
+  </div>
+
+  <div class="footer">
+    <p><strong>WULIX</strong> — Automatisation & IA pour TPE/PME</p>
+    <p><a href="https://wulix.fr">wulix.fr</a> · <a href="https://wulix.fr/cgv.html">CGV</a> · <a href="https://wulix.fr/mentions-legales.html">Mentions légales</a></p>
+    <p style="margin-top:10px;">Vous recevez cet email suite à votre achat sur Gumroad.</p>
+  </div>
+
+</div>
+</body>
+</html>

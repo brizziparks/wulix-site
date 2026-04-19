@@ -121,7 +121,8 @@
       "Bash(git --version)",
       "Bash(docker --version)",
       "Bash(docker pull *)",
-      "Bash(netlify --version)"
+      "Bash(netlify --version)",
+      "Bash(dir \"C:\\\\Users\\\\USER\\\\.claude\\\\projects\\\\projet jarvis\\\\ui\\\\\" /b)"
     ]
   }
 }

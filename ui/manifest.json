@@ -1,0 +1,21 @@
+{
+  "name": "WULIX Agency",
+  "short_name": "WULIX",
+  "description": "Automatisation & IA pour TPE/PME – WULIX Agency",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-192.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

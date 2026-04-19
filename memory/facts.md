@@ -50,14 +50,27 @@
 
 ## Fichiers importants
 - `agents/content/twitter_posts_wulix.md` — 8 posts Twitter prêts (S2-S5)
-- `agents/content/twitter_make_setup.md` — guide Make.com Twitter
-- `agents/content/suivi_revenus_wulix.md` — suivi revenus multi-canaux
+- `agents/content/tweets_8semaines.md` — 8 tweets hebdo prêts à poster
+- `agents/content/linkedin_posts_4semaines.md` — 12 posts LinkedIn 4 semaines
+- `agents/content/template_proposition_client.md` — template devis complet
+- `agents/content/email_template_acheteur_gumroad.html` — email HTML post-achat
+- `agents/content/WULIX_Suivi_Revenus.xlsx` — tableau revenus Excel 5 onglets
+- `agents/content/gumroad_pack/` — scripts Python + workflow n8n
 - `agents/content/gumroad_product3.md` — produit 3 PDF 9€ complet
 - `agents/legal/cgv_gumroad_wulix.md` — CGV complètes
-- `agents/legal/cgv_gumroad_snippet.md` — snippets à coller sur Gumroad
 - `agents/mariama_publisher.py` — publication LinkedIn auto
-- `ui/sitemap.xml` + `ui/robots.txt` — SEO wulix.fr
-- `ui/seo_setup_guide.md` — guide Netlify + Google Search Console
+- `ui/index.html` — homepage (og:image, JSON-LD, favicon, Blog nav)
+- `ui/blog.html` — 3 articles SEO
+- `ui/a-propos.html` — page profil Omar + valeurs WULIX
+- `ui/services.html` — 3 offres + 3 packs + process 4 étapes
+- `ui/mentions-legales.html` + `ui/cgv.html` — pages légales
+- `ui/manifest.json` + `ui/netlify.toml` + `ui/robots.txt` — config prod
+- `ui/sitemap.xml` + `ui/seo_setup_guide.md` — SEO wulix.fr
+
+## Netlify
+- Site ID : 1a620329-83d9-4541-ad5a-8b657a161f49
+- Deploy : `C:\Users\USER\Scripts\WULIX\do_deploy_wulix.bat`
+- Tâche planifiée : WULIX_Deploy_Netlify (lundi 9h)
 
 ## Projections revenus (scénario moyen, avec Malt)
 - M+1 (Mai 2026) : ~1 175€ net

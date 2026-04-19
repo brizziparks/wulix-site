@@ -46,5 +46,17 @@
     "message": "\"Bonjour [prénom], j'ai lu avec intérêt votre profil et je pense que notre expertise en automatisation n8n/Python pourrait nous aider à vous réduire les efforts administratifs ! Nous avons déjà aidé plusieurs entreprises de services à optimiser leurs flux, et je serais ravi de discuter de comment nous pouvons vous aider. Pouvez-vous me dire quel est le prochain pas que vous souhaitez prendre pour automatiser vos processus ?\"",
     "status": "ready",
     "created_at": "2026-04-18T14:28:09.426650"
+  },
+  {
+    "agent": "Closer",
+    "mode": "linkedin",
+    "prospect": {
+      "secteur": "Santé",
+      "probleme": "Automatisation de la saisie et traitement de données médicales",
+      "contexte": "{'nom_client': 'Entreprise de gestion de données', 'secteur': 'Santé', 'besoin': 'Automatisation de la saisie et traitement de données médicales'}"
+    },
+    "message": "\"Hé [Nom du prospect], j'ai lu votre profil et je suis impressionné par l'impact que vous voulez avoir sur la santé en automatisant les processus de saisie de données médicales. Je pense que ma proposition pourrait être un atout pour votre entreprise, en particulier avec notre expertise en automatisation n8n/Python qui permettrait de traiter rapidement et sécurisément ces données sensibles. Pouvez-vous me dire si vous avez déjà envisagé l'automatisation de ce processus ?\"",
+    "status": "ready",
+    "created_at": "2026-04-19T10:09:11.491649"
   }
 ]

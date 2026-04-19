@@ -133,5 +133,14 @@
     "content": "\"Vous pensez que les tâches répétitives sont une partie inévitable de votre travail ? Eh bien, pensez-vous encore qu'il faut passer au moins 4 heures par semaine à gérer vos fichiers et vos rapports ?\n\nÀ WULIX, nous avons vécu cela nous-mêmes. Mais avec notre expertise en automatisation IA, nous avons pu transformer ce temps perdu en plus de temps pour les choses qui comptent !\n\n📈 Voici un exemple concret de nos efforts : nous travaillions avec une PME dans le secteur de la logistique. Les employés étaient chargés de trier les packages, mais cela représentait des heures de travail répétitives et peu productives.\n\n**Avant** : chaque package devait être vérifié à la main pour s'assurer qu'il était complet et correctement emballé.\n\n**Après** : nous avons mis en place une automatisation Python qui permet aux packages d'être triés automatiquement !\n\nAvec notre outil, les employés ont pu se concentrer sur les tâches plus stratégiques, tandis que WULIX s'occupe de l'automatisation. Le résultat ? Une productivité accrue et une réduction des erreurs.\n\nNous voulons vous aider à transformer vos workflows répétitifs en moments de créativité ! 🤔 Comment allez-vous gérer vos tâches manuelles ? Partagez avec nous vos idées !\n\nEnvisagerez-vous d'automatiser votre workflow ? 📈 Découvrez comment WULIX peut vous aider : https://www.wulix.fr/\n\n#WULIX #IA #Automatisation #Python #PME\"",
     "status": "ready",
     "created_at": "2026-04-18T14:49:41.087332"
+  },
+  {
+    "id": "li_202604191009",
+    "platform": "linkedin",
+    "type": "education",
+    "topic": "Tutoriel IA locale avec Ollama",
+    "content": "\"Vous voulez déployer une intelligence artificielle (IA) sur votre ordinateur sans envoyer vos données au cloud ? C'est possible et je vais vous montrer comment faire !\n\nMais avant de plonger dans les détails, savez-vous que beaucoup de PME et d'entrepreneurs ont peur de l'IA parce qu'ils pensent qu'elle nécessite des infrastructures coûteuses et complexes ?\n\nC'est une erreur courante ! Avec Ollama, vous pouvez créer et utiliser votre propre IA sur votre PC sans problème. Et le mieux, c'est que cela fonctionne gratuitement !\n\nVoici les étapes pour démarrer :\n\n1. Téléchargez Ollama sur votre PC\n2. Créez un compte gratuit\n3. Sélectionnez l'IA appropriée pour vos besoins\n4. Suivez les instructions pour configurer et déployer votre IA\n\nEt voilà ! Vous avez désormais une solution d'automatisation intelligente pour votre workflow, sans avoir à envoyer vos données au cloud.\n\nQu'est-ce que vous pensez ? Avez-vous déjà utilisé l'IA dans votre entreprise ou vos projets personnels ?\n\nVisitez notre site WULIX.fr pour en savoir plus sur nos services d'automatisation IA et nous contacter si vous avez besoin de conseils personnalisés ! [lien vers le site] #WULIX #IA #Automatisation #Python #PME\"",
+    "status": "ready",
+    "created_at": "2026-04-19T10:09:09.105311"
   }
 ]
