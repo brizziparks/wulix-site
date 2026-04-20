@@ -405,6 +405,36 @@
     .metric-val.green { color: var(--green); }
     .metric-val.orange { color: var(--orange); }
 
+    /* Revenue widget */
+    .rev-card {
+      background: linear-gradient(135deg, #0a0a1a, #060612);
+      border: 1px solid rgba(0,229,255,.15); border-radius: 8px;
+      padding: 10px 12px; margin-bottom: 8px; position: relative; overflow: hidden;
+    }
+    .rev-card::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(circle at 80% 20%, rgba(0,229,255,.04), transparent 60%);
+    }
+    .rev-amount {
+      font-size: 22px; font-weight: bold; color: var(--accent2);
+      letter-spacing: 1px; text-shadow: 0 0 12px rgba(0,229,255,.4);
+    }
+    .rev-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .rev-sub { font-size: 11px; color: #5a7a9a; margin-top: 3px; }
+    .rev-sub span { color: var(--green); }
+    .rev-progress-wrap { margin-top: 8px; }
+    .rev-progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+    .rev-progress-bar { height: 4px; background: #0a0a20; border-radius: 2px; overflow: hidden; }
+    .rev-progress-fill {
+      height: 4px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .8s ease; width: 0%;
+    }
+    .rev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .rev-stat { background: #06060e; border: 1px solid var(--border); border-radius: 5px; padding: 6px 8px; text-align: center; }
+    .rev-stat-val { font-size: 14px; font-weight: bold; color: var(--green); }
+    .rev-stat-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
+
     /* Task log */
     .task-log {
       font-size: 10px; color: var(--muted);
@@ -623,9 +653,36 @@
       </div>
     </div>
 
+    <!-- Revenue widget -->
+    <div class="rp-section">
+      <div class="rp-title">💰 Revenus NDEYE</div>
+      <div class="rev-card">
+        <div class="rev-label">Aujourd'hui</div>
+        <div class="rev-amount" id="rev-today">— €</div>
+        <div class="rev-sub">Projection mois : <span id="rev-proj">—</span></div>
+        <div class="rev-progress-wrap">
+          <div class="rev-progress-label">
+            <span id="rev-pct">0%</span>
+            <span style="color:var(--accent2)">Obj. 500€</span>
+          </div>
+          <div class="rev-progress-bar"><div class="rev-progress-fill" id="rev-bar"></div></div>
+        </div>
+      </div>
+      <div class="rev-grid">
+        <div class="rev-stat">
+          <div class="rev-stat-val" id="rev-sales">—</div>
+          <div class="rev-stat-lbl">Ventes</div>
+        </div>
+        <div class="rev-stat">
+          <div class="rev-stat-val" id="rev-date">—</div>
+          <div class="rev-stat-lbl">Dernier rapport</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Metrics -->
     <div class="rp-section">
-      <div class="rp-title">📈 Dashboard</div>
+      <div class="rp-title">📈 Pipeline agents</div>
       <div id="metrics">
         <div class="metric-row">
           <span class="metric-label">File contenu</span>
@@ -903,6 +960,40 @@ async function refreshDashboard() {
     document.getElementById('m-lastrun').textContent    = d.last_daily_run  ?? '—';
     document.getElementById('m-tasks').textContent      = (d.running_tasks || []).length;
   } catch(e) {}
+  refreshRevenue();
+}
+
+// ── Revenue widget ────────────────────────────────────────────────────────
+async function refreshRevenue() {
+  try {
+    const r = await fetch('/agents/revenue', { headers: AUTH });
+    const d = await r.json();
+    if (d.error) {
+      document.getElementById('rev-today').textContent = '—';
+      document.getElementById('rev-proj').textContent  = d.error.includes('lancer') ? 'Lancer NDEYE' : '—';
+      return;
+    }
+    const rev   = (d.total_revenue || 0).toFixed(2);
+    const proj  = (d.projection    || 0).toFixed(0);
+    const pct   = Math.min(100, d.pct_objectif || 0);
+    const sales = d.total_sales ?? '—';
+    const date  = (d.date || '').slice(5) || '—';  // MM-DD
+
+    document.getElementById('rev-today').textContent = rev + ' €';
+    document.getElementById('rev-proj').textContent  = proj + ' €';
+    document.getElementById('rev-pct').textContent   = pct.toFixed(1) + '%';
+    document.getElementById('rev-bar').style.width   = pct + '%';
+    document.getElementById('rev-sales').textContent = sales;
+    document.getElementById('rev-date').textContent  = date;
+
+    // Couleur selon performance
+    const el = document.getElementById('rev-today');
+    el.style.color = d.total_revenue > 20 ? 'var(--green)'
+                   : d.total_revenue > 0  ? 'var(--accent2)'
+                   : 'var(--muted)';
+  } catch(e) {
+    // Pas de données NDEYE encore — silencieux
+  }
 }
 
 // ── Models ────────────────────────────────────────────────────────────────
@@ -1271,8 +1362,10 @@ loadModels().then(() => {
 });
 checkBackend();
 refreshDashboard();
+refreshRevenue();
 loadAgentsSidebar();
 setInterval(refreshDashboard, 30000);
+setInterval(refreshRevenue, 120000);  // revenus toutes les 2 min
 setInterval(checkBackend, 60000);
 setInterval(updateCountdowns, 1000);  // countdown chaque seconde
 addLog('NEXUS COMMAND initialisé', 'ok', 'SYS');

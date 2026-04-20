@@ -226,6 +226,53 @@ async def run_pipeline(background_tasks: BackgroundTasks, user: str = Depends(ve
     return {"task_id": task_id, "status": "started", "mode": mode}
 
 
+@app.get("/health")
+async def health():
+    """Health check public (pas d'auth). Utile pour monitoring Uptime Robot etc."""
+    import datetime as _dt
+    return {
+        "status": "ok",
+        "service": "aisatou-hud",
+        "ts": _dt.datetime.now().isoformat(),
+        "version": "2.0"
+    }
+
+
+@app.get("/agents/revenue")
+async def agents_revenue(user: str = Depends(verify_auth)):
+    """Retourne les dernières données de revenus NDEYE (finance/rapport_YYYYMMDD.json)."""
+    finance_dir = AGENTS_DIR / "finance"
+    if not finance_dir.exists():
+        return {"error": "Dossier finance introuvable — lancer NDEYE d'abord"}
+
+    # Trouve le rapport JSON le plus récent
+    reports = sorted(finance_dir.glob("rapport_*.json"), reverse=True)
+    if not reports:
+        return {"error": "Aucun rapport NDEYE disponible — lancer la tâche daily_report"}
+
+    try:
+        data = json.loads(reports[0].read_text(encoding="utf-8"))
+        # Calcule la projection mensuelle
+        import datetime as _dt
+        jour = _dt.date.today().day or 1
+        total = data.get("total_revenue", 0)
+        projection = round(total / jour * 30, 2)
+        obj = 500.0
+        pct = round(total / obj * 100, 1) if obj else 0
+        return {
+            "date":          data.get("date", "—"),
+            "total_revenue": total,
+            "total_sales":   data.get("total_sales", 0),
+            "projection":    projection,
+            "objectif":      obj,
+            "pct_objectif":  pct,
+            "platforms":     data.get("stats", []),
+            "source_file":   reports[0].name,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @app.get("/pipeline/log")
 async def pipeline_log(user: str = Depends(verify_auth)):
     """Retourne les derniers runs du pipeline."""

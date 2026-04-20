@@ -141,7 +141,8 @@
       { "id": "deploy_cloudflare","name": "Deploy Cloudflare wulix.fr", "cmd": ["pipeline", "deploy"],     "schedule": "Auto",      "auto": true  },
       { "id": "pipeline_full",    "name": "Pipeline complet SEO+Deploy", "cmd": ["pipeline", "full"],      "schedule": "Manuel",    "auto": false },
       { "id": "pipeline_seo",     "name": "Pipeline SEO seulement",     "cmd": ["pipeline", "seo"],        "schedule": "Manuel",    "auto": false },
-      { "id": "status_check",     "name": "Vérifier status site",       "cmd": ["adama", "audit"],         "schedule": "Manuel",    "auto": false }
+      { "id": "status_check",     "name": "Vérifier status site",       "cmd": ["adama", "audit"],         "schedule": "Manuel",    "auto": false },
+      { "id": "backup",           "name": "Sauvegarde données JSON",    "cmd": ["backup"],                 "schedule": "Quotidien 02:00", "auto": true }
     ]
   }
 }

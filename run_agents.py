@@ -235,6 +235,10 @@ def main():
         spec.loader.exec_module(mod)
         mod.run_pipeline(mode, niche)
 
+    elif cmd == "backup":
+        from agents.backup_agent import run
+        run()
+
     else:
         print(__doc__)
 
