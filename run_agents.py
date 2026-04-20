@@ -239,6 +239,81 @@ def main():
         from agents.backup_agent import run
         run()
 
+    elif cmd == "recommend":
+        # Lance la génération de recommandations pour un agent donné
+        # Usage: recommend <agent_id>
+        # agent_id: mariama | fatou | aminata | modibo | adama | djeneba | bintou | seydou | koumba | samba | ndeye | rokhaya | ibrahima | lamine
+        from agents.base_agent import BaseAgent
+        from pathlib import Path as _Path
+        import datetime as _dt
+
+        agent_id = args[1] if len(args) > 1 else None
+        if not agent_id:
+            print("Usage: recommend <agent_id>")
+            print("Agents: mariama|fatou|aminata|modibo|adama|djeneba|bintou|seydou|koumba|samba|ndeye|rokhaya|ibrahima|lamine")
+            sys.exit(1)
+
+        # Map des classes existantes
+        AGENT_CLASSES = {
+            "mariama":  ("agents.publisher_agent",  "PublisherAgent",  "Mariama",  "Responsable Communication & Social Media"),
+            "koumba":   ("agents.seo_writer_agent", "SeoWriterAgent",  "Koumba",   "SEO Writer & Content Specialist"),
+            "bintou":   ("agents.scout_agent",      "ScoutAgent",      "Bintou",   "Scout Fiverr & Veille Marché"),
+            "seydou":   ("agents.closer_agent",     "CloserAgent",     "Seydou",   "Commercial & Closer"),
+            "fatou":    ("agents.fatou_agent",       "FatouAgent",      "Fatou",    "Directrice Financière & Comptable"),
+            "aminata":  ("agents.aminata_agent",     "AminataAgent",    "Aminata",  "DRH & Responsable Missions"),
+            "modibo":   ("agents.modibo_agent",      "ModiboAgent",     "Modibo",   "Directeur Juridique"),
+            "adama":    ("agents.adama_agent",       "AdamaAgent",      "Adama",    "DSI — Directeur Systèmes Information"),
+            "djeneba":  ("agents.djeneba_agent",     "DjenebaAgent",    "Djeneba",  "Directrice Stratégie & Développement"),
+        }
+
+        # Agents standalone (pas de classe BaseAgent) — on crée un wrapper léger
+        STANDALONE_AGENTS = {
+            "samba":    ("Samba",    "Agent SEO & Publication Blog",
+                         "Tu publies des articles SEO sur wulix.fr. Tu gères le blog, les topics, le calendrier éditorial et l'optimisation SEO des articles existants."),
+            "ndeye":    ("Ndeye",    "Agent Analytics & Sales Reporting",
+                         "Tu analyses les ventes Gumroad/Fiverr, génères les rapports quotidiens et alertes sur les performances. Tu suis les KPIs revenus de WULIX."),
+            "rokhaya":  ("Rokhaya",  "Agent Email Marketing",
+                         "Tu gères les campagnes email de WULIX : newsletters, séquences automatiques, relances clients, templates. Objectif : convertir les abonnés en acheteurs."),
+            "ibrahima": ("Ibrahima", "Agent Analytics & Tracking",
+                         "Tu analyses le trafic web WULIX.fr, les conversions, les liens affiliés et proposes des optimisations basées sur les données."),
+            "lamine":   ("Lamine",   "Agent DevOps & Deploy",
+                         "Tu gères le déploiement Cloudflare Pages, le pipeline SEO→Build→Deploy, les sauvegardes et la disponibilité du site wulix.fr."),
+        }
+
+        reco_dir = BASE_DIR / "agents" / "recommandations"
+        reco_dir.mkdir(exist_ok=True)
+        date_str  = _dt.date.today().strftime("%Y%m%d")
+
+        if agent_id in AGENT_CLASSES:
+            module_name, class_name, _, _ = AGENT_CLASSES[agent_id]
+            import importlib
+            mod    = importlib.import_module(module_name)
+            cls    = getattr(mod, class_name)
+            agent  = cls()
+            content = agent.recommend()
+            filepath = agent.save_recommendation(content)
+
+        elif agent_id in STANDALONE_AGENTS:
+            name, role, backstory = STANDALONE_AGENTS[agent_id]
+            # Crée un agent générique avec le bon contexte
+            agent = BaseAgent(
+                name=name, role=role,
+                goal=f"Maximiser la performance du domaine {role} pour WULIX",
+                backstory=backstory + "\nTu travailles pour WULIX, agence IA solo de Omar Sylla (France)."
+            )
+            content  = agent.recommend()
+            filepath = agent.save_recommendation(content)
+
+        else:
+            print(f"Agent inconnu: {agent_id}")
+            sys.exit(1)
+
+        print(f"\n✅ Recommandations {agent_id.upper()} générées")
+        print(f"   Fichier : {filepath}")
+        print("\n" + "="*60)
+        print(content[:600] + ("..." if len(content) > 600 else ""))
+        print("="*60)
+
     else:
         print(__doc__)
 

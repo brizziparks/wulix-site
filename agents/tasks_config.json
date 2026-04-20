@@ -7,7 +7,8 @@
       { "id": "publish_article",  "name": "Publier 1 article blog",     "cmd": ["samba"],                    "schedule": "Lun 08:00", "auto": true  },
       { "id": "batch_articles",   "name": "Générer 3 articles en lot",   "cmd": ["seo", "batch", "3"],        "schedule": "Manuel",    "auto": false },
       { "id": "update_sitemap",   "name": "Mettre à jour sitemap",       "cmd": ["samba", "sitemap"],         "schedule": "Auto",      "auto": true  },
-      { "id": "seo_audit",        "name": "Audit SEO niche auto",        "cmd": ["seo", "niche", "automatisation"], "schedule": "Manuel", "auto": false }
+      { "id": "seo_audit",        "name": "Audit SEO niche auto",        "cmd": ["seo", "niche", "automatisation"], "schedule": "Manuel", "auto": false },
+      { "id": "recommend",        "name": "Recommandations SEO blog",    "cmd": ["recommend", "samba"],       "schedule": "Ven 16:00", "auto": true  }
     ]
   },
   "mariama": {
@@ -18,7 +19,8 @@
       { "id": "post_linkedin",    "name": "Poster sur LinkedIn",         "cmd": ["publish", "linkedin", "single"], "schedule": "Lun 09:00", "auto": true  },
       { "id": "weekly_posts",     "name": "Générer semaine de posts",    "cmd": ["weekly"],                        "schedule": "Dim 20:00", "auto": true  },
       { "id": "post_twitter",     "name": "Poster sur Twitter/X",        "cmd": ["publish", "twitter", "single"], "schedule": "Manuel",    "auto": false },
-      { "id": "promo_gumroad",    "name": "Post promo Gumroad",          "cmd": ["publish", "linkedin", "promo"], "schedule": "Manuel",    "auto": false }
+      { "id": "promo_gumroad",    "name": "Post promo Gumroad",          "cmd": ["publish", "linkedin", "promo"], "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations social media", "cmd": ["recommend", "mariama"],     "schedule": "Ven 16:10", "auto": true  }
     ]
   },
   "ndeye": {
@@ -29,7 +31,8 @@
       { "id": "daily_report",     "name": "Rapport ventes journalier",   "cmd": ["daily"],         "schedule": "08:30 quotidien", "auto": true  },
       { "id": "briefing",         "name": "Briefing complet équipe",     "cmd": ["briefing"],      "schedule": "Lun 07:30",       "auto": true  },
       { "id": "weekly_plan",      "name": "Plan de la semaine",          "cmd": ["plan"],          "schedule": "Lun 07:00",       "auto": true  },
-      { "id": "zero_sale_alert",  "name": "Alerte 0 vente (vérif)",     "cmd": ["fatou", "forecast"], "schedule": "Manuel",    "auto": false }
+      { "id": "zero_sale_alert",  "name": "Alerte 0 vente (vérif)",     "cmd": ["fatou", "forecast"], "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations ventes",      "cmd": ["recommend", "ndeye"], "schedule": "Ven 16:20", "auto": true }
     ]
   },
   "fatou": {
@@ -40,7 +43,8 @@
       { "id": "monthly_report",   "name": "Rapport financier mensuel",   "cmd": ["fatou"],                  "schedule": "1er du mois", "auto": true  },
       { "id": "forecast",         "name": "Prévisions revenus",          "cmd": ["fatou", "forecast"],      "schedule": "Manuel",      "auto": false },
       { "id": "invoice",          "name": "Générer modèle de facture",   "cmd": ["fatou", "invoice"],       "schedule": "Manuel",      "auto": false },
-      { "id": "kpis",             "name": "Tableau de bord KPIs",        "cmd": ["djeneba", "kpis"],        "schedule": "Lun 10:00",   "auto": true  }
+      { "id": "kpis",             "name": "Tableau de bord KPIs",        "cmd": ["djeneba", "kpis"],        "schedule": "Lun 10:00",   "auto": true  },
+      { "id": "recommend",        "name": "Recommandations financières", "cmd": ["recommend", "fatou"],     "schedule": "Ven 16:30",   "auto": true  }
     ]
   },
   "aminata": {
@@ -50,7 +54,8 @@
     "tasks": [
       { "id": "weekly_report",    "name": "Rapport RH hebdomadaire",     "cmd": ["aminata"],                "schedule": "Ven 17:00", "auto": true  },
       { "id": "onboarding",       "name": "Checklist onboarding client", "cmd": ["aminata", "onboarding"], "schedule": "Manuel",    "auto": false },
-      { "id": "team_review",      "name": "Revue performance équipe",    "cmd": ["aminata", "review"],     "schedule": "Manuel",    "auto": false }
+      { "id": "team_review",      "name": "Revue performance équipe",    "cmd": ["aminata", "review"],     "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations RH & missions","cmd": ["recommend", "aminata"],  "schedule": "Ven 16:40", "auto": true  }
     ]
   },
   "modibo": {
@@ -60,7 +65,8 @@
     "tasks": [
       { "id": "mentions",         "name": "Vérifier mentions légales",   "cmd": ["modibo"],             "schedule": "Manuel",    "auto": false },
       { "id": "cgv",              "name": "Générer CGV à jour",          "cmd": ["modibo", "cgv"],      "schedule": "Manuel",    "auto": false },
-      { "id": "contrat",          "name": "Générer contrat type",        "cmd": ["modibo", "contrat"],  "schedule": "Manuel",    "auto": false }
+      { "id": "contrat",          "name": "Générer contrat type",        "cmd": ["modibo", "contrat"],  "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations juridiques",  "cmd": ["recommend", "modibo"], "schedule": "Ven 16:50", "auto": true  }
     ]
   },
   "adama": {
@@ -71,7 +77,8 @@
       { "id": "veille_ia",        "name": "Veille IA & automatisation",  "cmd": ["adama"],                          "schedule": "Mer 09:00", "auto": true  },
       { "id": "audit",            "name": "Audit technique site",        "cmd": ["adama", "audit"],                 "schedule": "Manuel",    "auto": false },
       { "id": "roadmap",          "name": "Roadmap technique Q2",        "cmd": ["adama", "roadmap"],               "schedule": "Manuel",    "auto": false },
-      { "id": "pipeline",         "name": "Pipeline SEO → Deploy",       "cmd": ["pipeline", "full"],               "schedule": "Lun 10:00", "auto": true  }
+      { "id": "pipeline",         "name": "Pipeline SEO → Deploy",       "cmd": ["pipeline", "full"],               "schedule": "Lun 10:00", "auto": true  },
+      { "id": "recommend",        "name": "Recommandations tech",        "cmd": ["recommend", "adama"],             "schedule": "Ven 17:00", "auto": true  }
     ]
   },
   "djeneba": {
@@ -79,9 +86,10 @@
     "icon": "📈",
     "role": "Stratégie",
     "tasks": [
-      { "id": "quarterly_plan",   "name": "Plan trimestriel",            "cmd": ["djeneba"],                        "schedule": "Manuel",    "auto": false },
+      { "id": "quarterly_plan",   "name": "Plan trimestriel",            "cmd": ["djeneba"],                        "schedule": "Manuel",     "auto": false },
       { "id": "kpis",             "name": "Analyse KPIs mensuels",       "cmd": ["djeneba", "kpis"],                "schedule": "1er du mois","auto": true  },
-      { "id": "opportunities",    "name": "Nouvelles opportunités",      "cmd": ["djeneba", "opportunities"],       "schedule": "Mer 09:00", "auto": true  }
+      { "id": "opportunities",    "name": "Nouvelles opportunités",      "cmd": ["djeneba", "opportunities"],       "schedule": "Mer 09:00",  "auto": true  },
+      { "id": "recommend",        "name": "Recommandations stratégiques","cmd": ["recommend", "djeneba"],           "schedule": "Ven 17:10",  "auto": true  }
     ]
   },
   "bintou": {
@@ -91,7 +99,8 @@
     "tasks": [
       { "id": "opportunities",    "name": "Scanner opportunités Fiverr", "cmd": ["scout"],                  "schedule": "Mer 10:00", "auto": true  },
       { "id": "niches",           "name": "Veille niches IA",            "cmd": ["scout", "niches"],        "schedule": "Manuel",    "auto": false },
-      { "id": "weekly_report",    "name": "Rapport hebdo opportunités",  "cmd": ["scout", "report"],        "schedule": "Ven 18:00", "auto": true  }
+      { "id": "weekly_report",    "name": "Rapport hebdo opportunités",  "cmd": ["scout", "report"],        "schedule": "Ven 18:00", "auto": true  },
+      { "id": "recommend",        "name": "Recommandations Fiverr/niches","cmd": ["recommend", "bintou"],   "schedule": "Ven 17:20", "auto": true  }
     ]
   },
   "seydou": {
@@ -101,7 +110,8 @@
     "tasks": [
       { "id": "linkedin_msg",     "name": "Message approche LinkedIn",   "cmd": ["closer"],                         "schedule": "Manuel",    "auto": false },
       { "id": "fiverr_reply",     "name": "Réponse client Fiverr",       "cmd": ["closer", "fiverr"],               "schedule": "Manuel",    "auto": false },
-      { "id": "devis_template",   "name": "Générer template devis",      "cmd": ["closer", "devis"],                "schedule": "Manuel",    "auto": false }
+      { "id": "devis_template",   "name": "Générer template devis",      "cmd": ["closer", "devis"],                "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations prospection", "cmd": ["recommend", "seydou"],            "schedule": "Ven 17:30", "auto": true  }
     ]
   },
   "koumba": {
@@ -111,7 +121,8 @@
     "tasks": [
       { "id": "single_article",   "name": "Écrire 1 article SEO",        "cmd": ["seo"],                    "schedule": "Manuel",    "auto": false },
       { "id": "batch_3",          "name": "Batch 3 articles SEO",        "cmd": ["seo", "batch", "3"],      "schedule": "Manuel",    "auto": false },
-      { "id": "niche_tutos",      "name": "Article niche tutos-ia",      "cmd": ["seo", "niche", "tutos-ia"], "schedule": "Manuel",  "auto": false }
+      { "id": "niche_tutos",      "name": "Article niche tutos-ia",      "cmd": ["seo", "niche", "tutos-ia"], "schedule": "Manuel",  "auto": false },
+      { "id": "recommend",        "name": "Recommandations contenu SEO", "cmd": ["recommend", "koumba"],    "schedule": "Ven 17:40", "auto": true  }
     ]
   },
   "rokhaya": {
@@ -121,7 +132,8 @@
     "tasks": [
       { "id": "newsletter",       "name": "Envoyer newsletter",          "cmd": ["briefing"],                "schedule": "Ven 10:00", "auto": false },
       { "id": "relance_email",    "name": "Campagne relance clients",    "cmd": ["closer", "email"],        "schedule": "Manuel",    "auto": false },
-      { "id": "suivi_template",   "name": "Template email suivi",       "cmd": ["modibo", "email"],        "schedule": "Manuel",    "auto": false }
+      { "id": "suivi_template",   "name": "Template email suivi",       "cmd": ["modibo", "email"],        "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations email mktg", "cmd": ["recommend", "rokhaya"],   "schedule": "Ven 17:50", "auto": true  }
     ]
   },
   "ibrahima": {
@@ -130,7 +142,8 @@
     "role": "Analytics",
     "tasks": [
       { "id": "analytics_report", "name": "Rapport analytics mensuel",  "cmd": ["fatou", "monthly_report"], "schedule": "1er du mois","auto": true  },
-      { "id": "affiliates",       "name": "Tracking liens affiliés",    "cmd": ["scout", "affiliates"],     "schedule": "Manuel",    "auto": false }
+      { "id": "affiliates",       "name": "Tracking liens affiliés",    "cmd": ["scout", "affiliates"],     "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations analytics",  "cmd": ["recommend", "ibrahima"],   "schedule": "Ven 18:00", "auto": true  }
     ]
   },
   "lamine": {
@@ -138,11 +151,12 @@
     "icon": "🚀",
     "role": "DevOps & Deploy",
     "tasks": [
-      { "id": "deploy_cloudflare","name": "Deploy Cloudflare wulix.fr", "cmd": ["pipeline", "deploy"],     "schedule": "Auto",      "auto": true  },
-      { "id": "pipeline_full",    "name": "Pipeline complet SEO+Deploy", "cmd": ["pipeline", "full"],      "schedule": "Manuel",    "auto": false },
-      { "id": "pipeline_seo",     "name": "Pipeline SEO seulement",     "cmd": ["pipeline", "seo"],        "schedule": "Manuel",    "auto": false },
-      { "id": "status_check",     "name": "Vérifier status site",       "cmd": ["adama", "audit"],         "schedule": "Manuel",    "auto": false },
-      { "id": "backup",           "name": "Sauvegarde données JSON",    "cmd": ["backup"],                 "schedule": "Quotidien 02:00", "auto": true }
+      { "id": "deploy_cloudflare","name": "Deploy Cloudflare wulix.fr", "cmd": ["pipeline", "deploy"],     "schedule": "Auto",           "auto": true  },
+      { "id": "pipeline_full",    "name": "Pipeline complet SEO+Deploy", "cmd": ["pipeline", "full"],      "schedule": "Manuel",         "auto": false },
+      { "id": "pipeline_seo",     "name": "Pipeline SEO seulement",     "cmd": ["pipeline", "seo"],        "schedule": "Manuel",         "auto": false },
+      { "id": "status_check",     "name": "Vérifier status site",       "cmd": ["adama", "audit"],         "schedule": "Manuel",         "auto": false },
+      { "id": "backup",           "name": "Sauvegarde données JSON",    "cmd": ["backup"],                 "schedule": "Quotidien 02:00","auto": true  },
+      { "id": "recommend",        "name": "Recommandations DevOps",     "cmd": ["recommend", "lamine"],    "schedule": "Ven 18:10",      "auto": true  }
     ]
   }
 }

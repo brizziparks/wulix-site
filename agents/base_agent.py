@@ -99,6 +99,54 @@ Réponds toujours en français. Sois précis, concis et orienté résultat."""
         with open(self._log_path, "a", encoding="utf-8") as f:
             f.write(entry + "\n")
 
+    # ── Recommandations ────────────────────────────────────────────────────────
+    def recommend(self, context: str = "") -> str:
+        """Génère un rapport de recommandations hebdomadaires dans le domaine de l'agent.
+        Sauvegardé dans agents/recommandations/{name}_{date}.md"""
+        prompt = f"""En tant que {self.name} ({self.role}), génère un rapport de recommandations concret pour WULIX cette semaine.
+
+WULIX = agence IA solo (Omar Sylla, France). Stack : Python 3.11, FastAPI, Gemini API, Ollama, HTML/CSS/JS, Cloudflare Pages.
+Revenus actuels : 0-50€/mois. Objectif : 500€/mois (freelance) + 300€/mois (SEO passif).
+{f'Contexte additionnel : {context}' if context else ''}
+
+Structure du rapport (markdown) :
+
+## Analyse
+2-3 constats clés dans ton domaine {self.role} cette semaine.
+
+## Recommandations prioritaires
+
+### 1. [Titre action — IMPACT FORT]
+- **Quoi** : description précise (2 phrases)
+- **Comment** : étapes concrètes pour WULIX
+- **Effort** : XS / S / M / L
+- **Résultat attendu** : métrique ou livrable précis
+
+### 2. [Titre action — IMPACT MOYEN]
+(même format)
+
+### 3. [Titre action — QUICK WIN < 1h]
+(même format)
+
+## ⚠ Alerte (si urgent)
+Un risque ou opportunité à saisir dans les 48h. Sinon, écrire "RAS".
+
+---
+*Rapport {self.name} · {__import__('datetime').date.today().strftime('%d/%m/%Y')}*
+
+IMPORTANT : toutes les recommandations doivent être applicables MAINTENANT sur le système WULIX existant. Pas de théorie, pas de suggestions qui nécessitent un budget ou une équipe."""
+
+        return self.think(prompt, max_tokens=900)
+
+    def save_recommendation(self, content: str) -> "Path":
+        """Sauvegarde la recommandation dans agents/recommandations/."""
+        reco_dir = BASE_DIR / "agents" / "recommandations"
+        reco_dir.mkdir(exist_ok=True)
+        date_str  = __import__('datetime').date.today().strftime("%Y%m%d")
+        filepath  = reco_dir / f"{self.name.lower()}_{date_str}.md"
+        filepath.write_text(content, encoding="utf-8")
+        return filepath
+
     # ── Méthode principale à surcharger ───────────────────────────────────────
     def run(self, task: dict) -> dict:
         """Exécute une tâche. À implémenter dans chaque agent."""

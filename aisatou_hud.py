@@ -287,6 +287,50 @@ async def pipeline_log(user: str = Depends(verify_auth)):
     return {"logs": [], "count": 0}
 
 
+@app.get("/agents/recommendations")
+async def agents_recommendations(user: str = Depends(verify_auth)):
+    """Liste les fichiers de recommandations générés par les agents dans agents/recommandations/."""
+    reco_dir = AGENTS_DIR / "recommandations"
+    if not reco_dir.exists():
+        return {"items": [], "count": 0}
+
+    items = []
+    for f in sorted(reco_dir.glob("*.md"), reverse=True)[:20]:
+        try:
+            parts = f.stem.split("_")  # nom_YYYYMMDD
+            agent_name = parts[0].upper() if parts else "?"
+            date_str   = parts[1] if len(parts) > 1 else "?"
+            # Formater la date
+            if len(date_str) == 8:
+                date_fmt = f"{date_str[6:8]}/{date_str[4:6]}/{date_str[:4]}"
+            else:
+                date_fmt = date_str
+            preview = f.read_text(encoding="utf-8")[:200].replace("\n", " ").strip()
+            items.append({
+                "agent":   agent_name,
+                "date":    date_fmt,
+                "file":    f.name,
+                "preview": preview,
+            })
+        except Exception:
+            pass
+
+    return {"items": items, "count": len(items)}
+
+
+@app.get("/agents/recommendations/{filename}")
+async def get_recommendation(filename: str, user: str = Depends(verify_auth)):
+    """Retourne le contenu complet d'un fichier de recommandations."""
+    reco_dir = AGENTS_DIR / "recommandations"
+    # Sécurité : uniquement des .md dans le dossier recommandations
+    if not filename.endswith(".md") or "/" in filename or "\\" in filename:
+        raise HTTPException(status_code=400, detail="Fichier invalide")
+    filepath = reco_dir / filename
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="Fichier introuvable")
+    return {"filename": filename, "content": filepath.read_text(encoding="utf-8")}
+
+
 @app.get("/agents/blog")
 async def agents_blog(user: str = Depends(verify_auth)):
     """Retourne la file des articles SEO gÃ©nÃ©rÃ©s."""

@@ -481,6 +481,62 @@
     .auto-label { color: #94a3b8; flex: 1; }
     .auto-when { color: var(--muted); font-size: 10px; white-space: nowrap; }
 
+    /* Recommendations */
+    .reco-list { padding: 4px 0; max-height: 160px; overflow-y: auto; }
+    .reco-list::-webkit-scrollbar { width: 2px; }
+    .reco-list::-webkit-scrollbar-thumb { background: var(--accent); }
+    .reco-item {
+      padding: 7px 8px; border: 1px solid var(--border); border-radius: 5px;
+      margin-bottom: 5px; cursor: pointer; transition: all .15s;
+      background: #06060e;
+    }
+    .reco-item:hover { border-color: var(--accent2); background: #08081a; }
+    .reco-header { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+    .reco-agent { font-size: 10px; font-weight: bold; color: var(--accent2); letter-spacing: 1px; }
+    .reco-date  { font-size: 9px; color: var(--muted); margin-left: auto; }
+    .reco-preview { font-size: 10px; color: #5a6a7a; line-height: 1.5;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reco-empty { font-size: 11px; color: var(--muted); padding: 8px 0; text-align: center; }
+
+    /* Modal recommandation */
+    .reco-modal {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .reco-modal.open { display: flex; }
+    .reco-modal-box {
+      background: #080818; border: 1px solid var(--accent);
+      border-radius: 10px; padding: 20px 24px; max-width: 700px; width: 95%;
+      max-height: 80vh; overflow-y: auto; position: relative;
+    }
+    .reco-modal-box::-webkit-scrollbar { width: 3px; }
+    .reco-modal-box::-webkit-scrollbar-thumb { background: var(--accent); }
+    .reco-modal-title { font-size: 13px; font-weight: bold; color: var(--accent2);
+      letter-spacing: 2px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .reco-modal-close {
+      margin-left: auto; background: none; border: 1px solid var(--border);
+      color: var(--muted); border-radius: 4px; padding: 3px 10px; cursor: pointer;
+      font-size: 12px; font-family: inherit;
+    }
+    .reco-modal-close:hover { border-color: var(--red); color: var(--red); }
+    .reco-modal-content { font-size: 13px; line-height: 1.7; color: var(--text); }
+    .reco-modal-content h2 { color: var(--accent2); font-size: 13px; margin: 14px 0 6px; }
+    .reco-modal-content h3 { color: var(--green); font-size: 12px; margin: 10px 0 4px; }
+    .reco-modal-content p { margin-bottom: 6px; color: #aab0c8; }
+    .reco-modal-content ul { margin: 4px 0 8px 16px; }
+    .reco-modal-content li { margin-bottom: 3px; color: #8090a8; }
+    .reco-modal-content strong { color: #fff; }
+    .reco-modal-content em { color: var(--orange); }
+    .reco-modal-content hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+    .reco-apply-btn {
+      margin-top: 14px; background: linear-gradient(135deg, var(--accent), #5b21b6);
+      border: none; color: #fff; border-radius: 6px; padding: 9px 20px;
+      cursor: pointer; font-size: 12px; font-family: inherit; font-weight: bold;
+      letter-spacing: 1px; width: 100%; transition: all .2s;
+    }
+    .reco-apply-btn:hover { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #000; }
+
     /* ── Toast notifications ── */
     #toast-container {
       position: fixed; top: 16px; right: 16px;
@@ -503,6 +559,20 @@
 <body>
 
 <div id="toast-container"></div>
+
+<!-- Modal recommandations -->
+<div class="reco-modal" id="reco-modal">
+  <div class="reco-modal-box">
+    <div class="reco-modal-title">
+      <span id="reco-modal-agent">—</span> — RECOMMANDATIONS
+      <button class="reco-modal-close" onclick="closeRecoModal()">✕ Fermer</button>
+    </div>
+    <div class="reco-modal-content" id="reco-modal-body">Chargement...</div>
+    <button class="reco-apply-btn" onclick="applyReco()">
+      ▶ Demander à AISATOU d'appliquer ces recommandations
+    </button>
+  </div>
+</div>
 
 <header>
   <div class="logo">AI<span>SATOU</span></div>
@@ -707,18 +777,14 @@
       </div>
     </div>
 
-    <!-- Actions automatiques -->
+    <!-- Recommandations agents -->
     <div class="rp-section">
-      <div class="rp-title">✅ Actions auto récentes</div>
-      <div class="auto-list" id="auto-list">
-        <div class="auto-item"><div class="auto-dot"></div><div class="auto-label">SAMBA — article "n8n vs Make.com" publié</div><div class="auto-when">Auj.</div></div>
-        <div class="auto-item"><div class="auto-dot"></div><div class="auto-label">MARIAMA — post LinkedIn publié (2/5)</div><div class="auto-when">Auj.</div></div>
-        <div class="auto-item"><div class="auto-dot"></div><div class="auto-label">Blog — 6 articles + affiliés Hostinger</div><div class="auto-when">Auj.</div></div>
-        <div class="auto-item"><div class="auto-dot"></div><div class="auto-label">Deploy wulix.fr — Cloudflare Pages</div><div class="auto-when">Auj.</div></div>
-        <div class="auto-item"><div class="auto-dot"></div><div class="auto-label">Produit 4 PDF + cover générés</div><div class="auto-when">Auj.</div></div>
-        <div class="auto-item"><div class="auto-dot sched"></div><div class="auto-label">WULIX_SAMBA_Weekly — lundi 8h</div><div class="auto-when">Planifié</div></div>
-        <div class="auto-item"><div class="auto-dot sched"></div><div class="auto-label">WULIX_MARIAMA_Weekly — lundi 9h</div><div class="auto-when">Planifié</div></div>
-        <div class="auto-item"><div class="auto-dot sched"></div><div class="auto-label">WULIX_NDEYE_Daily — chaque jour 8h30</div><div class="auto-when">Planifié</div></div>
+      <div class="rp-title" style="display:flex;align-items:center;gap:6px">
+        💡 Recommandations agents
+        <span id="reco-count" style="background:#1a1a2a;color:var(--accent2);font-size:9px;padding:2px 6px;border-radius:8px;margin-left:auto">—</span>
+      </div>
+      <div class="reco-list" id="reco-list">
+        <div class="reco-empty">Aucune recommandation — lancez la tâche "Recommandations" d'un agent</div>
       </div>
     </div>
 
@@ -1351,6 +1417,75 @@ async function runTask(agentId, taskId, btn) {
   }
 }
 
+// ── Recommandations ───────────────────────────────────────────────────────
+let _currentRecoFile = null;
+let _currentRecoAgent = null;
+
+async function loadRecommendations() {
+  try {
+    const r = await fetch('/agents/recommendations', { headers: AUTH });
+    const d = await r.json();
+    const list = document.getElementById('reco-list');
+    const count = document.getElementById('reco-count');
+    if (!d.items || d.items.length === 0) {
+      list.innerHTML = '<div class="reco-empty">Aucune recommandation — lancez la tâche "Recommandations" d\'un agent</div>';
+      if (count) count.textContent = '0';
+      return;
+    }
+    if (count) count.textContent = d.items.length;
+    list.innerHTML = d.items.map(item => `
+      <div class="reco-item" onclick="openReco('${item.file}','${escHtml(item.agent)}')">
+        <div class="reco-header">
+          <span class="reco-agent">${escHtml(item.agent)}</span>
+          <span class="reco-date">${escHtml(item.date)}</span>
+        </div>
+        <div class="reco-preview">${escHtml(item.preview)}</div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+async function openReco(filename, agentName) {
+  _currentRecoFile  = filename;
+  _currentRecoAgent = agentName;
+  const modal = document.getElementById('reco-modal');
+  document.getElementById('reco-modal-agent').textContent = agentName;
+  document.getElementById('reco-modal-body').innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center">Chargement...</div>';
+  modal.classList.add('open');
+
+  try {
+    const r = await fetch(`/agents/recommendations/${encodeURIComponent(filename)}`, { headers: AUTH });
+    const d = await r.json();
+    document.getElementById('reco-modal-body').innerHTML = marked.parse(d.content || '');
+  } catch(e) {
+    document.getElementById('reco-modal-body').textContent = 'Erreur chargement';
+  }
+}
+
+function closeRecoModal() {
+  document.getElementById('reco-modal').classList.remove('open');
+  _currentRecoFile = null;
+  _currentRecoAgent = null;
+}
+
+function applyReco() {
+  if (!_currentRecoAgent) return;
+  const prompt = `Lis et applique les recommandations de l'agent ${_currentRecoAgent} (fichier : agents/recommandations/${_currentRecoFile}). Pour chaque recommandation applicable directement (code, config, fichiers), applique-la maintenant. Pour celles qui nécessitent une action d'Omar, liste-les clairement.`;
+  closeRecoModal();
+  // Envoie dans le chat
+  if (ws && ws.readyState === 1) {
+    addMessage('user', `💡 Appliquer recommandations ${_currentRecoAgent}`);
+    ws.send(JSON.stringify({ text: prompt, model: document.getElementById('model-select').value }));
+    sendBtn.disabled = true;
+    addLog(`Application reco ${_currentRecoAgent}...`, 'run', 'AISATOU');
+    toast('Recommandations', `AISATOU traite les reco de ${_currentRecoAgent}`, 'ok');
+  }
+}
+
+// Fermer modal au clic extérieur
+document.getElementById('reco-modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeRecoModal();
+});
+
 // ── Init ──────────────────────────────────────────────────────────────────
 connect();
 renderHexGrid();
@@ -1364,10 +1499,12 @@ checkBackend();
 refreshDashboard();
 refreshRevenue();
 loadAgentsSidebar();
+loadRecommendations();
 setInterval(refreshDashboard, 30000);
-setInterval(refreshRevenue, 120000);  // revenus toutes les 2 min
+setInterval(refreshRevenue, 120000);    // revenus toutes les 2 min
+setInterval(loadRecommendations, 300000); // reco toutes les 5 min
 setInterval(checkBackend, 60000);
-setInterval(updateCountdowns, 1000);  // countdown chaque seconde
+setInterval(updateCountdowns, 1000);    // countdown chaque seconde
 addLog('NEXUS COMMAND initialisé', 'ok', 'SYS');
 addLog('14 agents en ligne — WULIX opérationnel', 'ok', 'SYS');
 setTimeout(() => addLog('En attente de commandes...', 'sys', 'NEXUS'), 800);
