@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python3
 """
-AISATOU HUD â€” Interface Iron Man
+AISATOU HUD â€" Interface Iron Man
 Serveur FastAPI + WebSocket + interface web holographique
 """
 
@@ -20,11 +20,14 @@ from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-# â”€â”€â”€ Chemin du projet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# â"€â"€â"€ Chemin du projet â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 BASE_DIR = Path(__file__).parent
 sys.path.insert(0, str(BASE_DIR))
 
 import requests as _req
+from dotenv import load_dotenv
+load_dotenv(BASE_DIR / ".env", override=True)  # Charge .env avant tout
+
 from aisatou import (
     get_claude_client, is_ollama_running,
     run_turn_ollama, run_turn_claude, run_turn_gemini,
@@ -32,13 +35,13 @@ from aisatou import (
     OLLAMA_MODEL, execute_tool,
 )
 
-# ModÃ¨le par dÃ©faut â€” lit AISATOU_MODEL depuis .env
+# Modèle par défaut — lit AISATOU_MODEL depuis .env
 _default_model = OLLAMA_MODEL
 
-# â”€â”€â”€ SÃ©curitÃ© â€” Authentification HTTP Basic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Sécurité — Authentification HTTP Basic ─────────────────────────────────
 security = HTTPBasic()
 
-# Mot de passe depuis .env ou valeur par dÃ©faut
+# Mot de passe depuis .env
 HUD_USER     = os.environ.get("HUD_USER", "aisatou")
 HUD_PASSWORD = os.environ.get("HUD_PASSWORD", "WULIX2026")
 
@@ -54,14 +57,15 @@ def verify_auth(credentials: HTTPBasicCredentials = Depends(security)):
         )
     return credentials.username
 
-# â”€â”€â”€ App FastAPI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-app = FastAPI(title="AISATOU HUD", docs_url=None, redoc_url=None)  # DÃ©sactive /docs public
+# â"€â"€â"€ App FastAPI â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+app = FastAPI(title="AISATOU HUD", docs_url=None, redoc_url=None)  # Désactive /docs public
 app.mount("/ui", StaticFiles(directory=BASE_DIR / "ui"), name="ui")
+app.mount("/hud", StaticFiles(directory=BASE_DIR / "hud"), name="hud")
 
 
 @app.get("/")
 async def root(user: str = Depends(verify_auth)):
-    return FileResponse(BASE_DIR / "ui" / "index.html")
+    return FileResponse(BASE_DIR / "hud" / "index.html")
 
 
 @app.get("/status")
@@ -90,13 +94,15 @@ async def models(user: str = Depends(verify_auth)):
     return {"models": names}
 
 
-# â”€â”€â”€ Fichiers JSON des agents â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# â"€â"€â"€ Fichiers JSON des agents â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 AGENTS_DIR     = BASE_DIR / "agents"
 CONTENT_QUEUE  = AGENTS_DIR / "content_queue.json"
 PROSPECTS_FILE = AGENTS_DIR / "prospects.json"
 OUTREACH_FILE  = AGENTS_DIR / "outreach_queue.json"
 DAILY_REPORT   = AGENTS_DIR / "daily_report.json"
 BLOG_QUEUE     = AGENTS_DIR / "blog_queue.json"
+TASKS_CONFIG   = AGENTS_DIR / "tasks_config.json"
+TASKS_LOG      = AGENTS_DIR / "tasks_log.json"
 
 _agent_tasks: dict = {}  # {task_id: {"status": ..., "output": ...}}
 
@@ -190,7 +196,7 @@ async def run_agent(agent_name: str, background_tasks: BackgroundTasks, user: st
 
 @app.post("/pipeline/run")
 async def run_pipeline(background_tasks: BackgroundTasks, user: str = Depends(verify_auth), mode: str = "full", niche: str = "all"):
-    """Lance le pipeline WULIX : SEO â†’ Build â†’ Deploy Netlify.
+    """Lance le pipeline WULIX : SEO â†' Build â†' Deploy Netlify.
     mode: full | seo | build | deploy
     """
     task_id = f"pipeline_{mode}_{int(__import__('time').time())}"
@@ -243,18 +249,110 @@ async def agents_blog(user: str = Depends(verify_auth)):
 
 @app.get("/agents/task/{task_id}")
 async def get_task(task_id: str, user: str = Depends(verify_auth)):
-    """RÃ©cupÃ¨re le rÃ©sultat d'une tÃ¢che agent."""
     task = _agent_tasks.get(task_id)
     if not task:
-        return JSONResponse(status_code=404, content={"error": "TÃ¢che introuvable"})
+        return JSONResponse(status_code=404, content={"error": "Tache introuvable"})
     return task
+
+
+# ── Tasks config ──────────────────────────────────────────────────────────────
+@app.get("/agents/tasks")
+async def get_tasks_config(user: str = Depends(verify_auth)):
+    """Retourne la config complete des taches par agent."""
+    if TASKS_CONFIG.exists():
+        try:
+            cfg = json.loads(TASKS_CONFIG.read_text(encoding="utf-8"))
+            # Enrichit avec le log des dernieres executions
+            log = _load_tasks_log()
+            for agent_id, agent_data in cfg.items():
+                for task in agent_data.get("tasks", []):
+                    key = f"{agent_id}/{task['id']}"
+                    task["last_run"]    = log.get(key, {}).get("last_run", None)
+                    task["last_status"] = log.get(key, {}).get("status", None)
+            return cfg
+        except Exception as e:
+            return JSONResponse(status_code=500, content={"error": str(e)})
+    return {}
+
+
+def _load_tasks_log() -> dict:
+    if TASKS_LOG.exists():
+        try:
+            return json.loads(TASKS_LOG.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {}
+
+
+def _save_tasks_log(log: dict):
+    TASKS_LOG.write_text(json.dumps(log, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+@app.post("/agents/run_task/{agent_id}/{task_id}")
+async def run_agent_task(
+    agent_id: str, task_id: str,
+    background_tasks: BackgroundTasks,
+    user: str = Depends(verify_auth)
+):
+    """Lance une tache specifique d'un agent."""
+    if not TASKS_CONFIG.exists():
+        return JSONResponse(status_code=404, content={"error": "tasks_config.json introuvable"})
+
+    cfg = json.loads(TASKS_CONFIG.read_text(encoding="utf-8"))
+    agent_cfg = cfg.get(agent_id)
+    if not agent_cfg:
+        return JSONResponse(status_code=404, content={"error": f"Agent inconnu: {agent_id}"})
+
+    task_cfg = next((t for t in agent_cfg.get("tasks", []) if t["id"] == task_id), None)
+    if not task_cfg:
+        return JSONResponse(status_code=404, content={"error": f"Tache inconnue: {task_id}"})
+
+    cmd_args = task_cfg.get("cmd", [agent_id])
+    run_key  = f"{agent_id}/{task_id}"
+    full_id  = f"{agent_id}_{task_id}_{int(__import__('time').time())}"
+    _agent_tasks[full_id] = {"status": "running", "agent": agent_id, "task": task_id, "output": ""}
+
+    def _run():
+        import time as _time
+        try:
+            script = str(BASE_DIR / "run_agents.py")
+            env    = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+            result = subprocess.run(
+                [sys.executable, script] + cmd_args,
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+                timeout=180, env=env, cwd=str(BASE_DIR)
+            )
+            output = result.stdout + result.stderr
+            status = "done" if result.returncode == 0 else "error"
+            _agent_tasks[full_id] = {"status": status, "agent": agent_id, "task": task_id, "output": output}
+        except subprocess.TimeoutExpired:
+            status = "timeout"
+            _agent_tasks[full_id] = {"status": "timeout", "agent": agent_id, "task": task_id, "output": "Timeout (180s)"}
+        except Exception as e:
+            status = "error"
+            _agent_tasks[full_id] = {"status": "error", "agent": agent_id, "task": task_id, "output": str(e)}
+        finally:
+            # Sauvegarde le dernier run dans le log
+            log = _load_tasks_log()
+            log[run_key] = {
+                "last_run": __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "status": _agent_tasks.get(full_id, {}).get("status", "?")
+            }
+            _save_tasks_log(log)
+            # Nettoyage
+            done = [(k, v) for k, v in _agent_tasks.items() if v["status"] != "running"]
+            for k, _ in done[:-10]:
+                _agent_tasks.pop(k, None)
+
+    background_tasks.add_task(_run)
+    return {"task_id": full_id, "status": "started", "agent": agent_id, "task": task_id}
 
 
 @app.websocket("/ws")
 async def ws_endpoint(websocket: WebSocket):
     await websocket.accept()
 
-    # â”€â”€ Ã‰tat par session (multi-utilisateur) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # â"€â"€ Ã‰tat par session (multi-utilisateur) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
     conversation: list = []
     session_model: str = _default_model
     claude_client  = get_claude_client()
@@ -311,7 +409,7 @@ async def ws_endpoint(websocket: WebSocket):
         pass
 
 
-# â”€â”€â”€ Lancement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# â"€â"€â"€ Lancement â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 def main():
     import threading, time
 
@@ -333,4 +431,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ Automatisation IA — WULIX | Vos questions, nos réponses</title>
+  <meta name="description" content="Toutes les réponses à vos questions sur l'automatisation IA avec WULIX : prix, délais, outils utilisés, niveau technique requis, et comment démarrer." />
+  <meta property="og:title" content="FAQ — WULIX Automatisation IA" />
+  <meta property="og:description" content="Vos questions sur l'automatisation Python, n8n et Make.com. Réponses claires et directes." />
+  <meta property="og:image" content="https://wulix.fr/og-image.jpg" />
+  <meta property="og:url" content="https://wulix.fr/faq.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="canonical" href="https://wulix.fr/faq.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Qu'est-ce que WULIX ?","acceptedAnswer":{"@type":"Answer","text":"WULIX est une agence d'automatisation IA française fondée par Omar Sylla. Nous créons des scripts Python, workflows n8n et agents IA sur mesure pour aider les freelances et PME à automatiser leurs tâches répétitives."}},
+      {"@type":"Question","name":"Combien coûte une automatisation ?","acceptedAnswer":{"@type":"Answer","text":"Nos scripts Python démarrent à 29€ en téléchargement direct sur Gumroad. Les missions sur mesure démarrent à 50€ sur Fiverr pour un script simple, jusqu'à 500€+ pour un pipeline complet. Réponse sous 24h pour un devis personnalisé."}},
+      {"@type":"Question","name":"Est-ce que je dois savoir coder ?","acceptedAnswer":{"@type":"Answer","text":"Non. Nos produits Gumroad sont livrés avec documentation complète et scripts prêts à l'emploi. Pour les missions sur mesure, on s'occupe de tout le développement. Vous avez juste besoin de savoir ce que vous voulez automatiser."}},
+      {"@type":"Question","name":"Quels outils utilisez-vous ?","acceptedAnswer":{"@type":"Answer","text":"Python (principal), n8n pour les workflows no-code, Make.com, FastAPI pour les APIs, Gemini et Claude pour l'IA, Google Workspace, Gmail API, Stripe, Gumroad. Nous choisissons l'outil le plus adapté à votre situation."}},
+      {"@type":"Question","name":"Quels sont les délais de livraison ?","acceptedAnswer":{"@type":"Answer","text":"Scripts simples : 2-3 jours. Workflows complexes : 5-7 jours. Pipelines complets : 7-14 jours. Nous communiquons un délai précis avant de commencer et nous le respectons."}}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7c3aed; --purple-dark: #5b21b6;
+      --bg: #0f0f0f; --surface: #1a1a1a; --text: #e5e7eb; --muted: #9ca3af;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 1px solid #222; position: sticky; top: 0; background: rgba(15,15,15,.95); backdrop-filter: blur(8px); z-index: 100; }
+    .nav-logo { font-size: 22px; font-weight: 800; color: var(--purple); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--muted); font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    .hero { padding: 80px 40px 50px; max-width: 760px; margin: 0 auto; text-align: center; }
+    .hero-badge { display: inline-block; background: #ede9fe; color: var(--purple-dark); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: .05em; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+    .hero h1 span { color: var(--purple); }
+    .hero p { font-size: 17px; color: var(--muted); }
+
+    .faq-section { max-width: 760px; margin: 0 auto; padding: 20px 40px 80px; }
+    .faq-category { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--purple); margin: 48px 0 20px; padding-bottom: 8px; border-bottom: 1px solid #2a2a2a; }
+
+    .faq-item { border: 1px solid #2a2a2a; border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: border-color .2s; }
+    .faq-item:hover { border-color: var(--purple); }
+    .faq-q { width: 100%; background: none; border: none; color: var(--text); font-size: 16px; font-weight: 600; font-family: inherit; text-align: left; padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: color .2s; }
+    .faq-q:hover { color: #c4b5fd; }
+    .faq-arrow { color: var(--purple); font-size: 18px; transition: transform .25s; flex-shrink: 0; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .faq-item.open .faq-a { max-height: 400px; }
+    .faq-a-inner { padding: 0 24px 20px; color: var(--muted); font-size: 15px; line-height: 1.75; border-top: 1px solid #2a2a2a; padding-top: 16px; }
+    .faq-a-inner a { color: var(--purple); }
+    .faq-a-inner strong { color: var(--text); }
+
+    .cta-box { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 40px; text-align: center; margin: 60px 0 0; }
+    .cta-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .cta-box p { color: var(--muted); margin-bottom: 24px; }
+    .btn { display: inline-block; background: var(--purple); color: white; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 15px; transition: background .2s; }
+    .btn:hover { background: var(--purple-dark); text-decoration: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--purple); color: var(--purple); margin-left: 12px; }
+    .btn-outline:hover { background: var(--purple); color: white; }
+
+    footer { padding: 32px 40px; border-top: 1px solid #222; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; color: var(--muted); font-size: 13px; }
+    .footer-logo { font-size: 18px; font-weight: 800; color: var(--purple); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { color: var(--muted); }
+    .footer-links a:hover { color: var(--text); text-decoration: none; }
+
+    @media (max-width: 600px) { nav { padding: 16px 20px; } .faq-section, .hero { padding-left: 20px; padding-right: 20px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">WULIX</div>
+  <ul class="nav-links">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/services.html">Services</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/a-propos.html">À propos</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Support & Informations</div>
+  <h1>Vos questions sur <span>l'automatisation IA</span></h1>
+  <p>Tout ce que vous devez savoir avant de démarrer avec WULIX. Clair, direct, sans jargon.</p>
+</div>
+
+<div class="faq-section">
+
+  <!-- CATÉGORIE 1 -->
+  <div class="faq-category">Général — WULIX et l'automatisation</div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Qu'est-ce que WULIX exactement ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">WULIX est une agence d'automatisation IA française fondée par <strong>Omar Sylla</strong>. On crée des scripts Python, des workflows n8n/Make.com et des agents IA sur mesure pour aider les freelances et PME à automatiser leurs tâches répétitives. L'objectif : vous faire gagner du temps concret, pas vous vendre du rêve.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">C'est quoi l'automatisation IA concrètement ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">C'est programmer une machine pour qu'elle fasse à votre place des tâches que vous faites manuellement et de manière répétitive. Exemples concrets : <strong>envoyer des emails de relance automatiquement</strong>, générer un rapport PDF chaque lundi matin, publier des posts LinkedIn sans y toucher, ou trier vos emails entrants par priorité. L'IA permet de rendre ces automatisations plus intelligentes : elles s'adaptent au contexte plutôt que de suivre des règles rigides.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Est-ce que l'automatisation est réservée aux grandes entreprises ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Non — et c'est même l'inverse. Les grandes entreprises ont déjà des équipes IT et des outils coûteux. <strong>Les freelances et petites entreprises bénéficient le plus</strong> de l'automatisation car chaque heure récupérée a un impact direct sur leurs revenus. Un freelance qui économise 5h/semaine sur des tâches administratives peut prendre un client de plus ou simplement vivre mieux.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Vous travaillez avec quel type de clients ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Principalement des <strong>freelances, consultants, créateurs de contenu et petites entreprises</strong> (2-20 personnes) en France. Des secteurs variés : marketing, e-commerce, conseil, formation, immobilier, comptabilité. Le point commun : ils passent trop de temps sur des tâches répétitives à faible valeur ajoutée.</div></div>
+  </div>
+
+  <!-- CATÉGORIE 2 -->
+  <div class="faq-category">Technique — Outils et compétences</div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Est-ce que je dois savoir coder ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner"><strong>Non.</strong> Nos produits Gumroad sont livrés avec une documentation claire, étape par étape. Pour les missions sur mesure, on développe tout et on vous livre quelque chose qui tourne. Vous avez juste besoin de savoir ce que vous voulez automatiser — le reste c'est notre travail. Si vous voulez apprendre, on peut aussi vous former.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Quels outils utilisez-vous ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Notre stack principal : <strong>Python</strong> pour les scripts et agents, <strong>n8n</strong> et <strong>Make.com</strong> pour les workflows visuels no-code, <strong>FastAPI</strong> pour les APIs, <strong>Gemini / Claude</strong> pour l'intelligence artificielle. On s'intègre aussi avec Gmail, Google Sheets, Notion, Stripe, Gumroad, LinkedIn, et toute API REST. On choisit toujours l'outil le plus adapté à votre situation réelle — pas forcément le plus complexe.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Quelle différence avec un développeur classique ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Un développeur classique code des applications. Nous, on automatise des <strong>processus business existants</strong>. On est spécialisés dans les intégrations entre outils, les workflows de données, et l'utilisation de l'IA pour rendre les automatisations intelligentes. C'est aussi beaucoup plus rapide et moins cher : on livre en jours, pas en semaines. Et on connaît les outils no-code qui résolvent 80% des besoins sans écrire une ligne de code.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Mes données sont-elles en sécurité ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Oui. On ne stocke jamais vos données sur nos serveurs. Les scripts s'exécutent sur <strong>votre propre infrastructure</strong> (votre ordinateur, votre VPS, votre compte cloud). Les clés API et accès restent chez vous. Vous gardez le contrôle total. Pour les missions Fiverr, nous signons un NDA sur demande.</div></div>
+  </div>
+
+  <!-- CATÉGORIE 3 -->
+  <div class="faq-category">Tarifs et délais</div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Combien coûte une automatisation ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      Deux formats :<br><br>
+      <strong>Produits Gumroad (fix, téléchargement immédiat) :</strong><br>
+      • Pack Scripts Python — 29€<br>
+      • Pipeline LinkedIn n8n — 19€<br>
+      • Pack 50 Prompts IA — 5€<br>
+      • Pack Complet — 45€<br><br>
+      <strong>Missions sur mesure (Fiverr) :</strong><br>
+      • Script simple (relances, rapports) : 50-150€<br>
+      • Workflow n8n/Make.com : 80-250€<br>
+      • Pipeline complet (multi-agents) : 300-800€<br>
+      • Maintenance mensuelle : à partir de 99€/mois<br><br>
+      Devis gratuit en 24h sur <a href="mailto:contact@wulix.fr">contact@wulix.fr</a>.
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Quels sont vos délais de livraison ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      • Script simple (1-2 fonctionnalités) : <strong>2-3 jours</strong><br>
+      • Workflow n8n/Make.com : <strong>3-5 jours</strong><br>
+      • Pipeline complet ou agent IA : <strong>7-14 jours</strong><br><br>
+      On donne toujours un délai précis avant de commencer et on le respecte. En cas de retard, on vous prévient en avance. Sur Fiverr, le délai est contractuellement garanti.
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Y a-t-il un support après livraison ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Oui. <strong>30 jours de support inclus</strong> dans toutes les missions Fiverr. Si quelque chose ne marche pas dans les 30 jours suivant la livraison, on corrige gratuitement. Au-delà, on propose un suivi mensuel à partir de 99€/mois qui couvre la maintenance, les mises à jour et les petites évolutions.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Comment commander ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      <strong>Pour les produits numériques :</strong> directement sur <a href="https://wulix.gumroad.com" target="_blank">wulix.gumroad.com</a> — paiement sécurisé, téléchargement immédiat.<br><br>
+      <strong>Pour les missions sur mesure :</strong> via <a href="https://www.fiverr.com/richardsylla" target="_blank">Fiverr (richardsylla)</a> pour la sécurité du paiement en escrow. Ou directement par email sur <a href="mailto:contact@wulix.fr">contact@wulix.fr</a> si vous préférez traiter en direct (virement ou PayPal).<br><br>
+      <strong>Pour les missions importantes (+500€) :</strong> on propose un appel de 20 min gratuit pour bien cadrer le besoin avant de démarrer.
+    </div></div>
+  </div>
+
+  <!-- CATÉGORIE 4 -->
+  <div class="faq-category">Démarrer</div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Par où commencer si je ne sais pas quoi automatiser ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Répondez à ces 3 questions :<br><br>
+      1. <strong>Quelle tâche vous prend le plus de temps chaque semaine ?</strong> (emails, rapports, publication de contenu, facturation…)<br>
+      2. <strong>Est-ce que vous la refaites de manière identique ou similaire ?</strong> Si oui, elle est automatisable.<br>
+      3. <strong>Quel logiciel ou outil vous utilisez pour la faire ?</strong> (Gmail, Excel, Google Sheets, LinkedIn…)<br><br>
+      Envoyez-moi vos réponses sur <a href="mailto:contact@wulix.fr">contact@wulix.fr</a> et je vous dis en 24h ce qu'on peut automatiser et pour quel budget.
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Vous avez des exemples concrets de résultats clients ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">
+      • <strong>Consultant indépendant</strong> : script de relances clients automatique → 4h récupérées par semaine, taux de recouvrement +30%.<br>
+      • <strong>E-commerçant</strong> : rapport de ventes automatique chaque matin → décisions prises en 5 min au lieu d'1h d'analyse manuelle.<br>
+      • <strong>Créateur de contenu</strong> : pipeline LinkedIn automatisé → 5 posts/semaine sans y toucher, +40% d'engagement en 2 mois.<br>
+      • <strong>Cabinet comptable</strong> : génération automatique de factures PDF → 6h/mois récupérées sur la saisie manuelle.<br><br>
+      Plus d'exemples sur <a href="/portfolio.html">notre page portfolio →</a>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggle(this)">Est-ce que vous proposez de la formation ? <span class="faq-arrow">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Oui, sur demande. On peut vous former à Python pour l'automatisation, à n8n ou Make.com en visio (1-2h). Format atelier pratique sur votre cas concret, pas de cours théoriques. Tarif : 90€/h. Contactez <a href="mailto:contact@wulix.fr">contact@wulix.fr</a> pour organiser ça.</div></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <h2>Une question qui n'est pas là ?</h2>
+    <p>Envoyez-moi un email, je réponds personnellement sous 24h.</p>
+    <a class="btn" href="mailto:contact@wulix.fr">Écrire à Omar →</a>
+    <a class="btn btn-outline" href="https://www.fiverr.com/richardsylla" target="_blank">Voir les offres Fiverr</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">WULIX</div>
+  <div class="footer-links">
+    <a href="/">Accueil</a>
+    <a href="/services.html">Services</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/portfolio.html">Portfolio</a>
+    <a href="/cgv.html">CGV</a>
+    <a href="/mentions-legales.html">Mentions légales</a>
+    <a href="mailto:contact@wulix.fr">contact@wulix.fr</a>
+  </div>
+  <div style="width:100%;text-align:center;margin-top:8px">© 2026 Wulix — Agence d'automatisation IA · France</div>
+</footer>
+
+<script>
+function toggle(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+// Ouvrir le premier par défaut
+document.querySelector('.faq-item')?.classList.add('open');
+</script>
+</body>
+</html>

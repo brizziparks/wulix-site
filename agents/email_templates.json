@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-20",
+  "templates": [
+    {
+      "id": "welcome",
+      "name": "Email de bienvenue acheteur",
+      "subject": "🎉 Bienvenue chez WULIX — voici comment utiliser votre pack",
+      "trigger": "after_purchase",
+      "delay_hours": 0,
+      "body": "Bonjour {{prenom}},\n\nMerci pour votre achat ! Votre {{produit}} est prêt à l'emploi.\n\n📦 Ce que vous avez :\n{{contenu_pack}}\n\n🚀 Pour démarrer :\n1. Dézippez le fichier dans votre dossier de travail\n2. Ouvrez README.txt pour les instructions\n3. Installez les dépendances : pip install -r requirements.txt\n\n💬 Besoin d'aide ? Répondez simplement à cet email — je réponds sous 24h.\n\nBonne automatisation,\nOmar — WULIX\n\nP.S. Si vous trouvez ça utile, un avis sur Gumroad m'aiderait énormément 🙏\nhttps://wulix.gumroad.com"
+    },
+    {
+      "id": "followup_3j",
+      "name": "Suivi J+3 après achat",
+      "subject": "Comment ça se passe avec {{produit}} ?",
+      "trigger": "after_purchase",
+      "delay_hours": 72,
+      "body": "Bonjour {{prenom}},\n\nCela fait 3 jours que vous avez téléchargé {{produit}}.\n\nAvez-vous pu le tester ? Est-ce que ça tourne bien chez vous ?\n\nSi vous avez une question ou un blocage, c'est le bon moment pour me le dire — je suis là.\n\nQuelques questions rapides :\n→ Vous avez réussi à l'installer ?\n→ Il y a quelque chose d'unclear dans les instructions ?\n→ Vous voulez qu'on adapte un script à votre cas précis ?\n\nRépondez à cet email, je lis tout personnellement.\n\nOmar — WULIX"
+    },
+    {
+      "id": "followup_7j",
+      "name": "Suivi J+7 + témoignage + upsell",
+      "subject": "Vos résultats avec WULIX (+ une offre pour aller plus loin)",
+      "trigger": "after_purchase",
+      "delay_hours": 168,
+      "body": "Bonjour {{prenom}},\n\nUne semaine après votre achat — j'espère que {{produit}} vous fait gagner du temps concret.\n\nSi vous avez obtenu un résultat (même petit), j'aimerais vraiment le savoir. Ça m'aide à améliorer mes outils.\n\n⭐ Si vous êtes satisfait, un avis de 2 lignes sur Gumroad m'aiderait beaucoup :\nhttps://wulix.gumroad.com\n\n---\n\n🚀 Pour aller plus loin :\n\nVous avez aimé automatiser cette partie ? On peut faire pareil pour tout votre workflow.\n\nJe propose des missions sur-mesure à partir de 150€ :\n→ Audit de vos process manuels\n→ Script ou workflow livré en 5-7 jours\n→ Support 30 jours inclus\n\n📅 Réservez un appel de 20 min gratuit : contact@wulix.fr\n\nOmar — WULIX"
+    },
+    {
+      "id": "prospect_cold",
+      "name": "Premier contact cold (LinkedIn/email)",
+      "subject": "Automatiser {{tache_manuelle}} — j'ai quelque chose pour vous",
+      "trigger": "manual",
+      "delay_hours": 0,
+      "body": "Bonjour {{prenom}},\n\nJ'ai vu votre profil sur LinkedIn — vous faites {{activite}} chez {{entreprise}}.\n\nJe travaille avec des {{secteur}} pour automatiser les tâches répétitives qui prennent du temps sans créer de valeur.\n\nConcrètement : {{tache_manuelle}} peut souvent être automatisée à 80% en moins d'une semaine avec Python ou n8n.\n\nJe ne vends pas un logiciel. Je livre un script ou un workflow opérationnel, clé en main.\n\nÇa vous intéresse d'en savoir plus ? Je peux vous montrer un exemple concret adapté à votre cas.\n\nOmar Sylla — WULIX\nwulix.fr | Fiverr : fiverr.com/richardsylla"
+    },
+    {
+      "id": "relance_devis",
+      "name": "Relance devis sans réponse (+5 jours)",
+      "subject": "Re : Votre devis WULIX — une question ?",
+      "trigger": "after_quote",
+      "delay_hours": 120,
+      "body": "Bonjour {{prenom}},\n\nJe vous avais envoyé un devis il y a 5 jours pour {{mission}}.\n\nJe voulais juste m'assurer que vous l'avez bien reçu et vérifier si vous avez des questions.\n\nPas de pression — si le timing n'est pas le bon ou si vous avez pris une autre direction, dites-le moi simplement.\n\nSi vous avez des doutes sur la faisabilité ou le prix, on peut en parler 10 minutes au téléphone.\n\nOmar — WULIX\n\nP.S. Le devis est valable encore {{jours_restants}} jours."
+    },
+    {
+      "id": "newsletter_weekly",
+      "name": "Newsletter hebdo — 1 tip automatisation",
+      "subject": "💡 WULIX Weekly — {{titre_tip}}",
+      "trigger": "weekly",
+      "delay_hours": 0,
+      "body": "Bonjour {{prenom}},\n\nVoici le tip automatisation de cette semaine :\n\n---\n\n🔧 {{titre_tip}}\n\n{{contenu_tip}}\n\n💻 Le code complet est disponible dans notre Pack Scripts Python (10€) :\nhttps://wulix.gumroad.com/l/scripts-python\n\n---\n\n📝 Nouvel article sur le blog :\n{{titre_article}} → {{lien_article}}\n\n---\n\nBonne semaine,\nOmar — WULIX\n\nSe désabonner : {{lien_desabonnement}}"
+    },
+    {
+      "id": "promo_bundle",
+      "name": "Email promo Bundle complet",
+      "subject": "🎁 Pack Complet WULIX — 45€ au lieu de 62€ (offre limitée)",
+      "trigger": "manual",
+      "delay_hours": 0,
+      "body": "Bonjour {{prenom}},\n\nJe viens de créer quelque chose de pratique : le **Pack Complet WULIX**.\n\n📦 Ce qu'il contient :\n✓ Pack Scripts Python (10 scripts prêts à l'emploi)\n✓ Pack Workflows n8n (5 workflows clés en main)\n✓ Pack Prompts IA (50 prompts ChatGPT/Claude)\n✓ Bonus : Guide Démarrer l'automatisation IA\n\n💰 Prix : 45€ (valeur réelle : 62€, soit -27%)\n\n🔗 https://wulix.gumroad.com/l/pack-complet\n\nCe pack est fait pour vous si :\n→ Vous passez plus de 2h/semaine sur des tâches répétitives\n→ Vous voulez automatiser mais ne savez pas par où commencer\n→ Vous cherchez des outils concrets, pas de la théorie\n\nOmar — WULIX"
+    },
+    {
+      "id": "reengagement",
+      "name": "Réengager un contact inactif (30j+)",
+      "subject": "Toujours là ? Un dernier message de WULIX",
+      "trigger": "inactivity_30d",
+      "delay_hours": 0,
+      "body": "Bonjour {{prenom}},\n\nCela fait un moment qu'on ne s'est pas parlé.\n\nJe voulais vous partager une chose rapide : depuis votre dernier contact avec WULIX, j'ai aidé des clients à automatiser des factures, des relances clients, et même des publications LinkedIn automatiques.\n\nSi la question de l'automatisation est toujours dans un coin de votre tête — maintenant c'est peut-être le bon moment.\n\nUn audit gratuit de 20 minutes pour identifier votre tâche la plus automatisable ?\n\nRépondez juste « oui » à cet email.\n\nSinon, pas de souci — je vous retire de ma liste sur votre demande.\n\nOmar — WULIX"
+    }
+  ]
+}

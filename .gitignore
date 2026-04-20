@@ -27,6 +27,13 @@ netlify_install.log
 *.key
 *.pem
 
+# Claude Code — contient des tokens et infos sensibles
+.claude/
+memory/
+agents/finance/
+agents/logs/
+agents/tasks_log.json
+
 # Temporaire
 *.tmp
 *.bak

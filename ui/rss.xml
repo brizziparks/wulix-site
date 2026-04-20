@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Blog WULIX — Automatisation IA Python n8n</title>
+    <link>https://wulix.fr/blog.html</link>
+    <description>Guides pratiques pour automatiser votre business avec Python, n8n et Make.com. Tutoriels concrets pour freelances et PME françaises.</description>
+    <language>fr-FR</language>
+    <lastBuildDate>Sun, 20 Apr 2026 10:00:00 +0200</lastBuildDate>
+    <managingEditor>contact@wulix.fr (Omar Sylla)</managingEditor>
+    <webMaster>contact@wulix.fr</webMaster>
+    <image>
+      <url>https://wulix.fr/og-image.jpg</url>
+      <title>Blog WULIX</title>
+      <link>https://wulix.fr/blog.html</link>
+    </image>
+    <atom:link href="https://wulix.fr/rss.xml" rel="self" type="application/rss+xml"/>
+
+    <item>
+      <title>Créer un agent IA de support client avec Python et Gmail</title>
+      <link>https://wulix.fr/blog.html#samba_20260419</link>
+      <description>Un agent Python connecté à Gmail peut traiter 80% de vos demandes automatiquement, avec réponse en moins de 5 minutes 24h/24.</description>
+      <pubDate>Sun, 19 Apr 2026 09:00:00 +0200</pubDate>
+      <author>contact@wulix.fr (Omar Sylla)</author>
+      <category>IA</category>
+      <category>Python</category>
+      <guid isPermaLink="true">https://wulix.fr/blog.html#samba_20260419</guid>
+    </item>
+
+    <item>
+      <title>Automatiser sa veille concurrentielle avec Python en 2026</title>
+      <link>https://wulix.fr/blog.html#veille-concurrentielle</link>
+      <description>Un agent Python scrape les pages cibles, détecte les changements de prix ou de contenu, et vous envoie une alerte email instantanément.</description>
+      <pubDate>Sat, 18 Apr 2026 09:00:00 +0200</pubDate>
+      <author>contact@wulix.fr (Omar Sylla)</author>
+      <category>Python</category>
+      <category>Automatisation</category>
+      <guid isPermaLink="false">https://wulix.fr/blog.html#veille-python-2026</guid>
+    </item>
+
+    <item>
+      <title>Comment générer un rapport PDF automatiquement avec Python</title>
+      <link>https://wulix.fr/blog.html#rapport-pdf</link>
+      <description>Un script Python (fpdf2 + pandas) génère votre rapport en 10 secondes et l'envoie automatiquement par email chaque lundi matin.</description>
+      <pubDate>Fri, 17 Apr 2026 09:00:00 +0200</pubDate>
+      <author>contact@wulix.fr (Omar Sylla)</author>
+      <category>Python</category>
+      <guid isPermaLink="false">https://wulix.fr/blog.html#rapport-pdf-python</guid>
+    </item>
+
+    <item>
+      <title>5 tâches que vous pouvez automatiser ce week-end (sans coder)</title>
+      <link>https://wulix.fr/blog.html#automatiser-sans-coder</link>
+      <description>Vous pensez que l'automatisation c'est réservé aux développeurs ? Ces 5 exemples prouvent le contraire avec Make.com et n8n.</description>
+      <pubDate>Thu, 16 Apr 2026 09:00:00 +0200</pubDate>
+      <author>contact@wulix.fr (Omar Sylla)</author>
+      <category>Automatisation</category>
+      <category>n8n</category>
+      <guid isPermaLink="false">https://wulix.fr/blog.html#sans-coder</guid>
+    </item>
+
+    <item>
+      <title>n8n vs Make.com : lequel choisir pour automatiser votre business ?</title>
+      <link>https://wulix.fr/blog.html#n8n-vs-makecom</link>
+      <description>Comparaison honnête : n8n open-source self-hosted vs Make.com cloud intuitif. Notre recommandation selon votre profil et budget.</description>
+      <pubDate>Wed, 15 Apr 2026 09:00:00 +0200</pubDate>
+      <author>contact@wulix.fr (Omar Sylla)</author>
+      <category>n8n</category>
+      <category>Make.com</category>
+      <guid isPermaLink="false">https://wulix.fr/blog.html#n8n-makecom</guid>
+    </item>
+
+    <item>
+      <title>Comment automatiser ses relances clients avec Python en 30 minutes</title>
+      <link>https://wulix.fr/blog.html#relances-python</link>
+      <description>Un script Python lit votre liste CSV, vérifie qui n'a pas répondu et envoie les emails personnalisés automatiquement. Setup en 30 minutes.</description>
+      <pubDate>Mon, 14 Apr 2026 09:00:00 +0200</pubDate>
+      <author>contact@wulix.fr (Omar Sylla)</author>
+      <category>Python</category>
+      <category>Automatisation</category>
+      <guid isPermaLink="false">https://wulix.fr/blog.html#relances-python</guid>
+    </item>
+
+  </channel>
+</rss>
