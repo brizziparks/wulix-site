@@ -103,6 +103,9 @@ def main():
     elif cmd == "publish":
         platform = args[1] if len(args) > 1 else "linkedin"
         mode     = args[2] if len(args) > 2 else "single"
+        # Modes spéciaux growth (pas de plateforme)
+        if platform in ("growth", "growth_strategy"):
+            mode, platform = platform, "linkedin"
         agent = PublisherAgent()
         result = agent.run({"mode": mode, "platform": platform})
         items = result.get("results", [])

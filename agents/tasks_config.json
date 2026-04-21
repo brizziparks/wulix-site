@@ -14,13 +14,15 @@
   "mariama": {
     "label": "MARIAMA",
     "icon": "📣",
-    "role": "Comms LinkedIn",
+    "role": "Comms WULIX (page seulement)",
+    "note": "Profil perso Omar en pause — page WULIX uniquement",
     "tasks": [
-      { "id": "post_linkedin",    "name": "Poster sur LinkedIn",         "cmd": ["publish", "linkedin", "single"], "schedule": "Lun 09:00", "auto": true  },
-      { "id": "weekly_posts",     "name": "Générer semaine de posts",    "cmd": ["weekly"],                        "schedule": "Dim 20:00", "auto": true  },
-      { "id": "post_twitter",     "name": "Poster sur Twitter/X",        "cmd": ["publish", "twitter", "single"], "schedule": "Manuel",    "auto": false },
-      { "id": "promo_gumroad",    "name": "Post promo Gumroad",          "cmd": ["publish", "linkedin", "promo"], "schedule": "Manuel",    "auto": false },
-      { "id": "recommend",        "name": "Recommandations social media", "cmd": ["recommend", "mariama"],     "schedule": "Ven 16:10", "auto": true  }
+      { "id": "post_wulix",       "name": "Post WULIX LinkedIn",         "cmd": ["publish", "linkedin", "single"], "schedule": "Lun 09:00", "auto": true  },
+      { "id": "weekly_posts",     "name": "Générer semaine posts WULIX", "cmd": ["weekly"],                        "schedule": "Dim 20:00", "auto": true  },
+      { "id": "growth_post",      "name": "Post croissance abonnés",     "cmd": ["publish", "growth"],             "schedule": "Mer 10:00", "auto": true  },
+      { "id": "growth_strategy",  "name": "Plan hebdo +abonnés WULIX",   "cmd": ["publish", "growth_strategy"],    "schedule": "Lun 07:00", "auto": true  },
+      { "id": "promo_gumroad",    "name": "Post promo Gumroad (WULIX)",  "cmd": ["publish", "linkedin", "promo"], "schedule": "Manuel",    "auto": false },
+      { "id": "recommend",        "name": "Recommandations social media", "cmd": ["recommend", "mariama"],         "schedule": "Ven 16:10", "auto": true  }
     ]
   },
   "ndeye": {

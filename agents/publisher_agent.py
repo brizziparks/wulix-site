@@ -19,9 +19,15 @@ BRAND = {
     "url": "WULIX.fr",
     "email": "contact@WULIX.fr",
     "fiverr": "fiverr.com/richardsylla",
-    "linkedin": "linkedin.com/company/WULIX",
+    "linkedin": "linkedin.com/company/WULIX",  # PAGE ENTREPRISE UNIQUEMENT
     "twitter": "@WULIXIA",
     "description": "Automatisation IA pour PME, freelances & entrepreneurs",
+    # ── Stratégie LinkedIn (mise à jour) ──────────────────────────────────────
+    # Seul le compte WULIX (page entreprise) est actif.
+    # Le profil personnel Omar Sylla est en pause — pas de pression,
+    # on construit la marque WULIX d'abord.
+    "linkedin_personal_active": False,
+    "linkedin_focus": "page_wulix_uniquement",
 }
 
 CONTENT_THEMES = [
@@ -137,6 +143,74 @@ Format :
         raw = self.think(prompt, max_tokens=800)
         tweets = [t.strip() for t in raw.split("---") if t.strip()]
         return tweets
+
+    def generate_growth_content(self) -> str:
+        """Génère du contenu spécialement conçu pour attirer des abonnés sur la page WULIX."""
+        formats = [
+            ("carrousel éducatif", "Liste numérotée d'astuces IA/automatisation — chaque point = 1 slide. Format : '5 outils IA qui m'ont fait économiser 10h/semaine'"),
+            ("post statistique choc", "Une stat surprenante sur l'automatisation/IA + explication + lien avec WULIX. Les stats font +40% d'engagement."),
+            ("before/after", "Cas concret avant/après automatisation — mesures concrètes (temps, argent, erreurs). Très partageable."),
+            ("question à la communauté", "Question ouverte engageante sur l'IA ou l'automatisation qui invite les commentaires et augmente la portée organique."),
+            ("mini-tuto rapide", "Tuto en 3 étapes que n'importe qui peut faire en 10 minutes — donne de la valeur immédiate, crée de la confiance."),
+            ("mythe vs réalité", "Déconstruit une idée reçue sur l'IA ou l'automatisation — format engageant, provoque des réactions."),
+        ]
+        import random as _r
+        fmt_name, fmt_desc = _r.choice(formats)
+
+        prompt = f"""Génère un post LinkedIn pour la PAGE ENTREPRISE WULIX (linkedin.com/company/WULIX).
+
+OBJECTIF PRINCIPAL : faire croître le nombre d'abonnés de la page WULIX.
+Format choisi : {fmt_name}
+Description du format : {fmt_desc}
+
+Règles pour maximiser les abonnés :
+- Valeur immédiate et gratuite (pas de pitch, pas de vente directe)
+- Contenu assez bon pour être partagé ("enregistrer pour plus tard")
+- Appel à l'action en fin de post : "Suivez la page WULIX pour du contenu comme ça chaque semaine"
+- 150-250 mots
+- Ton humain, accessible, expert mais pas arrogant
+- 5 hashtags : #WULIX + 4 autres pertinents et populaires en France (#IA #Automatisation etc.)
+- Emojis stratégiques (max 4)
+
+NB : AUCUNE mention du profil personnel d'Omar. Tout est sous la marque WULIX.
+
+Écris UNIQUEMENT le post."""
+
+        return self.think(prompt, max_tokens=600)
+
+    def generate_growth_strategy(self) -> str:
+        """Génère un plan d'action hebdomadaire pour croître les abonnés WULIX LinkedIn."""
+        prompt = """Génère un plan d'action concret pour faire croître le nombre d'abonnés de la page LinkedIn WULIX (linkedin.com/company/WULIX).
+
+Contraintes :
+- WULIX est une jeune page (0-100 abonnés actuellement)
+- Créateur solo (Omar Sylla) — peu de temps disponible
+- Pas de budget pub
+- Objectif : +100 abonnés organiques en 30 jours
+
+Structure du plan (markdown) :
+
+## Stratégie croissance WULIX LinkedIn — Semaine du [DATE]
+
+### Actions QUOTIDIENNES (15 min/jour max)
+- Lister 3-4 micro-actions à faire chaque jour
+
+### Contenu de la semaine (WULIX page seulement)
+- Planning éditorial : jour / format / sujet
+
+### Hashtags cibles
+- Liste des 10 hashtags les plus utilisés dans notre niche en France
+
+### Comptes à cibler (interactions organiques)
+- Types de comptes à aller commenter/engager (sans spam)
+- Exemples concrets de profils cibles : DSI PME, directeurs marketing, entrepreneurs tech
+
+### Métriques à suivre
+- 2-3 KPIs simples à suivre cette semaine
+
+Sois très concret et actionnable. Aucune astuce générique."""
+
+        return self.think(prompt, max_tokens=900)
 
     def generate_short_post(self) -> str:
         """Génère un post court et percutant pour une publication rapide."""
@@ -389,6 +463,44 @@ Max 80 caractères, SEO Fiverr.
                     "status": "ready",
                     "created_at": datetime.now().isoformat(),
                 })
+
+        # ── Mode growth : contenu pour croître les abonnés WULIX ─────────────
+        elif mode == "growth":
+            self.log("Mode GROWTH — génération contenu croissance abonnés WULIX")
+            post = self.generate_growth_content()
+            results.append({
+                "id": f"li_growth_{datetime.now().strftime('%Y%m%d%H%M')}",
+                "platform": "linkedin",
+                "type": "growth",
+                "topic": "Croissance abonnés WULIX",
+                "content": post,
+                "status": "ready",
+                "created_at": datetime.now().isoformat(),
+            })
+            self.save_to_queue(results)
+            self.log(f"✓ Post growth généré")
+            return {
+                "agent": self.name,
+                "status": "success",
+                "items_generated": 1,
+                "results": results,
+            }
+
+        elif mode == "growth_strategy":
+            self.log("Mode GROWTH STRATEGY — plan hebdo croissance WULIX")
+            strategy = self.generate_growth_strategy()
+            # Sauvegarde du plan
+            strategy_dir = BASE_DIR / "agents" / "content"
+            strategy_dir.mkdir(exist_ok=True)
+            fname = strategy_dir / f"growth_strategy_{datetime.now().strftime('%Y%m%d')}.md"
+            fname.write_text(strategy, encoding="utf-8")
+            self.log(f"✓ Stratégie sauvegardée → {fname}")
+            return {
+                "agent": self.name,
+                "status": "success",
+                "content": strategy,
+                "file": str(fname),
+            }
 
         self.save_to_queue(results)
         self.log(f"✓ {len(results)} contenus générés et sauvegardés")

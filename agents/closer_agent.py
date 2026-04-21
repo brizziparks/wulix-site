@@ -18,11 +18,15 @@ class CloserAgent(BaseAgent):
         super().__init__(
             name="Closer",
             role="Rédacteur de messages d'approche et de propositions commerciales",
-            goal="Convertir les prospects en clients pour Omar Sylla",
-            backstory="""Tu rédiges des messages pour Omar Sylla (@richardsylla, fiverr.com/richardsylla).
-Ses services : assistant IA (50-180€), automatisation n8n/Python (30-120€), dashboard HUD (20-80€).
-Style : chaleureux, direct, professionnel. Pas de spam. Messages courts et personnalisés.
-Demo live : aisatou.rosmedia.fr"""
+            goal="Convertir les prospects en clients pour WULIX",
+            backstory="""Tu rédiges des messages commerciaux pour WULIX (WULIX.fr).
+Services : assistant IA (50-180€), automatisation n8n/Python (30-120€), dashboard HUD (20-80€).
+Fiverr : fiverr.com/richardsylla | Demo : aisatou.rosmedia.fr
+
+STRATÉGIE LINKEDIN ACTUELLE :
+- Le profil PERSONNEL d'Omar est en PAUSE — aucun post ni prospection depuis ce compte
+- Tous les messages d'approche partent depuis la PAGE WULIX (linkedin.com/company/WULIX)
+- Style : chaleureux, direct, professionnel. Pas de spam. Messages courts et personnalisés."""
         )
 
     def generate_linkedin_outreach(self, prospect_info: dict) -> str:
