@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription — MHK Asso</title>
+  <meta name="description" content="Inscrivez-vous aux cours de danse MHK pour la saison 2025–2026. Hip-hop, House, Waacking, Popping et plus — Bagneux 92." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .inscription-section { padding: 80px 0; }
+    .inscription-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: start;
+    }
+
+    /* FORM */
+    .form-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: 20px;
+      padding: 48px 40px;
+    }
+    .form-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .form-subtitle { color: var(--gray); font-size: 0.9rem; margin-bottom: 36px; }
+    .form-group { margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select, textarea {
+      width: 100%;
+      background: var(--bg-3);
+      border: 1px solid var(--gray-dark);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: var(--white);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(41,171,226,0.15);
+    }
+    select option { background: var(--bg-3); }
+    textarea { resize: vertical; min-height: 100px; }
+    .form-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 8px 0;
+    }
+    .form-check input[type="checkbox"] {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--cyan);
+      margin-top: 2px;
+    }
+    .form-check label {
+      font-size: 0.88rem;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--gray);
+      cursor: pointer;
+      font-weight: 400;
+      margin: 0;
+    }
+    .form-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--gradient-h);
+      color: var(--bg);
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 8px;
+    }
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(29,125,212,0.4);
+      filter: brightness(1.05);
+    }
+    .form-note {
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.78rem;
+      margin-top: 16px;
+    }
+
+    /* SIDEBAR */
+    .sidebar-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 20px;
+    }
+    .sidebar-card h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+    .sidebar-step {
+      display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--gradient-h);
+      color: var(--bg);
+      font-size: 0.78rem;
+      font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+    }
+    .sidebar-step p { color: var(--gray); font-size: 0.88rem; line-height: 1.5; }
+    .sidebar-step strong { color: var(--white); display: block; margin-bottom: 2px; }
+    .price-item {
+      display: flex; justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bg-3);
+      font-size: 0.88rem;
+      color: var(--gray);
+    }
+    .price-item:last-child { border-bottom: none; }
+    .price-item strong {
+      color: var(--white);
+      font-family: var(--font-display);
+    }
+    .contact-item {
+      display: flex; gap: 10px; align-items: center;
+      color: var(--gray); font-size: 0.88rem; margin-bottom: 10px;
+    }
+    .contact-item span:first-child { color: var(--cyan); }
+
+    @media (max-width: 900px) {
+      .inscription-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li><li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="active nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="page-hero">
+    <div class="badge">Saison 2025–2026</div>
+    <h1>INSCRIPTION</h1>
+    <p>Rejoins MHK ! Remplis le formulaire ci-dessous et on te recontacte rapidement pour finaliser ton inscription.</p>
+  </div>
+
+  <section class="inscription-section">
+    <div class="container">
+      <div class="inscription-grid">
+
+        <!-- FORM -->
+        <div class="form-card">
+          <h2 class="form-title">Formulaire d'inscription</h2>
+          <p class="form-subtitle">Saison 2025–2026 · Tous les champs * sont obligatoires</p>
+
+          <form id="inscriptionForm" action="https://formspree.io/f/XXXXXX" method="POST">
+            <!-- Identité -->
+            <div class="badge" style="margin-bottom:20px;">Identité</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Prénom *</label>
+                <input type="text" name="prenom" placeholder="Ton prénom" required />
+              </div>
+              <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" name="nom" placeholder="Ton nom" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date de naissance *</label>
+                <input type="date" name="naissance" required />
+              </div>
+              <div class="form-group">
+                <label>Téléphone *</label>
+                <input type="tel" name="tel" placeholder="06 XX XX XX XX" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" placeholder="ton@email.com" required />
+            </div>
+            <div class="form-group">
+              <label>Adresse</label>
+              <input type="text" name="adresse" placeholder="Ton adresse" />
+            </div>
+
+            <!-- Cours -->
+            <div class="badge" style="margin:28px 0 20px;">Cours souhaité</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Style de danse *</label>
+                <select name="style" required>
+                  <option value="">Choisir un style</option>
+                  <option>Hip-hop</option>
+                  <option>House</option>
+                  <option>Waacking</option>
+                  <option>Popping</option>
+                  <option>Multi-cours (2+)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Niveau *</label>
+                <select name="niveau" required>
+                  <option value="">Ton niveau</option>
+                  <option>Débutant (jamais dansé)</option>
+                  <option>Intermédiaire</option>
+                  <option>Avancé</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Formule *</label>
+              <select name="formule" required>
+                <option value="">Choisir une formule</option>
+                <option>Découverte — Cours d'essai gratuit</option>
+                <option>Annuel — 1 cours/semaine (150€/an)</option>
+                <option>Multi-cours — 2 cours+/semaine (220€/an)</option>
+              </select>
+            </div>
+
+            <!-- Infos complémentaires -->
+            <div class="badge" style="margin:28px 0 20px;">Informations complémentaires</div>
+            <div class="form-group">
+              <label>Comment nous avez-vous connu ?</label>
+              <select name="source">
+                <option value="">Sélectionner</option>
+                <option>Bouche à oreille</option>
+                <option>Instagram</option>
+                <option>Facebook</option>
+                <option>Google</option>
+                <option>Flyer</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Message / Questions</label>
+              <textarea name="message" placeholder="Des questions ? Des informations à nous donner ?"></textarea>
+            </div>
+
+            <!-- Consentements -->
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" id="rgpd" name="rgpd" required />
+                <label for="rgpd">J'accepte que mes données soient utilisées par MHK pour le traitement de mon inscription. *</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="photo" name="photo" />
+                <label for="photo">J'autorise MHK à utiliser mes photos/vidéos sur ses réseaux sociaux.</label>
+              </div>
+            </div>
+
+            <button type="submit" class="form-submit">Envoyer ma demande d'inscription</button>
+            <p class="form-note">Tes données restent confidentielles et ne sont jamais partagées.</p>
+          </form>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div>
+          <div class="sidebar-card">
+            <h4>Comment ça marche</h4>
+            <div class="sidebar-step">
+              <div class="step-num">1</div>
+              <div><strong>Tu remplis le formulaire</strong><p>Indique tes infos et le cours qui t'intéresse.</p></div>
+            </div>
+            <div class="sidebar-step">
+              <div class="step-num">2</div>
+              <div><strong>On te recontacte</strong><p>L'équipe MHK te rappelle sous 48h pour confirmer.</p></div>
+            </div>
+            <div class="sidebar-step">
+              <div class="step-num">3</div>
+              <div><strong>Cours d'essai offert</strong><p>Viens tester gratuitement avant de t'engager.</p></div>
+            </div>
+            <div class="sidebar-step">
+              <div class="step-num">4</div>
+              <div><strong>Règlement & adhésion</strong><p>Paiement sur place. CB, espèces, chèques vacances, pass sport acceptés.</p></div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4>Tarifs 2025–2026</h4>
+            <div class="price-item"><span>Cours d'essai</span><strong style="color:var(--teal);">Gratuit</strong></div>
+            <div class="price-item"><span>Annuel (1 cours/sem.)</span><strong>150€ / an</strong></div>
+            <div class="price-item"><span>Multi-cours (2+/sem.)</span><strong>220€ / an</strong></div>
+            <p style="color:var(--gray);font-size:0.78rem;margin-top:12px;">Pass Sport · CAF · Chèques Vacances acceptés</p>
+          </div>
+
+          <div class="sidebar-card">
+            <h4>Une question</h4>
+            <div class="contact-item"><span>📧</span> infos.mhk.asso@gmail.com</div>
+            <div class="contact-item"><span>📞</span> 06 41 23 21 79</div>
+            <div class="contact-item"><span>📍</span> Bagneux, Hauts-de-Seine (92)</div>
+            <a href="contact.html" class="btn btn-outline" style="width:100%; justify-content:center; margin-top:16px;">Nous écrire</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+      <div class="footer-col">
+        <h4>Aides</h4>
+        <ul>
+          <li><a href="#">Pass Sport</a></li>
+          <li><a href="#">CAF</a></li>
+          <li><a href="#">Chèques Vacances</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+
+

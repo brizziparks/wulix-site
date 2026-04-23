@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galerie — MHK Asso</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .galerie-filters {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: center; margin: 40px 0 48px;
+    }
+    .galerie-grid {
+      columns: 3;
+      column-gap: 16px;
+      margin-top: 0;
+    }
+    .galerie-item {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--bg-3);
+      position: relative;
+      cursor: pointer;
+      background: var(--bg-3);
+    }
+    .galerie-item:hover .galerie-overlay { opacity: 1; }
+    .galerie-ph {
+      aspect-ratio: var(--ratio, 4/3);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      color: var(--gray-dark); font-size: 2rem;
+      background: var(--bg-3);
+    }
+    .galerie-ph span { font-size: 0.75rem; color: var(--gray-dark); font-family: var(--font-main); }
+    .galerie-item img { width: 100%; display: block; }
+    .galerie-overlay {
+      position: absolute; inset: 0;
+      background: rgba(41,171,226,0.7);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity var(--transition);
+      font-size: 2rem;
+    }
+    /* YouTube section */
+    .youtube-section { background: var(--bg-2); padding: 80px 0; }
+    .yt-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .yt-card {
+      background: var(--bg);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .yt-card:hover { border-color: var(--cyan); transform: translateY(-4px); }
+    .yt-thumb {
+      aspect-ratio: 16/9;
+      background: var(--bg-3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .yt-play {
+      position: absolute;
+      width: 56px; height: 56px;
+      background: rgba(29,125,212,0.9);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      padding-left: 4px;
+    }
+    .yt-info { padding: 16px 20px; }
+    .yt-info h4 { font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
+    .yt-info p { color: var(--gray); font-size: 0.82rem; }
+
+    @media (max-width: 900px) {
+      .galerie-grid { columns: 2; }
+      .yt-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .galerie-grid { columns: 1; }
+      .yt-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html" class="active">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li><li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="page-hero">
+    <div class="badge">Photos & Vidéos</div>
+    <h1>GALERIE</h1>
+    <p>Cours, battles, showcases — revivez les meilleurs moments de MHK en images.</p>
+  </div>
+
+  <!-- PHOTOS -->
+  <section class="section">
+    <div class="container">
+      <div class="badge">Photos</div>
+      <h2 class="section-title"><span class="gradient-text">En images</span></h2>
+      <div class="divider"></div>
+
+      <div class="galerie-filters">
+        <button class="filter-btn active">Tous</button>
+        <button class="filter-btn">Cours</button>
+        <button class="filter-btn">Battles</button>
+        <button class="filter-btn">Showcases</button>
+        <button class="filter-btn">Événements</button>
+      </div>
+
+      <div class="galerie-grid">
+        <div class="galerie-item">
+          <img src="assets/images/photo-danseurs.avif" alt="MHK — Showcase scène" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/MONNA.avif" alt="Monna — Hip-hop" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/Photo B in the game.avif" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/SPIDER 2.avif" alt="Spider" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/MHK on Stage.avif" alt="MHK on Stage" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/NESSOO.avif" alt="Nessoo" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/3bc75c_3a78adfbcb3e46ce956571d254d4c67e~mv2.avif" alt="MHK — Danseurs sur scène" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/MP.avif" alt="MP" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/Paris Danse Cypher.avif" alt="Paris Danse Cypher" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/STEPHANIE_JPG.avif" alt="SP Sunny" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/le meeting.avif" alt="Le Meeting" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/MUTEKI 2.avif" alt="Mutekirena" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/le shuffle.avif" alt="Le Shuffle" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+
+        <!-- Nouvelles photos B IN THE GAME -->
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8279-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8476-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8579-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8556-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8637-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8641-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8618-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8670-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_9279-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+        <div class="galerie-item">
+          <img src="assets/images/IMG_8450-A.jpg" alt="B IN THE GAME" loading="lazy" />
+          <div class="galerie-overlay"></div>
+        </div>
+      </div>
+
+      <div class="text-center" style="margin-top:48px;">
+        <p style="color:var(--gray); margin-bottom:16px; font-size:0.9rem;">Tes photos sur Instagram ?</p>
+        <a href="https://www.instagram.com/" target="_blank" class="btn btn-outline">@mhk_asso sur Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- YOUTUBE -->
+  <section class="youtube-section">
+    <div class="container">
+      <div class="badge">Vidéos</div>
+      <h2 class="section-title"><span class="gradient-text">Sur YouTube</span></h2>
+      <div class="divider"></div>
+      <p class="section-sub" style="margin-bottom:0;">Battles, showcases et highlights — tout est sur la chaîne <strong>@Binthegame</strong>.</p>
+
+      <div class="yt-grid">
+        <div class="yt-card">
+          <a href="https://www.youtube.com/@Binthegame" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+            <div class="yt-thumb">
+              <img src="assets/images/Photo B in the game.avif" alt="B IN THE GAME" style="width:100%;height:100%;object-fit:cover;" />
+              <div class="yt-play">▶</div>
+            </div>
+            <div class="yt-info">
+              <h4>B IN THE GAME — Highlights</h4>
+              <p>8ème édition · Battle all style -18 ans · PPCM Bagneux</p>
+            </div>
+          </a>
+        </div>
+        <div class="yt-card">
+          <a href="https://www.youtube.com/@Binthegame" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+            <div class="yt-thumb">
+              <img src="assets/images/MHK on Stage.avif" alt="MHK on Stage" style="width:100%;height:100%;object-fit:cover;" />
+              <div class="yt-play">▶</div>
+            </div>
+            <div class="yt-info">
+              <h4>MHK on Stage</h4>
+              <p>Gala de fin d'année · Théâtre Victor Hugo, Bagneux</p>
+            </div>
+          </a>
+        </div>
+        <div class="yt-card">
+          <a href="https://www.youtube.com/@Binthegame" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+            <div class="yt-thumb">
+              <img src="assets/images/photo-danseurs.avif" alt="MHK Showcase" style="width:100%;height:100%;object-fit:cover;" />
+              <div class="yt-play">▶</div>
+            </div>
+            <div class="yt-info">
+              <h4>MHK — Performances & Showcases</h4>
+              <p>Les meilleurs moments de la saison</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="text-center" style="margin-top:40px;">
+        <a href="https://www.youtube.com/@Binthegame" target="_blank" class="btn btn-gradient">Voir toutes les vidéos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+          <li><a href="galerie.html">Galerie</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+      <div class="footer-col">
+        <h4>Réseaux</h4>
+        <ul>
+          <li><a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a></li>
+          <li><a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a></li>
+          <li><a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube — B IN THE SHOW</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+

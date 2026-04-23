@@ -1,0 +1,802 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nos Cours — MHK Asso</title>
+  <meta name="description" content="Cours de Hip-hop, House, Waacking et Popping à Bagneux. Tous niveaux, tous âges." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* FILTERS */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 40px 0 56px;
+    }
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 2px solid var(--bg-3);
+      background: var(--bg-2);
+      color: var(--gray);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(41,171,226,0.08);
+    }
+
+    /* COURS CARDS */
+    .cours-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .cours-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .cours-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .cours-header {
+      padding: 28px 24px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cours-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gradient-h);
+    }
+    .cours-emoji { font-size: 2.5rem; margin-bottom: 14px; }
+    .cours-header h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .cours-levels { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .cours-body { padding: 0 24px 20px; flex: 1; }
+    .cours-body p {
+      color: var(--gray);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .cours-infos { display: flex; flex-direction: column; gap: 8px; }
+    .cours-info-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+    .cours-info-row .ico { color: var(--cyan); font-size: 0.9rem; width: 18px; }
+
+    .cours-footer {
+      padding: 20px 24px;
+      border-top: 1px solid var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cours-price {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 900;
+      background: var(--gradient-h);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cours-price small {
+      font-size: 0.7rem;
+      color: var(--gray);
+      font-weight: 400;
+      -webkit-text-fill-color: var(--gray);
+    }
+
+    /* HORAIRES */
+    .horaires-section {
+      background: var(--bg-2);
+      padding: 80px 0;
+    }
+    .horaires-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+    .horaires-table th {
+      background: var(--bg-3);
+      padding: 14px 20px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gray);
+      text-align: left;
+      font-weight: 600;
+    }
+    .horaires-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--bg-3);
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    .horaires-table tr:hover td { background: rgba(41,171,226,0.04); }
+    .horaires-table td:first-child { color: var(--white); font-weight: 600; }
+    .style-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 50px;
+      background: rgba(41,171,226,0.12);
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* TARIFS */
+    .tarifs-section { padding: 80px 0; }
+    .tarifs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .tarif-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      text-align: center;
+      position: relative;
+      transition: all var(--transition);
+    }
+    .tarif-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+    }
+    .tarif-card.featured {
+      border-color: var(--cyan);
+      background: linear-gradient(160deg, rgba(41,171,226,0.08), var(--bg-2));
+    }
+    .tarif-featured-badge {
+      position: absolute;
+      top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--gradient-h);
+      color: var(--bg);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tarif-card h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tarif-price {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 900;
+      background: var(--gradient-h);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .tarif-price small {
+      font-size: 1rem;
+      color: var(--gray);
+      -webkit-text-fill-color: var(--gray);
+    }
+    .tarif-desc {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin: 16px 0 24px;
+      line-height: 1.6;
+    }
+    .tarif-features { list-style: none; margin-bottom: 28px; }
+    .tarif-features li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg-3);
+      font-size: 0.88rem;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tarif-features li::before { content: '✓'; color: var(--teal); font-weight: 700; }
+
+    /* RENTREE BANNER */
+    .rentree-banner {
+      background: linear-gradient(135deg, rgba(29,125,212,0.15), rgba(13,71,161,0.1));
+      border: 1px solid rgba(29,125,212,0.4);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+      justify-content: center; text-align: center;
+      margin-bottom: 48px;
+    }
+    .rentree-banner .rb-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .rentree-banner .rb-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); }
+    .rentree-banner .rb-date { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; color: var(--white); }
+    .rentree-banner .rb-sep { width: 1px; height: 40px; background: var(--bg-3); }
+    .rentree-banner .rb-lieu { color: var(--gray); font-size: 0.88rem; }
+    .rentree-banner .rb-lieu strong { color: var(--cyan); }
+
+    /* COURS ENFANTS CARDS */
+    .enfants-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .enfant-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 3/4;
+      border: 1px solid var(--bg-3);
+      transition: all var(--transition);
+      cursor: default;
+    }
+    .enfant-card:hover { border-color: var(--cyan); transform: translateY(-4px); }
+    .enfant-card img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .enfant-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(7,9,15,0.92) 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 16px;
+    }
+    .enfant-age {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+    }
+    .enfant-horaire { font-size: 0.78rem; color: var(--cyan); margin-top: 4px; }
+    .enfant-jour { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
+
+    /* WORKSHOP CARD */
+    .cours-card.workshop {
+      border-color: rgba(77,184,255,0.3);
+      background: linear-gradient(160deg, rgba(13,30,60,0.95), var(--bg-2));
+    }
+    .cours-card.workshop .cours-header::before {
+      background: linear-gradient(90deg, #4db8ff, #a78bfa);
+    }
+    .workshop-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(77,184,255,0.12); border: 1px solid rgba(77,184,255,0.3);
+      color: #4db8ff; font-size: 0.72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 50px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .workshop-dates { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .workshop-date {
+      background: rgba(29,125,212,0.12);
+      color: var(--cyan); font-size: 0.75rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 50px;
+    }
+
+    /* LIEU BADGE */
+    .lieu-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(29,125,212,0.08); border: 1px solid rgba(29,125,212,0.2);
+      border-radius: var(--radius); padding: 12px 20px;
+      color: var(--gray); font-size: 0.88rem;
+      margin-top: 16px;
+    }
+    .lieu-badge strong { color: var(--white); }
+    .lieu-badge span:first-child { color: var(--cyan); font-size: 1rem; }
+
+    @media (max-width: 1024px) {
+      .cours-grid { grid-template-columns: repeat(2, 1fr); }
+      .tarifs-grid { grid-template-columns: repeat(2, 1fr); }
+      .enfants-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .cours-grid, .tarifs-grid { grid-template-columns: 1fr; }
+      .horaires-table { font-size: 0.82rem; }
+      .horaires-table th, .horaires-table td { padding: 12px 12px; }
+      .enfants-grid { grid-template-columns: repeat(2, 1fr); }
+      .rentree-banner .rb-sep { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html" class="active">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li><li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="badge">Saison 2025–2026</div>
+    <h1>NOS COURS</h1>
+    <p>Hip-hop, House, Waacking, Popping — des profs passionnés, tous niveaux acceptés. Trouve ton rythme chez MHK.</p>
+  </div>
+
+  <!-- COURS -->
+  <section class="section">
+    <div class="container">
+
+      <!-- RENTREE BANNER -->
+      <div class="rentree-banner">
+        <div class="rb-item">
+          <span class="rb-label">🎒 Rentrée Enfants</span>
+          <span class="rb-date">9 Septembre 2025</span>
+        </div>
+        <div class="rb-sep"></div>
+        <div class="rb-item">
+          <span class="rb-label">🎶 Rentrée Adultes</span>
+          <span class="rb-date">4 Octobre 2025</span>
+        </div>
+        <div class="rb-sep"></div>
+        <div class="rb-item">
+          <span class="rb-label">📍 Lieu</span>
+          <span class="rb-lieu"><strong>Espace Marc Lanvin</strong> · 22 rue Blaise Pascal, 92220 Bagneux</span>
+        </div>
+      </div>
+
+      <!-- FILTERS -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">Tous</button>
+        <button class="filter-btn" data-filter="hip-hop">Hip-hop</button>
+        <button class="filter-btn" data-filter="house">House</button>
+        <button class="filter-btn" data-filter="waacking">Waacking</button>
+        <button class="filter-btn" data-filter="popping">Popping</button>
+        <button class="filter-btn" data-filter="enfants">Enfants</button>
+        <button class="filter-btn" data-filter="workshop">Workshop</button>
+      </div>
+
+      <!-- COURS ADULTES -->
+      <div class="badge" style="margin-bottom:20px;">Adultes · 14 ans et +</div>
+      <div class="cours-grid" id="coursGrid">
+
+        <!-- HIP-HOP -->
+        <div class="cours-card" data-style="hip-hop">
+          <div class="cours-header">
+            <h3>Hip-hop</h3>
+            <div class="cours-levels">
+              <span class="tag tag-cyan">Débutant</span>
+              <span class="tag tag-cyan">Intermédiaire</span>
+              <span class="tag tag-cyan">Avancé</span>
+            </div>
+          </div>
+          <div class="cours-body">
+            <p>Le style originel de la culture urbaine. Groove, énergie et expression — pour tous ceux qui veulent découvrir ou approfondir le hip-hop.</p>
+            <div class="cours-infos">
+              <div class="cours-info-row"><span class="ico">📅</span> Mercredi · 20h00 – 21h30</div>
+              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-nessoo" style="color:var(--cyan); text-decoration:none;">Nessoo</a> — Débutant / Intermédiaire</div>
+              <div class="cours-info-row"><span class="ico">📅</span> Jeudi · 20h00 – 21h30</div>
+              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-spider" style="color:var(--cyan); text-decoration:none;">Spider</a> — Avancé</div>
+              <div class="cours-info-row"><span class="ico">👥</span> Adultes · 14 ans et +</div>
+            </div>
+          </div>
+          <div class="cours-footer" style="justify-content:flex-end;">
+            <a href="inscription.html" class="btn btn-primary" style="padding:10px 20px; font-size:0.8rem;">S'inscrire</a>
+          </div>
+        </div>
+
+        <!-- HOUSE DANCE -->
+        <div class="cours-card" data-style="house">
+          <div class="cours-header">
+            <h3>House Dance</h3>
+            <div class="cours-levels">
+              <span class="tag tag-cyan">Tous niveaux</span>
+            </div>
+          </div>
+          <div class="cours-body">
+            <p>Footwork rapide, torso fluide, roots de Chicago — le house demande musicalité et feeling. Cours dispensé dans une ambiance club.</p>
+            <div class="cours-infos">
+              <div class="cours-info-row"><span class="ico">📅</span> Mardi · 19h50 – 21h00</div>
+              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-sp-sunny" style="color:var(--cyan); text-decoration:none;">SP Sunny</a></div>
+              <div class="cours-info-row"><span class="ico">👥</span> Adultes · 14 ans et +</div>
+            </div>
+          </div>
+          <div class="cours-footer" style="justify-content:flex-end;">
+            <a href="inscription.html" class="btn btn-primary" style="padding:10px 20px; font-size:0.8rem;">S'inscrire</a>
+          </div>
+        </div>
+
+        <!-- WAACKING -->
+        <div class="cours-card" data-style="waacking">
+          <div class="cours-header">
+            <h3>Waacking</h3>
+            <div class="cours-levels">
+              <span class="tag tag-cyan">Débutant</span>
+              <span class="tag tag-cyan">Intermédiaire</span>
+            </div>
+          </div>
+          <div class="cours-body">
+            <p>Bras fouettés, attitude, élégance et self-expression. Né dans les clubs disco, le waacking mêle danse et personnalité forte.</p>
+            <div class="cours-infos">
+              <div class="cours-info-row"><span class="ico">📅</span> Lundi · 20h00 – 21h30</div>
+              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-sp-sunny" style="color:var(--cyan); text-decoration:none;">SP Sunny</a></div>
+              <div class="cours-info-row"><span class="ico">👥</span> Adultes · 14 ans et +</div>
+            </div>
+          </div>
+          <div class="cours-footer" style="justify-content:flex-end;">
+            <a href="inscription.html" class="btn btn-primary" style="padding:10px 20px; font-size:0.8rem;">S'inscrire</a>
+          </div>
+        </div>
+
+        <!-- POPPING -->
+        <div class="cours-card" data-style="popping">
+          <div class="cours-header">
+            <h3>Popping</h3>
+            <div class="cours-levels">
+              <span class="tag tag-cyan">Débutant</span>
+              <span class="tag tag-cyan">Intermédiaire</span>
+            </div>
+          </div>
+          <div class="cours-body">
+            <p>Contractions musculaires, illusions optiques, robot, tutting, animation — Missile t'initie à cet art du contrôle corporel.</p>
+            <div class="cours-infos">
+              <div class="cours-info-row"><span class="ico">📅</span> Vendredi · 20h00 – 21h30</div>
+              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-missile" style="color:var(--cyan); text-decoration:none;">Missile</a></div>
+              <div class="cours-info-row"><span class="ico">👥</span> Adultes · Tous niveaux</div>
+            </div>
+          </div>
+          <div class="cours-footer" style="justify-content:flex-end;">
+            <a href="inscription.html" class="btn btn-primary" style="padding:10px 20px; font-size:0.8rem;">S'inscrire</a>
+          </div>
+        </div>
+
+        <!-- WAACKING WORKSHOP -->
+        <div class="cours-card workshop" data-style="workshop waacking">
+          <div class="cours-header">
+            <div class="workshop-badge">⚡ Workshop mensuel</div>
+            <h3>Waacking Workshop</h3>
+            <div class="cours-levels">
+              <span class="tag tag-cyan">Tous niveaux</span>
+            </div>
+          </div>
+          <div class="cours-body">
+            <p>Un samedi par mois, Mutekirena ouvre ses portes pour un workshop intensif de 4h. Technique, histoire et battle spirit — une expérience unique.</p>
+            <div class="cours-infos">
+              <div class="cours-info-row"><span class="ico">📅</span> Samedi · 13h30 – 17h30 · 1×/mois</div>
+              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-mutekirena" style="color:var(--cyan); text-decoration:none;">Mutekirena</a></div>
+              <div class="cours-info-row"><span class="ico">👥</span> Adultes · 14 ans et +</div>
+            </div>
+            <div class="workshop-dates" style="margin-top:14px;">
+              <span class="workshop-date">12 oct. 2025</span>
+              <span class="workshop-date">2 nov. 2025</span>
+              <span class="workshop-date">20 déc. 2025</span>
+            </div>
+          </div>
+          <div class="cours-footer">
+            <div class="cours-price">30€ <small>/ session</small></div>
+            <a href="contact.html" class="btn btn-outline" style="padding:10px 20px; font-size:0.8rem;">Réserver</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COURS ENFANTS -->
+      <div style="margin-top:72px;">
+        <div class="badge" style="margin-bottom:12px;">Enfants &amp; Ados</div>
+        <h2 class="section-title" style="font-size:2rem; margin-bottom:8px;">Cours <span class="gradient-text">Jeunesse</span></h2>
+        <div class="divider"></div>
+        <p style="color:var(--gray); font-size:0.95rem; max-width:560px; line-height:1.7; margin-bottom:0;">
+          De 3 à 17 ans, MHK propose des cours Hip-hop adaptés à chaque tranche d'âge. Ateliers le samedi matin avec <a href="nos-profs.html#prof-nessoo" style="color:var(--cyan);">Nessoo</a> &amp; <a href="nos-profs.html#prof-monna" style="color:var(--cyan);">Monna</a>.
+        </p>
+
+        <div class="enfants-grid" style="margin-top:32px;" id="enfantsGrid">
+          <div class="enfant-card" data-style="enfants">
+            <img src="assets/images/3-5 ans.avif" alt="Cours Hip-hop 3-5 ans" loading="lazy" />
+            <div class="enfant-card-overlay">
+              <div class="enfant-age">3 – 5 ans</div>
+              <div class="enfant-horaire">10h00 – 10h45</div>
+              <div class="enfant-jour">Samedi · Hip-hop Éveil</div>
+            </div>
+          </div>
+          <div class="enfant-card" data-style="enfants">
+            <img src="assets/images/6-10 ans.avif" alt="Cours Hip-hop 6-10 ans" loading="lazy" />
+            <div class="enfant-card-overlay">
+              <div class="enfant-age">6 – 10 ans</div>
+              <div class="enfant-horaire">11h00 – 12h00</div>
+              <div class="enfant-jour">Samedi · Hip-hop</div>
+            </div>
+          </div>
+          <div class="enfant-card" data-style="enfants">
+            <img src="assets/images/8-12 ans.avif" alt="Cours Hip-hop 8-12 ans" loading="lazy" />
+            <div class="enfant-card-overlay">
+              <div class="enfant-age">8 – 12 ans</div>
+              <div class="enfant-horaire">19h00 – 20h00</div>
+              <div class="enfant-jour">Mercredi · Hip-hop</div>
+            </div>
+          </div>
+          <div class="enfant-card" data-style="enfants">
+            <img src="assets/images/12-15 ans.avif" alt="Cours Hip-hop 12-15 ans" loading="lazy" />
+            <div class="enfant-card-overlay">
+              <div class="enfant-age">12 – 15 ans</div>
+              <div class="enfant-horaire">19h00 – 20h00</div>
+              <div class="enfant-jour">Mercredi · Hip-hop</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 14 ans et + transition -->
+        <div style="display:flex; align-items:center; gap:24px; margin:8px 0 0; flex-wrap:wrap;">
+          <div class="enfant-card" data-style="enfants" style="width:180px; flex-shrink:0; aspect-ratio:3/4;">
+            <img src="assets/images/14 ans et plus.avif" alt="Cours 14 ans et +" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            <div class="enfant-card-overlay">
+              <div class="enfant-age">14 ans +</div>
+              <div class="enfant-horaire">19h15 – 20h30</div>
+              <div class="enfant-jour">Mardi · Hip-hop Ados</div>
+            </div>
+          </div>
+          <div style="flex:1; min-width:220px;">
+            <h4 style="font-family:var(--font-display); font-size:1.2rem; font-weight:900; margin-bottom:8px;">Ados &amp; pré-ados</h4>
+            <p style="color:var(--gray); font-size:0.88rem; line-height:1.7; margin-bottom:16px;">À partir de 14 ans, les élèves rejoignent les cours adultes ou un créneau dédié ados, pour une progression sérieuse avant d'intégrer les groupes avancés.</p>
+            <a href="inscription.html" class="btn btn-outline" style="font-size:0.85rem; padding:10px 20px;">Inscrire mon enfant →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HORAIRES -->
+  <section class="horaires-section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:0;">
+        <div class="badge">Planning</div>
+        <h2 class="section-title">Horaires <span class="gradient-text">2025–2026</span></h2>
+        <div class="divider divider-center"></div>
+        <p class="section-sub">Retrouve tous les cours de la semaine. Horaires provisoires — contacte-nous pour confirmer.</p>
+      </div>
+      <div class="lieu-badge" style="margin-bottom:32px; display:inline-flex;">
+        <span>📍</span>
+        <span><strong>Espace Marc Lanvin</strong> · 22 rue Blaise Pascal, 92220 Bagneux</span>
+      </div>
+
+      <div style="margin-top:8px;">
+        <h3 style="font-family:'Bebas Neue', var(--font-display); font-size:1.4rem; letter-spacing:3px; color:var(--cyan); margin-bottom:16px; text-transform:uppercase;">Cours Enfants &amp; Ados</h3>
+        <div style="overflow-x:auto; margin-bottom:40px;">
+          <table class="horaires-table">
+            <thead>
+              <tr>
+                <th>Jour</th>
+                <th>Horaire</th>
+                <th>Groupe d'âge</th>
+                <th>Style</th>
+                <th>Prof</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Mardi</td><td>18h15 – 19h15</td><td><span class="style-pill">6 – 9 ans</span></td><td>Hip-hop</td><td>—</td></tr>
+              <tr><td>Mardi</td><td>19h15 – 20h30</td><td><span class="style-pill">14 ans et +</span></td><td>Hip-hop Ados</td><td>—</td></tr>
+              <tr><td>Mercredi</td><td>19h00 – 20h00</td><td><span class="style-pill">8 – 12 ans</span></td><td>Hip-hop</td><td>—</td></tr>
+              <tr><td>Mercredi</td><td>19h00 – 20h00</td><td><span class="style-pill">12 – 15 ans</span></td><td>Hip-hop</td><td>—</td></tr>
+              <tr><td>Samedi</td><td>10h00 – 10h45</td><td><span class="style-pill">3 – 5 ans</span></td><td>Éveil danse</td><td>Nessoo / Monna</td></tr>
+              <tr><td>Samedi</td><td>11h00 – 12h00</td><td><span class="style-pill">6 – 10 ans</span></td><td>Hip-hop</td><td>Nessoo / Monna</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-family:'Bebas Neue', var(--font-display); font-size:1.4rem; letter-spacing:3px; color:var(--cyan); margin-bottom:16px; text-transform:uppercase;">Cours Adultes · 14 ans et +</h3>
+        <div style="overflow-x:auto; margin-bottom:32px;">
+          <table class="horaires-table">
+            <thead>
+              <tr>
+                <th>Jour</th>
+                <th>Horaire</th>
+                <th>Style</th>
+                <th>Niveau</th>
+                <th>Prof</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Lundi</td><td>20h00 – 21h30</td><td><span class="style-pill">Waacking</span></td><td>Débutant / Inter.</td><td>SP Sunny</td></tr>
+              <tr><td>Mardi</td><td>19h50 – 21h00</td><td><span class="style-pill">House Dance</span></td><td>Tous niveaux</td><td>SP Sunny</td></tr>
+              <tr><td>Mercredi</td><td>20h00 – 21h30</td><td><span class="style-pill">Hip-hop</span></td><td>Débutant / Inter.</td><td>Nessoo</td></tr>
+              <tr><td>Jeudi</td><td>20h00 – 21h30</td><td><span class="style-pill">Hip-hop</span></td><td>Avancé</td><td>Spider</td></tr>
+              <tr><td>Vendredi</td><td>20h00 – 21h30</td><td><span class="style-pill">Popping</span></td><td>Tous niveaux</td><td>Missile</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-family:'Bebas Neue', var(--font-display); font-size:1.4rem; letter-spacing:3px; color:var(--cyan); margin-bottom:16px; text-transform:uppercase;">Workshops Spéciaux</h3>
+        <div style="overflow-x:auto;">
+          <table class="horaires-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Horaire</th>
+                <th>Style</th>
+                <th>Durée</th>
+                <th>Prof</th>
+                <th>Tarif</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Sam. 12 oct. 2025</td><td>13h30 – 17h30</td><td><span class="style-pill">Waacking</span></td><td>4h</td><td>Mutekirena</td><td style="color:var(--cyan); font-weight:700;">30€</td></tr>
+              <tr><td>Dim. 2 nov. 2025</td><td>13h30 – 17h30</td><td><span class="style-pill">Waacking</span></td><td>4h</td><td>Mutekirena</td><td style="color:var(--cyan); font-weight:700;">30€</td></tr>
+              <tr><td>Sam. 20 déc. 2025</td><td>13h30 – 17h30</td><td><span class="style-pill">Waacking</span></td><td>4h</td><td>Mutekirena</td><td style="color:var(--cyan); font-weight:700;">30€</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="color:var(--gray); font-size:0.82rem; margin-top:12px;">Inscription aux workshops par <a href="contact.html" style="color:var(--cyan);">contact direct</a> — places limitées.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARIFS -->
+  <section class="tarifs-section">
+    <div class="container">
+      <div class="text-center">
+        <div class="badge">Tarifs</div>
+        <h2 class="section-title">Adhésion <span class="gradient-text">2025–2026</span></h2>
+        <div class="divider divider-center"></div>
+        <p class="section-sub">Tarifs associatifs. Des aides (CAF, chèques vacances, pass sport) peuvent être mobilisées.</p>
+      </div>
+      <div class="tarifs-grid">
+        <div class="tarif-card">
+          <h3>Découverte</h3>
+          <div class="tarif-price">Gratuit</div>
+          <p class="tarif-desc">Premier cours d'essai offert pour tout nouveau membre.</p>
+          <ul class="tarif-features">
+            <li>1 cours d'essai</li>
+            <li>Tous styles disponibles</li>
+            <li>Sans engagement</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline" style="width:100%; justify-content:center;">Réserver un essai</a>
+        </div>
+        <div class="tarif-card featured">
+          <div class="tarif-featured-badge">Le plus populaire</div>
+          <h3>Annuel</h3>
+          <div class="tarif-price">150€ <small>/ an</small></div>
+          <p class="tarif-desc">Accès à 1 cours par semaine sur toute la saison.</p>
+          <ul class="tarif-features">
+            <li>1 cours / semaine</li>
+            <li>Accès événements membres</li>
+            <li>Licence fédérale incluse</li>
+            <li>Pass Sport accepté</li>
+          </ul>
+          <a href="inscription.html" class="btn btn-gradient" style="width:100%; justify-content:center;">S'inscrire</a>
+        </div>
+        <div class="tarif-card">
+          <h3>Multi-cours</h3>
+          <div class="tarif-price">220€ <small>/ an</small></div>
+          <p class="tarif-desc">Accès à 2 cours ou plus par semaine. Idéal pour progresser vite.</p>
+          <ul class="tarif-features">
+            <li>2 cours / semaine</li>
+            <li>Accès tous événements</li>
+            <li>Licence fédérale incluse</li>
+            <li>CAF & pass sport acceptés</li>
+          </ul>
+          <a href="inscription.html" class="btn btn-primary" style="width:100%; justify-content:center;">S'inscrire</a>
+        </div>
+      </div>
+      <p style="text-align:center; color:var(--gray); font-size:0.85rem; margin-top:24px;">
+        Tarifs indicatifs — contactez-nous pour les tarifs exacts et les aides disponibles.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+          <li><a href="galerie.html">Galerie</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Styles</h4>
+        <ul>
+          <li><a href="#">Hip-hop</a></li>
+          <li><a href="#">House · Waacking</a></li>
+          <li><a href="#">Popping</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+  <script>
+    // Filter cours
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+
+        // Adult cours cards
+        document.querySelectorAll('.cours-card').forEach(card => {
+          const styles = card.dataset.style || '';
+          if (filter === 'all' || styles.includes(filter)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Enfants section
+        const enfantsSection = document.getElementById('enfantsGrid');
+        if (enfantsSection) {
+          const enfantsParent = enfantsSection.closest('div[style*="margin-top:72px"]') || enfantsSection.parentElement.parentElement;
+          if (filter === 'all' || filter === 'enfants') {
+            if (enfantsParent) enfantsParent.style.display = '';
+          } else {
+            if (enfantsParent) enfantsParent.style.display = 'none';
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

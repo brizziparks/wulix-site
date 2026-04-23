@@ -1,0 +1,771 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B IN THE GAME — MHK Asso</title>
+  <meta name="description" content="B IN THE GAME — le battle de danse annuel organisé par MHK Asso à Bagneux. Hip-hop, House, Popping, Waacking." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+
+    /* ── HERO BITG ── */
+    .bitg-hero {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: var(--nav-h);
+    }
+    .bitg-hero-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-image: url('assets/images/Photo B in the game.avif');
+      filter: brightness(0.35);
+    }
+    .bitg-hero-lines {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+    }
+    .bitg-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      padding: 0 24px;
+    }
+    .bitg-logo-wrap {
+      margin-bottom: 40px;
+    }
+    .bitg-logo-wrap img {
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+      filter: drop-shadow(0 0 40px rgba(77,184,255,0.4));
+    }
+    .bitg-year {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 15vw, 12rem);
+      font-weight: 900;
+      line-height: 0.85;
+      letter-spacing: -4px;
+      background: var(--gradient-h);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 24px;
+    }
+    .bitg-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .bitg-sub {
+      color: var(--gray);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.8;
+    }
+    .bitg-hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .bitg-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .bitg-scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--gray), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ── INFOS ÉDITION ── */
+    .bitg-info-section {
+      background: var(--bg-2);
+      padding: 80px 0;
+    }
+    .bitg-info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--bg-3);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 56px;
+    }
+    .bitg-info-item {
+      background: var(--bg-2);
+      padding: 36px 28px;
+      text-align: center;
+      position: relative;
+    }
+    .bitg-info-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 40px; height: 2px;
+      background: var(--gradient-h);
+      border-radius: 2px;
+    }
+    .bitg-info-icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+    .bitg-info-item h4 {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      font-weight: 900;
+      color: var(--lime);
+      margin-bottom: 6px;
+    }
+    .bitg-info-item p {
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+
+    /* ── CATEGORIES ── */
+    .bitg-cats-section { padding: 80px 0; }
+    .bitg-cats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .bitg-cat-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .bitg-cat-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+    }
+    .bitg-cat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gradient-h);
+    }
+    .bitg-cat-emoji {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .bitg-cat-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .bitg-cat-card p {
+      color: var(--gray);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .bitg-cat-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    /* ── INSCRIPTION BATTLE ── */
+    .bitg-register-section {
+      background: #000;
+      padding: 100px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .bitg-register-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 30% 50%, rgba(41,171,226,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 70% 50%, rgba(29,125,212,0.1) 0%, transparent 60%);
+    }
+    .bitg-register-inner {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .bitg-register-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .bitg-register-text p {
+      color: var(--gray);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .bitg-register-text .bitg-price {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      margin-bottom: 32px;
+    }
+    .bitg-price-amount {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--lime);
+    }
+    .bitg-price-label { color: var(--gray); font-size: 0.85rem; line-height: 1.4; }
+    .bitg-register-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: 20px;
+      padding: 40px 36px;
+    }
+    .bitg-register-card h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+    }
+    .bitg-checklist { list-style: none; }
+    .bitg-checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--bg-3);
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    .bitg-checklist li:last-child { border-bottom: none; }
+    .bitg-check-icon {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--gradient-h);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem;
+      color: var(--bg);
+      font-weight: 900;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .bitg-checklist li strong { color: var(--white); display: block; }
+
+    /* ── ÉDITIONS PASSÉES ── */
+    .bitg-editions-section {
+      background: var(--bg-2);
+      padding: 80px 0;
+    }
+    .bitg-editions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .bitg-edition-card {
+      background: var(--bg);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .bitg-edition-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+    }
+    .bitg-edition-thumb {
+      aspect-ratio: 16/9;
+      background: var(--bg-3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .bitg-edition-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .bitg-edition-year-badge {
+      position: absolute;
+      top: 12px; left: 12px;
+      background: rgba(0,0,0,0.85);
+      color: var(--lime);
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 50px;
+      backdrop-filter: blur(4px);
+    }
+    .bitg-yt-play {
+      position: absolute;
+      width: 56px; height: 56px;
+      background: rgba(29,125,212,0.9);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      padding-left: 4px;
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition);
+    }
+    .bitg-edition-card:hover .bitg-yt-play {
+      transform: scale(1.1);
+      background: var(--lime);
+    }
+    .bitg-edition-info {
+      padding: 20px 24px;
+    }
+    .bitg-edition-info h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .bitg-edition-info p {
+      color: var(--gray);
+      font-size: 0.82rem;
+    }
+    .bitg-edition-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--bg-3);
+    }
+    .bitg-e-stat {
+      font-size: 0.78rem;
+      color: var(--gray);
+    }
+    .bitg-e-stat strong {
+      color: var(--cyan);
+      font-family: var(--font-display);
+      display: block;
+      font-size: 1rem;
+    }
+
+    /* ── CTA FINAL ── */
+    .bitg-cta-section {
+      padding: 120px 24px;
+      text-align: center;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+    }
+    .bitg-cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(29,125,212,0.1) 0%, transparent 60%);
+    }
+    .bitg-cta-section .bitg-big-text {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      color: rgba(255,255,255,0.05);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .bitg-cta-inner {
+      position: relative;
+      z-index: 2;
+    }
+    .bitg-cta-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .bitg-cta-section p {
+      color: var(--gray);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+    .bitg-cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .bitg-info-grid { grid-template-columns: repeat(2, 1fr); }
+      .bitg-cats-grid { grid-template-columns: repeat(2, 1fr); }
+      .bitg-register-inner { grid-template-columns: 1fr; gap: 40px; }
+      .bitg-editions-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .bitg-info-grid { grid-template-columns: 1fr 1fr; }
+      .bitg-cats-grid { grid-template-columns: 1fr; }
+      .bitg-editions-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html" class="active">B IN THE GAME</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="bitg-hero">
+    <div class="bitg-hero-bg"></div>
+    <div class="bitg-hero-lines"></div>
+    <div class="bitg-hero-content animate-up">
+      <div class="bitg-logo-wrap">
+        <img src="assets/images/logo-b-in-the-game.avif" alt="B IN THE GAME" />
+      </div>
+      <span class="bitg-year">8ème</span>
+      <p class="bitg-tagline">Battle All Style · All Music · -18 ans</p>
+      <p class="bitg-sub">Depuis 2015, MHK réunit la jeune communauté de danseurs européens pour se rencontrer, se challenger et partager. Un battle unique — contrainte artistique tirée au sort, musique live, valeurs de transmission et d'inclusion.</p>
+      <div class="bitg-hero-actions">
+        <a href="#inscription-battle" class="btn btn-gradient">Participer</a>
+        <a href="https://www.youtube.com/@Binthegame" target="_blank" class="btn btn-outline-white">▶ Voir les éditions passées</a>
+      </div>
+    </div>
+    <div class="bitg-scroll">
+      <span>Découvrir</span>
+      <div class="bitg-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- INFOS CLÉS -->
+  <section class="bitg-info-section">
+    <div class="container">
+      <div class="badge">8ème Édition</div>
+      <h2 class="section-title">Le battle <span class="gradient-text">en chiffres</span></h2>
+      <div class="divider"></div>
+      <div class="bitg-info-grid">
+        <div class="bitg-info-item">
+          <h4>8 Fév. 2026</h4>
+          <p>11h–19h · Préliminaires & Finales</p>
+        </div>
+        <div class="bitg-info-item">
+          <h4>PPCM · Bagneux</h4>
+          <p>Impasse de la Renardière, 92220</p>
+        </div>
+        <div class="bitg-info-item">
+          <h4>8–18 ans</h4>
+          <p>Battle all style · Tous niveaux</p>
+        </div>
+        <div class="bitg-info-item">
+          <h4>Depuis 2015</h4>
+          <p>Point de ralliement des jeunes danseurs européens</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATÉGORIES -->
+  <section class="bitg-cats-section">
+    <div class="container">
+      <div class="badge">Compétition</div>
+      <h2 class="section-title">Les <span class="gradient-text">catégories</span></h2>
+      <div class="divider"></div>
+      <p class="section-sub">Chaque danseur reçoit une contrainte artistique tirée au sort — thème, émotion, prop — qu'il doit intégrer à sa battle. Styles, niveaux et créativité au rendez-vous.</p>
+      <div class="bitg-cats-grid">
+        <div class="bitg-cat-card">
+          
+          <h3>Hip-hop</h3>
+          <p>Groove, puissance et expression urbaine. La discipline qui a tout fondé.</p>
+          <div class="bitg-cat-tags">
+            <span class="tag tag-cyan">1vs1</span>
+            <span class="tag">Groove</span>
+          </div>
+        </div>
+        <div class="bitg-cat-card">
+          
+          <h3>House</h3>
+          <p>Footwork rapide et torso fluide. L'âme de Chicago dans la compétition.</p>
+          <div class="bitg-cat-tags">
+            <span class="tag tag-cyan">1vs1</span>
+            <span class="tag">Footwork</span>
+          </div>
+        </div>
+        <div class="bitg-cat-card">
+          
+          <h3>Popping</h3>
+          <p>Contractions musculaires, isolations et illusions — le style funky en duel.</p>
+          <div class="bitg-cat-tags">
+            <span class="tag tag-cyan">1vs1</span>
+            <span class="tag">Funky styles</span>
+          </div>
+        </div>
+        <div class="bitg-cat-card">
+          
+          <h3>Waacking</h3>
+          <p>Bras fouettés, attitude et élégance — né dans les clubs disco, redoutable en battle.</p>
+          <div class="bitg-cat-tags">
+            <span class="tag tag-cyan">1vs1</span>
+            <span class="tag">Attitude</span>
+          </div>
+        </div>
+        <div class="bitg-cat-card">
+          
+          <h3>Showcase MHK</h3>
+          <p>Performance scénique des équipes MHK. Pas de compétition — juste l'art et la famille.</p>
+          <div class="bitg-cat-tags">
+            <span class="tag" style="background:rgba(77,184,255,0.12); border-color:var(--lime); color:var(--lime);">Hors compétition</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSCRIPTION BATTLE -->
+  <section class="bitg-register-section" id="inscription-battle">
+    <div class="container">
+      <div class="bitg-register-inner">
+        <div class="bitg-register-text">
+          <div class="badge">Participer</div>
+          <h2>Comment<br><span class="gradient-text">s'inscrire ?</span></h2>
+          <p>Le B IN THE GAME est ouvert à tous les danseurs de moins de 18 ans, adhérents MHK ou non. Inscris-toi et viens relever le défi artistique.</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px;">
+            <div class="bitg-price">
+              <span class="bitg-price-amount">7€</span>
+              <span class="bitg-price-label">Inscription danseur<br><span style="color:var(--teal);">8 à 18 ans · Tous niveaux</span></span>
+            </div>
+            <div class="bitg-price">
+              <span class="bitg-price-amount">10€</span>
+              <span class="bitg-price-label">Entrée public<br><span style="color:var(--teal);">Ouvert à tous · 14h–19h</span></span>
+            </div>
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="contact.html" class="btn btn-gradient">S'inscrire au battle</a>
+            <a href="contact.html" class="btn btn-outline">Une question ?</a>
+          </div>
+        </div>
+        <div class="bitg-register-card">
+          <h3>Ce qu'il faut savoir</h3>
+          <ul class="bitg-checklist">
+            <li>
+              <div class="bitg-check-icon">✓</div>
+              <div><strong>Niveau requis</strong>Toutes catégories ont des poules débutant, intermédiaire et avancé.</div>
+            </li>
+            <li>
+              <div class="bitg-check-icon">✓</div>
+              <div><strong>Format</strong>Battles en 1vs1 ou 2vs2 selon la catégorie. Tirage au sort pour les poules.</div>
+            </li>
+            <li>
+              <div class="bitg-check-icon">✓</div>
+              <div><strong>Musique</strong>Les DJs jouent en live. Pas de musique imposée — le DJ choisit pour tout le monde.</div>
+            </li>
+            <li>
+              <div class="bitg-check-icon">✓</div>
+              <div><strong>Jury</strong>3 juges professionnels par catégorie. Délibération à bulletin secret.</div>
+            </li>
+            <li>
+              <div class="bitg-check-icon">✓</div>
+              <div><strong>Prix</strong>Trophées + dotations pour les 3 premières places de chaque catégorie.</div>
+            </li>
+            <li>
+              <div class="bitg-check-icon">✓</div>
+              <div><strong>Entrée public</strong>Spectateurs bienvenus — 10€ · Horaires : 14h–19h au PPCM, Bagneux.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉDITIONS PASSÉES -->
+  <section class="bitg-editions-section">
+    <div class="container">
+      <div class="badge">Historique</div>
+      <h2 class="section-title">Éditions <span class="gradient-text">passées</span></h2>
+      <div class="divider"></div>
+      <p class="section-sub">Chaque année, le B IN THE GAME grandit. Retrouve les highlights sur notre chaîne YouTube.</p>
+      <div class="bitg-editions-grid">
+        <div class="bitg-edition-card">
+          <a href="https://www.youtube.com/@Binthegame" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+            <div class="bitg-edition-thumb">
+              <img src="assets/images/Photo B in the game.avif" alt="B IN THE GAME 2026" />
+              <span class="bitg-edition-year-badge">2026 · 8ème éd.</span>
+              <div class="bitg-yt-play">▶</div>
+            </div>
+            <div class="bitg-edition-info">
+              <h4>B IN THE GAME 2026</h4>
+              <p>8ème édition · PPCM Bagneux · 8 Février 2026.</p>
+              <div class="bitg-edition-stats">
+                <div class="bitg-e-stat"><strong>8–18 ans</strong>Danseurs</div>
+                <div class="bitg-e-stat"><strong>All style</strong>Catégories</div>
+                <div class="bitg-e-stat"><strong>PPCM</strong>Bagneux</div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="bitg-edition-card">
+          <a href="https://www.youtube.com/@Binthegame" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+            <div class="bitg-edition-thumb">
+              <img src="assets/images/3bc75c_3a78adfbcb3e46ce956571d254d4c67e~mv2.avif" alt="B IN THE GAME 2024" />
+              <span class="bitg-edition-year-badge">2024 · 6ème éd.</span>
+              <div class="bitg-yt-play">▶</div>
+            </div>
+            <div class="bitg-edition-info">
+              <h4>B IN THE GAME 2024</h4>
+              <p>6ème édition — battles intenses, contraintes artistiques et performances de folie.</p>
+              <div class="bitg-edition-stats">
+                <div class="bitg-e-stat"><strong>80+</strong>Danseurs</div>
+                <div class="bitg-e-stat"><strong>All style</strong>Catégories</div>
+                <div class="bitg-e-stat"><strong>200+</strong>Spectateurs</div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="bitg-edition-card">
+          <a href="https://www.youtube.com/@Binthegame" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+            <div class="bitg-edition-thumb">
+              <img src="assets/images/le meeting.avif" alt="B IN THE GAME 2022" />
+              <span class="bitg-edition-year-badge">2022 · 4ème éd.</span>
+              <div class="bitg-yt-play">▶</div>
+            </div>
+            <div class="bitg-edition-info">
+              <h4>B IN THE GAME 2022</h4>
+              <p>4ème édition — la confirmation. Rendez-vous incontournable de la scène jeune danse 92.</p>
+              <div class="bitg-edition-stats">
+                <div class="bitg-e-stat"><strong>60+</strong>Danseurs</div>
+                <div class="bitg-e-stat"><strong>All style</strong>Catégories</div>
+                <div class="bitg-e-stat"><strong>150+</strong>Spectateurs</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="text-center" style="margin-top:48px;">
+        <a href="https://www.youtube.com/@Binthegame" target="_blank" class="btn btn-gradient">Toutes les vidéos sur YouTube</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bitg-cta-section">
+    <span class="bitg-big-text">BATTLE</span>
+    <div class="bitg-cta-inner">
+      <div class="badge">Depuis 2015</div>
+      <h2>Tu es prêt·e<br>à <span class="gradient-text">jouer le game ?</span></h2>
+      <p>Le B IN THE GAME, c'est l'événement de l'année pour les jeunes danseurs du 92 et d'ailleurs. La scène t'attend.</p>
+      <div class="bitg-cta-actions">
+        <a href="contact.html" class="btn btn-gradient">Participer au battle →</a>
+        <a href="inscription.html" class="btn btn-outline-white">Rejoindre MHK</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+          <li><a href="galerie.html">Galerie</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>B IN THE GAME</h4>
+        <ul>
+          <li><a href="#inscription-battle">Participer</a></li>
+          <li><a href="https://www.youtube.com/@Binthegame" target="_blank">Voir les éditions</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+
+

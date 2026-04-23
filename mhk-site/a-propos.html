@@ -1,0 +1,379 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>À Propos — MHK Asso</title>
+  <meta name="description" content="L'histoire de MHK, association de danse hip-hop à Bagneux (92). Notre mission, nos valeurs, notre équipe." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .story-section { padding: 80px 0; }
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+    .story-grid.reverse { direction: rtl; }
+    .story-grid.reverse > * { direction: ltr; }
+    .story-img {
+      aspect-ratio: 4/3;
+      background: var(--bg-3);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      border: 1px solid var(--bg-3);
+      color: var(--gray-dark);
+      flex-direction: column;
+      gap: 12px;
+    }
+    .story-img span { font-size: 0.85rem; color: var(--gray-dark); }
+    .story-text h2 { margin-bottom: 20px; }
+    .story-text p { color: var(--gray); line-height: 1.8; margin-bottom: 16px; }
+
+    /* VALUES */
+    .values-section { background: var(--bg-2); padding: 80px 0; }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .value-card {
+      background: var(--bg);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      text-align: center;
+      transition: all var(--transition);
+    }
+    .value-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .value-ico { font-size: 2.8rem; margin-bottom: 20px; }
+    .value-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: var(--gradient-h);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .value-card p { color: var(--gray); font-size: 0.9rem; line-height: 1.7; }
+
+    /* CHIFFRES */
+    .chiffres-section { padding: 80px 0; }
+    .chiffres-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+      background: var(--bg-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .chiffre-item {
+      background: var(--bg-2);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .chiffre-item strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 900;
+      background: var(--gradient-h);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .chiffre-item span { color: var(--gray); font-size: 0.88rem; }
+
+    /* PARTENAIRES */
+    .partenaires-section { background: var(--bg-2); padding: 60px 0; }
+    .partenaires-row {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .partenaire-badge {
+      background: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius);
+      padding: 16px 28px;
+      color: var(--gray);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      min-width: 140px;
+    }
+
+    @media (max-width: 900px) {
+      .story-grid, .story-grid.reverse { grid-template-columns: 1fr; direction: ltr; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .chiffres-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .values-grid, .chiffres-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html" class="active">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li><li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="page-hero">
+    <div class="badge">Notre histoire</div>
+    <h1>À PROPOS</h1>
+    <p>MHK, c'est une famille unie par la passion de la danse et la fierté de la culture hip-hop, ancrée à Bagneux depuis ses débuts.</p>
+  </div>
+
+  <!-- HISTOIRE -->
+  <section class="story-section">
+    <div class="container">
+      <div class="story-grid">
+        <div class="story-img" style="background:var(--bg-3); border-radius:20px; overflow:hidden; padding:0;">
+          <img src="assets/images/IMG_8624-A.jpg" alt="MHK — Association" style="width:100%;height:100%;object-fit:cover;" />
+        </div>
+        <div class="story-text">
+          <div class="badge">L'origine</div>
+          <h2 class="section-title">Née de la <span class="gradient-text">passion</span></h2>
+          <div class="divider"></div>
+          <p>MHK — Mille Horizons Conek'Team — est une association de danse fondée à Bagneux, dans les Hauts-de-Seine. Née de la volonté de danseurs passionnés de rassembler la communauté autour de la culture hip-hop et des danses urbaines.</p>
+          <p>Depuis ses débuts, MHK n'a cessé de grandir, accueillant toujours plus de danseurs de tous âges et de tous niveaux, dans une ambiance bienveillante et familiale.</p>
+        </div>
+      </div>
+      <div class="story-grid reverse">
+        <div class="story-img" style="background:var(--bg-3); border-radius:20px; overflow:hidden; padding:0;">
+          <img src="assets/images/IMG_8581-A.jpg" alt="MHK — Danse pour tous" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
+        </div>
+        <div class="story-text">
+          <div class="badge">La mission</div>
+          <h2 class="section-title">Danse pour <span class="gradient-text">tous</span></h2>
+          <div class="divider"></div>
+          <p>Notre mission : rendre la danse accessible à tous, sans distinction d'âge, de niveau ou d'origine. La danse est un vecteur puissant de lien social, d'épanouissement personnel et d'expression culturelle.</p>
+          <p>À travers nos cours, nos événements et le battle B IN THE GAME, nous faisons rayonner la culture hip-hop dans le 92 et au-delà.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉQUIPE -->
+  <section class="section" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:56px;">
+        <div class="badge">L'équipe MHK</div>
+        <h2 class="section-title">Nos <span class="gradient-text">professeurs</span></h2>
+        <div class="divider divider-center"></div>
+        <p class="section-sub">Des artistes passionnés qui transmettent leur amour de la danse.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+
+        <a href="nos-profs.html#prof-monna" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/MONNA.avif" alt="Monna" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">MONNA</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">Hip-hop</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="nos-profs.html#prof-nessoo" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/NESSOO.avif" alt="Nessoo" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">NESSOO</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">Hip-hop</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="nos-profs.html#prof-sp-sunny" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/STEPHANIE_JPG.avif" alt="SP Sunny" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">SP SUNNY</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">House</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="nos-profs.html#prof-spider" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/SPIDER 2.avif" alt="Spider" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">SPIDER</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">Hip-hop</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="nos-profs.html#prof-mp" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/MP.avif" alt="MP" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">MP</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">Breaking</span><span class="tag">Hip-hop</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="nos-profs.html#prof-mutekirena" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/MUTEKI 2.avif" alt="Mutekirena" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">MUTEKIRENA</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">Waacking</span></div>
+            </div>
+          </div>
+        </a>
+
+        <a href="nos-profs.html#prof-missile" style="text-decoration:none; color:inherit;">
+          <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--bg-3); transition:all var(--transition);" onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--bg-3)';this.style.transform='none'">
+            <div style="aspect-ratio:3/4; overflow:hidden; background:var(--bg-3);">
+              <img src="assets/images/MISSILE.jpg" alt="Missile" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+            </div>
+            <div style="padding:16px 18px; background:var(--bg-2);">
+              <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:900;letter-spacing:2px;color:var(--white);margin-bottom:6px;">MISSILE</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="tag tag-cyan">Popping</span></div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+      <div class="text-center" style="margin-top:40px;">
+        <a href="nos-profs.html" class="btn btn-outline">Voir les fiches complètes →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHIFFRES -->
+  <section class="chiffres-section">
+    <div class="container">
+      <div class="text-center">
+        <div class="badge">MHK en chiffres</div>
+        <h2 class="section-title"><span class="gradient-text">L'association</span> aujourd'hui</h2>
+        <div class="divider divider-center"></div>
+      </div>
+      <div class="chiffres-grid">
+        <div class="chiffre-item"><strong>2015</strong><span>Année de création</span></div>
+        <div class="chiffre-item"><strong>7+</strong><span>Professeurs et artistes</span></div>
+        <div class="chiffre-item"><strong>100+</strong><span>Adhérents par saison</span></div>
+        <div class="chiffre-item"><strong>Bagneux</strong><span>Hauts-de-Seine · 92</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTENAIRES -->
+  <section class="partenaires-section">
+    <div class="container">
+      <div class="text-center">
+        <div class="badge">Ils nous soutiennent</div>
+        <h2 class="section-title">Nos <span class="gradient-text">partenaires</span></h2>
+        <div class="divider divider-center"></div>
+      </div>
+      <div class="partenaires-row">
+        <div class="partenaire-badge">
+          <img src="assets/images/logo-bagneux.svg" alt="Ville de Bagneux" style="height:52px; object-fit:contain;" />
+        </div>
+        <div class="partenaire-badge">
+          <img src="assets/images/logo-hauts-de-seine.png" alt="Hauts-de-Seine" style="height:52px; object-fit:contain;" />
+        </div>
+        <div class="partenaire-badge">
+          <img src="assets/images/logo-pass-sport.jpg" alt="Pass Sport" style="height:52px; object-fit:contain;" />
+        </div>
+        <div class="partenaire-badge">
+          <img src="assets/images/logo-caf.svg" alt="CAF" style="height:52px; object-fit:contain;" />
+        </div>
+        <div class="partenaire-badge">
+          <img src="assets/images/logo-cheque-vacances.jpg" alt="Chèques Vacances" style="height:52px; object-fit:contain;" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+          <li><a href="galerie.html">Galerie</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Styles</h4>
+        <ul>
+          <li><a href="nos-cours.html">Hip-hop</a></li>
+          <li><a href="nos-cours.html">House · Waacking</a></li>
+          <li><a href="nos-cours.html">Popping</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+

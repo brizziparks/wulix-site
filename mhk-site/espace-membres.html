@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espace Membres — MHK Asso</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .membres-section { padding: 80px 0; }
+    .login-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .login-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: 20px;
+      padding: 48px 40px;
+    }
+    .login-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .login-card p { color: var(--gray); font-size: 0.9rem; margin-bottom: 32px; }
+    .form-group { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input {
+      width: 100%;
+      background: var(--bg-3);
+      border: 1px solid var(--gray-dark);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: var(--white);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(41,171,226,0.15);
+    }
+    .forgot-link {
+      display: block;
+      text-align: right;
+      color: var(--cyan);
+      font-size: 0.8rem;
+      margin-top: 8px;
+      transition: opacity var(--transition);
+    }
+    .forgot-link:hover { opacity: 0.7; }
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--gradient-h);
+      color: var(--bg);
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 12px;
+    }
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(29,125,212,0.4);
+      filter: brightness(1.05);
+    }
+    .login-sep {
+      text-align: center;
+      color: var(--gray-dark);
+      font-size: 0.82rem;
+      margin: 20px 0;
+      position: relative;
+    }
+    .login-sep::before, .login-sep::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--bg-3);
+    }
+    .login-sep::before { left: 0; }
+    .login-sep::after { right: 0; }
+
+    .login-benefits h3 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .login-benefits > p { color: var(--gray); margin-bottom: 32px; }
+    .benefit-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .benefit-ico {
+      width: 44px; height: 44px;
+      background: rgba(41,171,226,0.1);
+      color: var(--cyan);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .benefit-item h4 { font-weight: 700; margin-bottom: 4px; font-size: 0.95rem; }
+    .benefit-item p { color: var(--gray); font-size: 0.85rem; line-height: 1.5; }
+
+    .coming-soon-banner {
+      background: linear-gradient(135deg, rgba(29,125,212,0.12), rgba(13,71,161,0.08));
+      border: 1px dashed var(--cyan);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.88rem;
+      margin-top: 48px;
+    }
+    .coming-soon-banner strong { color: var(--cyan); }
+
+    @media (max-width: 800px) {
+      .login-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li><li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="page-hero">
+    <div class="badge">Réservé aux membres</div>
+    <h1>ESPACE MEMBRES</h1>
+    <p>Accède à ton espace personnel MHK — planning, documents, actualités réservées aux adhérents.</p>
+  </div>
+
+  <section class="membres-section">
+    <div class="container">
+      <div class="login-grid">
+
+        <!-- LOGIN -->
+        <div class="login-card">
+          <h2>Connexion</h2>
+          <p>Connecte-toi avec ton compte membre MHK.</p>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="ton@email.com" required />
+            </div>
+            <div class="form-group">
+              <label>Mot de passe</label>
+              <input type="password" placeholder="••••••••" required />
+              <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+            </div>
+            <button type="submit" class="login-btn">Se connecter</button>
+          </form>
+
+          <div class="login-sep">ou</div>
+
+          <p style="text-align:center; color:var(--gray); font-size:0.88rem;">
+            Pas encore membre ? <a href="inscription.html" style="color:var(--cyan);">S'inscrire →</a>
+          </p>
+
+          <div class="coming-soon-banner" style="margin-top:24px;">
+            <strong>🚀 Espace membres en construction</strong><br>
+            L'espace membre complet arrive bientôt.<br>
+            En attendant, contacte-nous directement.
+          </div>
+        </div>
+
+        <!-- BENEFITS -->
+        <div class="login-benefits">
+          <div class="badge">Avantages membres</div>
+          <h3>Ton espace <span class="gradient-text">MHK</span></h3>
+          <p>En tant que membre MHK, accède à des fonctionnalités exclusives.</p>
+
+          <div class="benefit-item">
+            <div class="benefit-ico">📅</div>
+            <div>
+              <h4>Planning en ligne</h4>
+              <p>Consulte les horaires de cours, les annulations et changements en temps réel.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-ico">📄</div>
+            <div>
+              <h4>Documents & reçus</h4>
+              <p>Télécharge tes justificatifs, attestations et reçus de paiement.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-ico">🎟</div>
+            <div>
+              <h4>Accès prioritaire événements</h4>
+              <p>Inscris-toi en avant-première aux battles et événements MHK.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-ico">📢</div>
+            <div>
+              <h4>Actualités exclusives</h4>
+              <p>Infos, vidéos et contenus réservés aux membres de l'association.</p>
+            </div>
+          </div>
+
+          <a href="inscription.html" class="btn btn-outline" style="margin-top:8px;">Devenir membre →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+      <div class="footer-col">
+        <h4>Compte</h4>
+        <ul>
+          <li><a href="inscription.html">S'inscrire</a></li>
+          <li><a href="espace-membres.html">Connexion</a></li>
+          <li><a href="contact.html">Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nos Professeurs — MHK Asso</title>
+  <meta name="description" content="Découvrez l'équipe MHK : des artistes et profs passionnés de Hip-hop, House, Waacking et Popping." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+
+    /* ── PROF ROW ── */
+    .prof-row {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      min-height: 580px;
+      border-bottom: 1px solid var(--bg-3);
+      position: relative;
+    }
+    /* Alternance photo droite / gauche */
+    .prof-row:nth-child(even) {
+      grid-template-columns: 58% 42%;
+    }
+    .prof-row:nth-child(even) .prof-row-photo {
+      order: 2;
+    }
+
+    /* PHOTO */
+    .prof-row-photo {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-3);
+    }
+    .prof-row-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    .prof-row:hover .prof-row-photo img {
+      transform: scale(1.04);
+    }
+    .prof-row-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 50%, var(--bg) 100%);
+      pointer-events: none;
+    }
+    .prof-row:nth-child(even) .prof-row-photo-overlay {
+      background: linear-gradient(to left, transparent 50%, var(--bg) 100%);
+    }
+    .prof-row-num {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* PHOTO PLACEHOLDER */
+    .prof-photo-ph {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px;
+      color: var(--gray-dark);
+      font-size: 5rem;
+      min-height: 400px;
+    }
+    .prof-photo-ph span {
+      font-size: 0.8rem;
+      font-family: var(--font-main);
+      color: var(--gray-dark);
+    }
+
+    /* INFO */
+    .prof-row-info {
+      padding: 60px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .prof-row-index {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .prof-row-index::after {
+      content: '';
+      flex: 1;
+      max-width: 40px;
+      height: 1px;
+      background: var(--cyan);
+      opacity: 0.5;
+    }
+    .prof-row-name {
+      font-family: 'Bebas Neue', var(--font-display);
+      font-size: clamp(3rem, 5vw, 5rem);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      line-height: 1;
+      margin-bottom: 20px;
+      background: repeating-linear-gradient(
+        180deg,
+        var(--lime) 0px,
+        var(--lime) 2px,
+        transparent 2px,
+        transparent 7px
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 6px rgba(77,184,255,0.25));
+    }
+    .prof-row-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .prof-row-tags .tag {
+      font-size: 0.75rem;
+      padding: 5px 14px;
+    }
+    .prof-row-bio {
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+    .prof-row-cours {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .prof-cours-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--gray);
+    }
+    .prof-cours-item .ico { color: var(--cyan); width: 16px; }
+    .prof-cours-item strong { color: var(--white); }
+    .prof-row-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* CTA JOIN */
+    .join-section {
+      padding: 100px 24px;
+      text-align: center;
+      background: var(--bg-2);
+    }
+    .join-section h2 { margin-bottom: 16px; }
+    .join-section p { color: var(--gray); max-width: 480px; margin: 0 auto 36px; }
+    .join-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .prof-row,
+      .prof-row:nth-child(even) {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .prof-row:nth-child(even) .prof-row-photo { order: 0; }
+      .prof-row-photo { aspect-ratio: 16/9; min-height: 280px; }
+      .prof-row-photo-overlay,
+      .prof-row:nth-child(even) .prof-row-photo-overlay {
+        background: linear-gradient(to bottom, transparent 50%, var(--bg) 100%);
+      }
+      .prof-row-info { padding: 36px 24px; }
+      .prof-row-name { font-size: 3rem; }
+    }
+    @media (max-width: 540px) {
+      .prof-row-info { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html" class="active">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="badge">L'équipe MHK</div>
+    <h1>NOS PROFS</h1>
+    <p>Des artistes, des passionnés, des pédagogues — une équipe soudée qui transmet la culture danse au quotidien.</p>
+  </div>
+
+  <!-- PROFS — LAYOUT ALTERNÉ -->
+  <section style="background: var(--bg);">
+
+    <!-- 01 · MONNA -->
+    <div class="prof-row" id="prof-monna">
+      <div class="prof-row-photo">
+        <img src="assets/images/MONNA.avif" alt="Monna — Hip-hop & House" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">01</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeure</div>
+        <h2 class="prof-row-name">Monna</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">Hip-hop</span>
+          <span class="tag tag-cyan">House</span>
+        </div>
+        <p class="prof-row-bio">
+          Danseuse et chorégraphe de haut niveau, Monna enseigne le hip-hop et le house avec une énergie communicative. Sa pédagogie allie technique rigoureuse et liberté d'expression — elle a su créer une atmosphère où chaque élève progresse à son rythme, sans jamais perdre le plaisir de danser.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Jeudi</strong> · 20h00 – 21h30 · Hip-hop Avancé</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Samedi</strong> · 10h00 – 12h00 · Cours Enfants</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📍</span>
+            <span>Espace Marc Lanvin · Bagneux</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="inscription.html" class="btn btn-gradient">Rejoindre un cours</a>
+          <a href="nos-cours.html" class="btn btn-outline">Voir les horaires</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · SP SUNNY -->
+    <div class="prof-row" id="prof-sp-sunny">
+      <div class="prof-row-photo">
+        <img src="assets/images/STEPHANIE_JPG.avif" alt="SP Sunny — House & Waacking" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">02</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeure</div>
+        <h2 class="prof-row-name">SP Sunny</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">House Dance</span>
+          <span class="tag tag-cyan">Waacking</span>
+          <span class="tag tag-cyan">Hip-hop</span>
+        </div>
+        <p class="prof-row-bio">
+          Artiste complète et compétitrice accomplie, SP Sunny maîtrise le House Dance et le Waacking avec une précision et une fluidité remarquables. Son cours est une invitation à explorer la musicalité, l'attitude et l'élégance des danses clubs — dans une ambiance chaleureuse et exigeante.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Lundi</strong> · 20h00 – 21h30 · Waacking</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Mardi</strong> · 19h50 – 21h00 · House Dance</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📍</span>
+            <span>Espace Marc Lanvin · Bagneux</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="inscription.html" class="btn btn-gradient">Rejoindre un cours</a>
+          <a href="nos-cours.html" class="btn btn-outline">Voir les horaires</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · NESSOO -->
+    <div class="prof-row" id="prof-nessoo">
+      <div class="prof-row-photo">
+        <img src="assets/images/NESSOO.avif" alt="Nessoo — Hip-hop" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">03</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeure</div>
+        <h2 class="prof-row-name">Nessoo</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">Hip-hop</span>
+          <span class="tag tag-cyan">Afro</span>
+        </div>
+        <p class="prof-row-bio">
+          Passionnée de cultures africaines et urbaines, Nessoo enseigne le hip-hop avec style, authenticité et une positivité sans faille. Elle s'investit aussi dans les cours enfants du samedi matin — un engagement fort pour transmettre la danse dès le plus jeune âge.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Mercredi</strong> · 20h00 – 21h30 · Hip-hop Déb/Inter</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Samedi</strong> · 10h00 – 12h00 · Cours Enfants</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📍</span>
+            <span>Espace Marc Lanvin · Bagneux</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="inscription.html" class="btn btn-gradient">Rejoindre un cours</a>
+          <a href="nos-cours.html" class="btn btn-outline">Voir les horaires</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 · SPIDER -->
+    <div class="prof-row" id="prof-spider">
+      <div class="prof-row-photo">
+        <img src="assets/images/SPIDER 2.avif" alt="Spider — Hip-hop Avancé" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">04</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeur</div>
+        <h2 class="prof-row-name">Spider</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">Hip-hop</span>
+          <span class="tag tag-cyan">Breaking</span>
+          <span class="tag tag-cyan">Popping</span>
+        </div>
+        <p class="prof-row-bio">
+          Danseur aux styles multiples, Spider maîtrise le hip-hop avancé avec une créativité et une technique affûtées. Compétiteur dans l'âme, il transmet aux élèves avancés le mindset de la scène — précision, originalité et battle spirit.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Jeudi</strong> · 20h00 – 21h30 · Hip-hop Avancé</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📍</span>
+            <span>Espace Marc Lanvin · Bagneux</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="inscription.html" class="btn btn-gradient">Rejoindre un cours</a>
+          <a href="nos-cours.html" class="btn btn-outline">Voir les horaires</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 · MUTEKIRENA -->
+    <div class="prof-row" id="prof-mutekirena">
+      <div class="prof-row-photo">
+        <img src="assets/images/MUTEKI 2.avif" alt="Mutekirena — Waacking & Afro" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">05</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeur · Intervenant</div>
+        <h2 class="prof-row-name">Mutekirena</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">Waacking</span>
+          <span class="tag tag-cyan">Afro</span>
+          <span class="tag tag-cyan">Caribéen</span>
+        </div>
+        <p class="prof-row-bio">
+          Artiste aux multiples facettes, Mutekirena enseigne le Waacking avec passion et expertise. Ses workshops mensuels sont des sessions intensives de 4h — technique de compétition, histoire du style, battle spirit. Il incarne l'authenticité africaine et l'énergie brute des cypher.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">⚡</span>
+            <span><strong>Workshop Waacking</strong> · 1×/mois · Samedi 13h30–17h30</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">🗓</span>
+            <span>12 oct. · 2 nov. · 20 déc. 2025</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">💰</span>
+            <span><strong>30€</strong> / session · Places limitées</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="contact.html" class="btn btn-gradient">Réserver un workshop</a>
+          <a href="nos-cours.html#workshop" class="btn btn-outline">Détails</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · MISSILE -->
+    <div class="prof-row" id="prof-missile">
+      <div class="prof-row-photo">
+        <img src="assets/images/MISSILE.jpg" alt="Missile — Popping" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">06</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeur</div>
+        <h2 class="prof-row-name">Missile</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">Popping</span>
+        </div>
+        <p class="prof-row-bio">
+          Expert en popping et isolation, Missile guide les élèves dans la découverte des styles funky avec une précision millimétrée. Robot, tutting, animation, waving — son cours est une invitation à explorer le corps comme instrument. Exigeant et bienveillant.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span><strong>Vendredi</strong> · 20h00 – 21h30 · Popping tous niveaux</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📍</span>
+            <span>Espace Marc Lanvin · Bagneux</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="inscription.html" class="btn btn-gradient">Rejoindre un cours</a>
+          <a href="nos-cours.html" class="btn btn-outline">Voir les horaires</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 · MP -->
+    <div class="prof-row" id="prof-mp">
+      <div class="prof-row-photo">
+        <img src="assets/images/MP.avif" alt="MP — Breaking" />
+        <div class="prof-row-photo-overlay"></div>
+        <div class="prof-row-num">07</div>
+      </div>
+      <div class="prof-row-info">
+        <div class="prof-row-index">Professeur</div>
+        <h2 class="prof-row-name">MP</h2>
+        <div class="prof-row-tags">
+          <span class="tag tag-cyan">Hip-hop</span>
+        </div>
+        <p class="prof-row-bio">
+          Danseur passionné, MP transmet sa maîtrise du hip-hop avec rigueur et bonne humeur. Sa pédagogie met l'accent sur le groove, la technique et le respect de la culture urbaine.
+        </p>
+        <div class="prof-row-cours">
+          <div class="prof-cours-item">
+            <span class="ico">📅</span>
+            <span>Horaires à confirmer — contactez-nous</span>
+          </div>
+          <div class="prof-cours-item">
+            <span class="ico">📍</span>
+            <span>Espace Marc Lanvin · Bagneux</span>
+          </div>
+        </div>
+        <div class="prof-row-actions">
+          <a href="contact.html" class="btn btn-gradient">Nous contacter</a>
+          <a href="nos-cours.html" class="btn btn-outline">Voir les cours</a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- JOIN CTA -->
+  <section class="join-section">
+    <div class="badge">Rejoindre MHK</div>
+    <h2 class="section-title">Prêt·e à danser <span class="gradient-text">avec nous ?</span></h2>
+    <p>Inscris-toi pour la saison 2025–2026 et rejoins notre communauté. Premier cours d'essai offert !</p>
+    <div class="join-actions">
+      <a href="inscription.html" class="btn btn-gradient">S'inscrire maintenant</a>
+      <a href="nos-cours.html" class="btn btn-outline">Voir les cours</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+          <li><a href="galerie.html">Galerie</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Styles</h4>
+        <ul>
+          <li><a href="nos-cours.html">Hip-hop</a></li>
+          <li><a href="nos-cours.html">House · Waacking</a></li>
+          <li><a href="nos-cours.html">Popping</a></li>
+          <li><a href="nos-cours.html">Breaking</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
