@@ -12,6 +12,10 @@ from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import decode_header
+from dotenv import load_dotenv
+
+BASE_DIR_INIT = Path(__file__).parent
+load_dotenv(BASE_DIR_INIT.parent / ".env")
 
 BASE_DIR = Path(__file__).parent
 LOG_DIR = BASE_DIR / "logs"
@@ -90,6 +94,19 @@ def get_email_text(msg) -> str:
     else:
         return msg.get_payload(decode=True).decode("utf-8", errors="ignore")
     return ""
+
+BLACKLIST_DOMAINS = [
+    "linkedin.com", "noreply", "no-reply", "notifications", "newsletter",
+    "sfr.fr", "orange.com", "banquealimentaire.org", "anthropic.com",
+    "accounts.google.com", "mail.google.com", "facebook.com",
+    "twitter.com", "instagram.com", "youtube.com", "amazon.com",
+    "paypal.com", "stripe.com", "gumroad.com"
+]
+
+def is_blacklisted(sender: str) -> bool:
+    """Vérifie si l'expéditeur est une adresse automatique/newsletter"""
+    sender_lower = sender.lower()
+    return any(domain in sender_lower for domain in BLACKLIST_DOMAINS)
 
 def classify_email(text: str) -> str:
     """Classifie l'email selon les mots-clés"""
@@ -172,11 +189,13 @@ def process_inbox():
             tickets.append(ticket)
             log(f"Email [{category}] de {sender}: {subject[:50]}")
 
-            # Réponse auto si catégorie connue
+            # Réponse auto si catégorie connue ET expéditeur non blacklisté
             if category in FAQ:
-                # Extrait l'adresse email
                 email_addr = sender.split("<")[-1].strip(">") if "<" in sender else sender
-                send_auto_reply(email_addr, subject, FAQ[category]["response"])
+                if is_blacklisted(sender):
+                    log(f"Expéditeur blacklisté — pas de réponse auto: {sender[:50]}")
+                else:
+                    send_auto_reply(email_addr, subject, FAQ[category]["response"])
             else:
                 log(f"Email non classifié — nécessite réponse manuelle: {subject[:50]}")
 

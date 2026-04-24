@@ -1,68 +1,18 @@
-﻿[
+[
   {
-    "date": "2026-04-17T16:48:19.128077",
-    "mode": "deploy",
-    "seo": null,
-    "build": null,
-    "deploy": {
-      "status": "success",
-      "deploy_id": "69e2484071b4a533bf4d3992",
-      "url": "https://69e2484071b4a533bf4d3992--WULIX-site.netlify.app"
-    }
-  },
-  {
-    "date": "2026-04-17T16:49:27.264106",
-    "mode": "deploy",
-    "seo": null,
-    "build": null,
-    "deploy": {
-      "status": "success",
-      "deploy_id": "69e2488495d1d22496df38e9",
-      "url": "https://69e2488495d1d22496df38e9--WULIX-site.netlify.app"
-    }
-  },
-  {
-    "date": "2026-04-17T16:50:37.423336",
-    "mode": "deploy",
-    "seo": null,
-    "build": null,
-    "deploy": {
-      "status": "success",
-      "deploy_id": "69e248ca95d1d226eddf3945",
-      "url": "https://69e248ca95d1d226eddf3945--WULIX-site.netlify.app"
-    }
-  },
-  {
-    "date": "2026-04-17T16:50:48.606221",
-    "mode": "deploy",
-    "seo": null,
-    "build": null,
-    "deploy": {
-      "status": "success",
-      "deploy_id": "69e248d56c221f30820162f1",
-      "url": "https://69e248d56c221f30820162f1--WULIX-site.netlify.app"
-    }
-  },
-  {
-    "date": "2026-04-17T17:19:50.355815",
-    "mode": "build",
-    "seo": null,
-    "build": "failed",
-    "deploy": {
-      "status": "success",
-      "deploy_id": "69e24fa3f4f2bf498572ae61",
-      "url": "https://69e24fa3f4f2bf498572ae61--WULIX-site.netlify.app"
-    }
-  },
-  {
-    "date": "2026-04-17T17:21:07.463265",
-    "mode": "build",
-    "seo": null,
+    "date": "2026-04-20T22:33:33.812189",
+    "mode": "full",
+    "seo": {
+      "articles": 1,
+      "results": [
+        "creer-agent-ia-python-debutant"
+      ]
+    },
     "build": "success",
     "deploy": {
-      "status": "success",
-      "deploy_id": "69e24ff149c88a3d61153aa7",
-      "url": "https://69e24ff149c88a3d61153aa7--WULIX-site.netlify.app"
+      "status": "error",
+      "code": 403,
+      "detail": "{\"error\":\"Account credit usage exceeded - new deploys are blocked until credits are added\"}"
     }
   }
 ]

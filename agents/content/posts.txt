@@ -73,3 +73,77 @@ C'est ce qu'on fait chez WULIX.
 Tu veux savoir comment ? DM ou wulix.fr 👇
 
 #IA #Automatisation #WULIX
+---
+J'ai compilé 50 prompts que j'utilise chaque semaine.
+
+Résultat : 5€ sur Gumroad.
+
+Les catégories :
+→ Rédaction (emails, LinkedIn, propositions)
+→ Automatisation (Python, n8n, Make.com)
+→ Analyse & Stratégie (SWOT, pricing, concurrents)
+→ Productivité (planning, délégation, comptes-rendus)
+→ Business & Vente (offres, scripts, témoignages)
+
+Pas de blabla. Juste du concret.
+Copie, adapte, utilise dans ChatGPT ou Claude.
+
+→ wulix.gumroad.com
+
+#IA #Prompts #ChatGPT #Productivité #WULIX
+---
+J'ai créé 6 agents IA qui gèrent WULIX à ma place.
+
+Chaque lundi matin :
+→ SAMBA publie un article SEO sur le blog
+→ MARIAMA poste sur LinkedIn (ce post, là, maintenant)
+→ NDEYE m'envoie un rapport des ventes par email
+
+Je n'ai rien fait aujourd'hui.
+Eux si.
+
+C'est ça l'automatisation réelle — pas juste un workflow Make.com qui envoie un email. Des agents qui pensent, décident, agissent.
+
+On peut faire pareil pour ton business.
+
+→ contact@wulix.fr pour en parler
+
+#AgentIA #Automatisation #Python #WULIX
+---
+"L'automatisation c'est pour les grandes entreprises."
+
+Faux. Voici ce qu'une TPE peut automatiser dès demain :
+
+✓ Relances clients non-payeurs (Python, 0€)
+✓ Publication LinkedIn hebdo (n8n, 0€)
+✓ Rapport de ventes quotidien (Python + Gmail, 0€)
+✓ Génération de devis PDF (fpdf2, 0€)
+✓ Veille concurrentielle (requests + smtplib, 0€)
+
+Total outils : 0€.
+Total temps de setup : 1 weekend avec WULIX.
+
+Le seul investissement c'est le temps de comprendre.
+On s'occupe du reste.
+
+→ wulix.fr/services
+
+#PME #Automatisation #NoCode #WULIX
+---
+Ce qu'on a livré en 1 semaine pour WULIX :
+
+→ Site wulix.fr en ligne (Cloudflare Pages, SSL)
+→ 4 produits digitaux publiés (5€ à 29€)
+→ 6 agents IA opérationnels
+→ Blog SEO : 6 articles publiés
+→ LinkedIn automatisé chaque lundi
+→ Rapport ventes quotidien par email
+
+Investissement temps : ~20h.
+Investissement argent : 0€.
+
+C'est exactement ce qu'on peut reproduire pour ton activité.
+
+DM ou contact@wulix.fr — premier audit offert.
+
+#Freelance #IA #Automatisation #WULIX

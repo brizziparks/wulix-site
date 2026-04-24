@@ -18,6 +18,18 @@
       --text: #e0e0f0;
       --muted: #555577;
     }
+    body.light {
+      --bg: #f0f2f8;
+      --panel: #ffffff;
+      --border: #d0d4e8;
+      --accent: #7c3aed;
+      --accent2: #0066cc;
+      --green: #16a34a;
+      --orange: #d97706;
+      --red: #dc2626;
+      --text: #1a1a2e;
+      --muted: #7070a0;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: var(--bg);
@@ -368,6 +380,49 @@
     #send-btn:hover { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #000; box-shadow: 0 0 16px rgba(0,229,255,.4); }
     #send-btn:disabled { background: #1a1a2a; border-color: #2a2a3a; color: var(--muted); cursor: not-allowed; box-shadow: none; text-shadow: none; }
 
+    #voice-btn {
+      background: #0d1117; border: 1px solid #2a2a3a; color: var(--muted);
+      border-radius: 4px; padding: 9px 12px; cursor: pointer;
+      font-size: 14px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #voice-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    #voice-btn.voice-on  { border-color: #00e676; color: #00e676; box-shadow: 0 0 10px rgba(0,230,118,.3); }
+    #voice-btn.voice-speaking { animation: pulse-voice .5s ease-in-out infinite alternate; }
+    @keyframes pulse-voice {
+      from { box-shadow: 0 0 6px rgba(0,230,118,.3); }
+      to   { box-shadow: 0 0 20px rgba(0,230,118,.8); }
+    }
+    #stop-btn {
+      background: #1a0a0a; border: 1px solid #5a1a1a; color: #ff5555;
+      border-radius: 4px; padding: 9px 10px; cursor: pointer;
+      font-size: 13px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #stop-btn:hover { background: #ff5555; color: #fff; }
+    
+    #export-btn {
+      background: #0a1a0a; border: 1px solid #1a4a1a; color: #00dc82;
+      border-radius: 4px; padding: 9px 10px; cursor: pointer;
+      font-size: 13px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #export-btn:hover { border-color: #00dc82; background: #0a2a0a; }
+
+    #theme-btn {
+      background: #0a0a1a; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 4px; padding: 9px 10px; cursor: pointer;
+      font-size: 14px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #theme-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    body.light #theme-btn { background: #fff; }
+#mic-btn {
+      background: #0d1117; border: 1px solid #2a2a3a; color: var(--muted);
+      border-radius: 4px; padding: 9px 12px; cursor: pointer;
+      font-size: 14px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #mic-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    #mic-btn.stt-on { border-color: #ff6b35; color: #ff6b35; box-shadow: 0 0 10px rgba(255,107,53,.3); animation: pulse-mic 1s ease-in-out infinite alternate; }
+    #mic-btn.stt-listening { border-color: #ff1744; color: #ff1744; box-shadow: 0 0 18px rgba(255,23,68,.6); }
+    @keyframes pulse-mic { from { opacity: .7; } to { opacity: 1.0; } }
+
     /* ── Right panel ── */
     .right-panel {
       width: 300px; background: var(--panel);
@@ -696,6 +751,11 @@
         <span class="cmd-prompt">NEXUS&nbsp;›</span>
         <textarea id="input" placeholder="Commande pour AISATOU... (Entrée pour envoyer)" rows="1"></textarea>
         <button id="send-btn" title="Envoyer (Entrée)">EXEC&nbsp;➤</button>
+        <button id="voice-btn" title="Activer / désactiver la voix AISATOU" onclick="toggleVoice()">🎤</button>
+        <button id="mic-btn" title="Wake word navigateur — dis 'Aisatou'" onclick="toggleBrowserSTT()">🎙</button>
+        <button id="stop-btn" title="Couper la parole" onclick="stopAudio()" style="display:none">⏹</button>
+  <button id="export-btn" onclick="exportHistory()" title="Exporter historique">&#128190;</button>
+  <button id="theme-btn" onclick="toggleTheme()" title="Basculer theme clair/sombre">&#9788;</button>
       </div>
     </div>
 
@@ -880,6 +940,10 @@ function connect() {
       addToolMsg(`⚙ ${msg.tool}(${JSON.stringify(msg.input||{}).slice(0,80)})`);
     } else if (msg.type === 'tool_result') {
       addToolMsg(`→ ${String(msg.result).slice(0,150)}`);
+    } else if (msg.type === 'voice_state') {
+      handleVoiceState(msg.state);
+    } else if (msg.type === 'voice_volume') {
+      updateVoiceVolume(msg.volume);
     }
   };
 }
@@ -944,12 +1008,154 @@ function escHtml(t) {
   return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ── Voix ──────────────────────────────────────────────────────────────────
+let _voiceActive = false;
+
+function toggleVoice() {
+  if (!ws || ws.readyState !== 1) return;
+  ws.send(JSON.stringify({ type: 'voice_toggle' }));
+}
+
+function stopAudio() {
+  if (!ws || ws.readyState !== 1) return;
+  ws.send(JSON.stringify({ type: 'stop_audio' }));
+}
+
+function handleVoiceState(state) {
+  const btn   = document.getElementById('voice-btn');
+  const stop  = document.getElementById('stop-btn');
+  if (!btn) return;
+
+  // Effacer toutes les classes d'état
+  btn.classList.remove('voice-on', 'voice-speaking', 'voice-listening');
+
+  if (state === 'voice_on') {
+    _voiceActive = true;
+    btn.classList.add('voice-on');
+    btn.title = 'Voix active — cliquer pour désactiver';
+    stop.style.display = '';
+    toast('Voix', 'Mode voix activé — AISATOU va parler', 'ok');
+  } else if (state === 'voice_off') {
+    _voiceActive = false;
+    btn.title = 'Activer la voix AISATOU';
+    stop.style.display = 'none';
+    toast('Voix', 'Mode voix désactivé', 'ok');
+  } else if (state === 'speaking') {
+    btn.classList.add('voice-on', 'voice-speaking');
+  } else if (state === 'idle') {
+    if (_voiceActive) btn.classList.add('voice-on');
+  } else if (state === 'unavailable') {
+    toast('Voix', 'edge-tts ou pygame non installé', 'err');
+  }
+}
+
+function updateVoiceVolume(vol) {
+  // Anime l'orbe en fonction du volume TTS
+  const orb = document.querySelector('.orb-ring');
+  if (!orb) return;
+  const scale = 1 + vol * 0.25;
+  orb.style.transform = `scale(${scale})`;
+  orb.style.transition = 'transform 0.05s ease';
+}
+
+// ── Wake word navigateur (Web Speech API) ─────────────────────────────────
+let _sttActive   = false;
+let _recognition = null;
+const WAKE_WORDS = ['aisatou', 'aïsatou', 'aisatu', 'isatou', 'aissatou', 'hey aisatou'];
+
+function toggleBrowserSTT() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    toast('Micro', 'Web Speech API non supporté (utilise Chrome ou Edge)', 'err');
+    return;
+  }
+  _sttActive ? stopBrowserSTT() : startBrowserSTT();
+}
+
+function startBrowserSTT() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  _recognition = new SR();
+  _recognition.lang        = 'fr-FR';
+  _recognition.continuous  = true;
+  _recognition.interimResults = true;
+
+  _recognition.onstart = () => {
+    _sttActive = true;
+    const btn = document.getElementById('mic-btn');
+    btn.classList.add('stt-on');
+    btn.title = 'Micro actif — dis "Aisatou" pour activer';
+    toast('Micro', 'En écoute — dis "Aisatou" pour parler', 'ok');
+  };
+
+  _recognition.onresult = (e) => {
+    let final = '';
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript.toLowerCase().trim();
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    const text = (final || interim).trim();
+    if (!text) return;
+
+    // Détection wake word
+    const hasWake = WAKE_WORDS.some(w => text.includes(w));
+    if (hasWake) {
+      document.getElementById('mic-btn').classList.add('stt-listening');
+      // Extraire la commande après le wake word
+      let cmd = text;
+      for (const w of WAKE_WORDS) {
+        const idx = cmd.indexOf(w);
+        if (idx !== -1) { cmd = cmd.slice(idx + w.length).trim().replace(/^[,.\s]+/, ''); break; }
+      }
+      if (cmd && e.results[e.results.length-1].isFinal) {
+        document.getElementById('mic-btn').classList.remove('stt-listening');
+        if (cmd) {
+          addMessage('user', `🎙 ${cmd}`);
+          if (ws && ws.readyState === 1) {
+            ws.send(JSON.stringify({ type: 'voice_message', text: cmd,
+              model: document.getElementById('model-select').value }));
+            sendBtn.disabled = true;
+          }
+        } else {
+          // Wake word seul — écoute active
+          toast('Aisatou', 'Je vous écoute…', 'ok');
+        }
+      }
+    }
+  };
+
+  _recognition.onerror = (e) => {
+    if (e.error !== 'no-speech') {
+      console.warn('[STT]', e.error);
+      if (e.error === 'not-allowed') toast('Micro', 'Permission micro refusée', 'err');
+    }
+  };
+
+  _recognition.onend = () => {
+    // Redémarrage automatique si toujours actif
+    if (_sttActive) {
+      try { _recognition.start(); } catch(e) {}
+    }
+  };
+
+  try { _recognition.start(); } catch(e) { toast('Micro', `Erreur: ${e.message}`, 'err'); }
+}
+
+function stopBrowserSTT() {
+  _sttActive = false;
+  if (_recognition) { try { _recognition.stop(); } catch(e) {} _recognition = null; }
+  const btn = document.getElementById('mic-btn');
+  btn.classList.remove('stt-on', 'stt-listening');
+  btn.title = 'Wake word navigateur — dis "Aisatou"';
+  toast('Micro', 'Écoute désactivée', 'ok');
+}
+
 // ── Send ──────────────────────────────────────────────────────────────────
 function send() {
   const text = inputEl.value.trim();
   if (!text || !ws || ws.readyState !== 1) return;
   addMessage('user', text);
-  ws.send(JSON.stringify({ text, model: document.getElementById('model-select').value }));
+  ws.send(JSON.stringify({ type: 'message', text, model: document.getElementById('model-select').value }));
   inputEl.value = '';
   inputEl.style.height = 'auto';
   sendBtn.disabled = true;
@@ -1003,6 +1209,7 @@ async function runDeploy(btn) {
   // Envoyer via chat AISATOU
   if (ws && ws.readyState === 1) {
     ws.send(JSON.stringify({
+      type: 'message',
       text: 'Lance le deploy Cloudflare : powershell -ExecutionPolicy Bypass -File C:\\Users\\USER\\Scripts\\WULIX\\deploy_cloudflare.ps1',
       model: document.getElementById('model-select').value
     }));
@@ -1474,7 +1681,7 @@ function applyReco() {
   // Envoie dans le chat
   if (ws && ws.readyState === 1) {
     addMessage('user', `💡 Appliquer recommandations ${_currentRecoAgent}`);
-    ws.send(JSON.stringify({ text: prompt, model: document.getElementById('model-select').value }));
+    ws.send(JSON.stringify({ type: 'message', text: prompt, model: document.getElementById('model-select').value }));
     sendBtn.disabled = true;
     addLog(`Application reco ${_currentRecoAgent}...`, 'run', 'AISATOU');
     toast('Recommandations', `AISATOU traite les reco de ${_currentRecoAgent}`, 'ok');
@@ -1508,6 +1715,59 @@ setInterval(updateCountdowns, 1000);    // countdown chaque seconde
 addLog('NEXUS COMMAND initialisé', 'ok', 'SYS');
 addLog('14 agents en ligne — WULIX opérationnel', 'ok', 'SYS');
 setTimeout(() => addLog('En attente de commandes...', 'sys', 'NEXUS'), 800);
+
+// ── Historique / Export ──────────────────────────────────────────────────
+async function exportHistory() {
+  try {
+    const r = await fetch('/history', {headers: {Authorization: 'Basic ' + btoa(AUTH)}});
+    const data = await r.json();
+    if (!data.history || data.history.length === 0) {
+      addMsg('aisatou', 'Aucune conversation sauvegardee pour le moment.'); return;
+    }
+    // Telecharge le fichier le plus recent
+    const latest = data.history[0];
+    const a = document.createElement('a');
+    a.href = '/history/' + latest.file + '?auth=' + btoa(AUTH);
+    a.download = latest.file;
+    a.click();
+    addMsg('aisatou', 'Export: ' + latest.file + ' (' + latest.count + ' echanges)');
+  } catch(e) {
+    addMsg('aisatou', 'Erreur export: ' + e.message);
+  }
+}
+
+async function showHistory() {
+  try {
+    const r = await fetch('/history', {headers: {Authorization: 'Basic ' + btoa(AUTH)}});
+    const data = await r.json();
+    if (!data.history || data.history.length === 0) {
+      addMsg('aisatou', 'Aucune conversation sauvegardee.'); return;
+    }
+    let msg = '**Historique des conversations:**
+';
+    data.history.slice(0, 10).forEach(h => {
+      msg += `
+- \`${h.session}\` — ${h.count} echanges`;
+    });
+    addMsg('aisatou', msg);
+  } catch(e) { addMsg('aisatou', 'Erreur: ' + e.message); }
+}
+
+
+// Theme clair/sombre
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('aisatou_theme', isLight ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = isLight ? '☽' : '☀';
+}
+// Applique le theme sauvegarde au chargement
+(function() {
+  if (localStorage.getItem('aisatou_theme') === 'light') {
+    document.body.classList.add('light');
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = '☽';
+  }
+})();
 </script>
 </body>
 </html>
