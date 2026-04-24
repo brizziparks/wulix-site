@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 AISATOU HUD â€" Interface Iron Man
 Serveur FastAPI + WebSocket + interface web holographique
@@ -6,6 +6,7 @@ Serveur FastAPI + WebSocket + interface web holographique
 
 import asyncio
 import json
+from datetime import datetime
 import os
 import sys
 import secrets
@@ -32,11 +33,26 @@ from aisatou import (
     get_claude_client, is_ollama_running,
     run_turn_ollama, run_turn_claude, run_turn_gemini,
     get_gemini_client, GEMINI_MODELS,
+    get_groq_client, run_turn_groq, GROQ_MODELS,
     OLLAMA_MODEL, execute_tool,
 )
 
+# ── Voix (optionnel — si edge-tts + pygame installés) ───────────────────────
+try:
+    from voice.tts import speak as tts_speak, stop_speaking, set_ws_broadcaster
+    from voice.stt import listen as stt_listen, list_microphones
+    from voice.wake_word import WakeWordDetector
+    VOICE_AVAILABLE = True
+except Exception as _ve:
+    VOICE_AVAILABLE = False
+    print(f"[HUD] Mode voix non disponible : {_ve}")
+
 # Modèle par défaut — lit AISATOU_MODEL depuis .env
 _default_model = OLLAMA_MODEL
+
+# ── Pool WebSocket pour broadcast voix ──────────────────────────────────────
+_ws_pool: set = set()   # toutes les connexions actives
+_voice_mode: bool = False  # voix activée globalement
 
 # ── Sécurité — Authentification HTTP Basic ─────────────────────────────────
 security = HTTPBasic()
@@ -68,6 +84,73 @@ async def root(user: str = Depends(verify_auth)):
     return FileResponse(BASE_DIR / "hud" / "index.html")
 
 
+@app.get("/mobile")
+async def mobile(user: str = Depends(verify_auth)):
+    """Interface mobile optimisée — accessible depuis téléphone via aisatou.rosmedia.fr/mobile"""
+    return FileResponse(BASE_DIR / "hud" / "mobile.html")
+
+# ── Historique conversations ─────────────────────────────────────────────────
+_HISTORY_DIR = BASE_DIR / "memory" / "conversations"
+_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
+_session_file: dict = {}   # websocket_id -> Path
+
+
+def _get_session_file(ws_id: str) -> "Path":
+    """Retourne (et cree si besoin) le fichier JSON de la session courante."""
+    if ws_id not in _session_file:
+        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        _session_file[ws_id] = _HISTORY_DIR / f"session_{ts}.json"
+        _session_file[ws_id].write_text(
+            '{"session": "' + ts + '", "messages": []}',
+            encoding="utf-8"
+        )
+    return _session_file[ws_id]
+
+
+def _save_exchange(ws_id: str, user_msg: str, ai_msg: str):
+    """Ajoute un echange dans le fichier JSON de session."""
+    try:
+        path = _get_session_file(ws_id)
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["messages"].append({
+            "ts": datetime.now().isoformat(),
+            "user": user_msg,
+            "assistant": ai_msg,
+        })
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[history] Erreur sauvegarde : {e}")
+
+
+@app.get("/history")
+async def list_history(user: str = Depends(verify_auth)):
+    """Liste les fichiers de conversation sauvegardes."""
+    files = sorted(_HISTORY_DIR.glob("session_*.json"), reverse=True)
+    result = []
+    for f in files[:50]:
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            result.append({
+                "file": f.name,
+                "session": data.get("session", ""),
+                "count": len(data.get("messages", [])),
+            })
+        except Exception:
+            pass
+    return {"history": result}
+
+
+@app.get("/history/{filename}")
+async def download_history(filename: str, user: str = Depends(verify_auth)):
+    """Telecharge un fichier de conversation."""
+    path = _HISTORY_DIR / filename
+    if not path.exists() or not path.name.startswith("session_"):
+        raise HTTPException(status_code=404, detail="Fichier introuvable")
+    return FileResponse(path, media_type="application/json", filename=filename)
+
+
+
+
 @app.get("/status")
 async def status(user: str = Depends(verify_auth)):
     claude = get_claude_client() is not None
@@ -91,6 +174,8 @@ async def models(user: str = Depends(verify_auth)):
     # ModÃ¨les Gemini si clÃ© disponible
     if get_gemini_client():
         names += ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash"]
+    if get_groq_client():
+        names += ["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768", "gemma2-9b-it"]
     return {"models": names}
 
 
@@ -439,15 +524,92 @@ async def run_agent_task(
     return {"task_id": full_id, "status": "started", "agent": agent_id, "task": task_id}
 
 
+async def _broadcast_all(data: dict):
+    """Envoie un message JSON à toutes les connexions WebSocket actives."""
+    dead = set()
+    for ws in list(_ws_pool):
+        try:
+            await ws.send_json(data)
+        except Exception:
+            dead.add(ws)
+    _ws_pool.difference_update(dead)
+
+
+async def _voice_state_broadcaster(state: str):
+    """Callback injecté dans tts.py pour broadcaster l'état vocal au HUD."""
+    await _broadcast_all({"type": "voice_state", "state": state})
+
+
+# Configure le broadcaster TTS dès le démarrage (si voix dispo)
+if VOICE_AVAILABLE:
+    set_ws_broadcaster(_voice_state_broadcaster)
+
+
+
+
+async def _morning_briefing(send_fn) -> None:
+    """Envoie un briefing automatique : emails + agenda."""
+    import asyncio
+    try:
+        from tools.gmail import gmail_unread, gcal_today
+        await asyncio.sleep(0.8)
+        parts = []
+        try:
+            emails = gmail_unread(max_results=5)
+            if isinstance(emails, list) and emails:
+                parts.append("**" + str(len(emails)) + " email(s) non lu(s) :**")
+                for e in emails[:3]:
+                    subj = e.get("subject", "(sans objet)")
+                    sender = e.get("from", "?").split("<")[0].strip()
+                    parts.append("  - *" + sender + "* : " + subj)
+                if len(emails) > 3:
+                    parts.append("  - ... et " + str(len(emails) - 3) + " autre(s)")
+            else:
+                parts.append("Aucun email non lu.")
+        except Exception:
+            parts.append("Gmail non disponible.")
+        try:
+            events = gcal_today()
+            if isinstance(events, list) and events:
+                parts.append("")
+                parts.append("**Agenda du jour (" + str(len(events)) + " evenement(s)) :**")
+                for ev in events[:4]:
+                    t = ev.get("start", {}).get("dateTime", ev.get("start", {}).get("date", ""))
+                    if "T" in t:
+                        t = t.split("T")[1][:5]
+                    parts.append("  - " + t + " : " + ev.get("summary", "?"))
+            else:
+                parts.append("")
+                parts.append("Aucun evenement aujourd hui.")
+        except Exception:
+            parts.append("Calendrier non disponible.")
+        date_str = datetime.now().strftime("%d/%m/%Y")
+        header = "Bonjour Omar ! Voici ton briefing du " + date_str + " :"
+        body = (chr(10)).join(parts)
+        greeting = header + chr(10) + chr(10) + body
+        await send_fn({"type": "response", "text": greeting})
+    except Exception:
+        pass
+
+
 @app.websocket("/ws")
 async def ws_endpoint(websocket: WebSocket):
+    global _voice_mode
     await websocket.accept()
+    _ws_pool.add(websocket)
 
-    # â"€â"€ Ã‰tat par session (multi-utilisateur) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+    # Briefing auto au demarrage de session
+    asyncio.ensure_future(_morning_briefing(
+        lambda d: websocket.send_json(d),
+        None
+    ))
+
+    # ── État par session (multi-utilisateur) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
     conversation: list = []
     session_model: str = _default_model
     claude_client  = get_claude_client()
     gemini_client  = get_gemini_client()
+    groq_client    = get_groq_client()
     use_ollama     = is_ollama_running()
 
     async def send(data: dict):
@@ -456,11 +618,32 @@ async def ws_endpoint(websocket: WebSocket):
         except Exception:
             pass
 
+    async def get_ai_response(user_text: str) -> str:
+        try:
+            if session_model in GEMINI_MODELS and gemini_client:
+                return await run_turn_gemini(gemini_client, conversation, user_text, model_name=session_model)
+            elif session_model in GROQ_MODELS and groq_client:
+                return await run_turn_groq(groq_client, conversation, user_text, model=session_model)
+            elif use_ollama:
+                return await run_turn_ollama(conversation, user_text, model=session_model)
+            elif claude_client:
+                return await run_turn_claude(claude_client, conversation, user_text)
+            elif groq_client:
+                # Fallback Groq si rien d'autre dispo
+                return await run_turn_groq(groq_client, conversation, user_text)
+            else:
+                return "Aucun backend IA disponible (Gemini, Groq, Ollama, Claude)."
+        except Exception as e:
+            return f"Erreur : {e}"
+
     try:
         while True:
             raw = await websocket.receive_text()
             data = json.loads(raw)
             msg_type = data.get("type")
+            # Rétrocompatibilité : si pas de type mais un champ "text", traiter comme message
+            if not msg_type and data.get("text"):
+                msg_type = "message"
 
             if msg_type == "ping":
                 await send({"type": "pong"})
@@ -469,55 +652,181 @@ async def ws_endpoint(websocket: WebSocket):
             if msg_type == "settings":
                 new_model = data.get("model", "").strip()
                 if new_model:
-                    session_model = new_model  # modÃ¨le propre Ã  cette session
+                    session_model = new_model
                 await send({"type": "settings_ok", "model": session_model})
                 continue
 
+            # Voix : activer / desactiver
+            if msg_type == "voice_toggle":
+                if not VOICE_AVAILABLE:
+                    await send({"type": "voice_state", "state": "unavailable",
+                                "msg": "edge-tts ou pygame non installe"})
+                    continue
+                _voice_mode = not _voice_mode
+                await send({"type": "voice_state",
+                            "state": "voice_on" if _voice_mode else "voice_off"})
+                continue
+
+            # Voix : arreter la parole
+            if msg_type == "stop_audio":
+                if VOICE_AVAILABLE:
+                    stop_speaking()
+                await send({"type": "voice_state", "state": "idle"})
+                continue
+
+            # Message texte principal
             if msg_type == "message":
                 user_text = data.get("text", "").strip()
                 if not user_text:
                     continue
 
                 await send({"type": "thinking"})
-
-                try:
-                    if session_model in GEMINI_MODELS and gemini_client:
-                        response = await run_turn_gemini(gemini_client, conversation, user_text, model_name=session_model)
-                    elif use_ollama:
-                        response = await run_turn_ollama(conversation, user_text, model=session_model)
-                    elif claude_client:
-                        response = await run_turn_claude(claude_client, conversation, user_text)
-                    else:
-                        response = "Aucun backend IA disponible."
-                except Exception as e:
-                    response = f"Erreur : {e}"
-
+                response = await get_ai_response(user_text)
                 await send({"type": "response", "text": response})
+                _save_exchange(str(id(websocket)), user_text, response)
+
+                # TTS si mode voix actif
+                if _voice_mode and VOICE_AVAILABLE:
+                    async def _vol_cb(vol: float, _ws=websocket):
+                        try:
+                            await _ws.send_json({"type": "voice_volume", "volume": vol})
+                        except Exception:
+                            pass
+                    asyncio.ensure_future(tts_speak(response, volume_callback=_vol_cb))
+
+                continue
+
+            # Message vocal (texte transcrit par navigateur)
+            if msg_type == "voice_message":
+                user_text = data.get("text", "").strip()
+                if not user_text:
+                    continue
+                await send({"type": "thinking"})
+                response = await get_ai_response(user_text)
+                await send({"type": "response", "text": response})
+                _save_exchange(str(id(websocket)), user_text, response)
+                if VOICE_AVAILABLE:
+                    async def _vol_cb2(vol: float, _ws=websocket):
+                        try:
+                            await _ws.send_json({"type": "voice_volume", "volume": vol})
+                        except Exception:
+                            pass
+                    asyncio.ensure_future(tts_speak(response, volume_callback=_vol_cb2))
 
     except WebSocketDisconnect:
         pass
     except Exception:
         pass
+    finally:
+        _ws_pool.discard(websocket)
 
 
 # â"€â"€â"€ Lancement â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+def _create_tray_icon(url: str):
+    """Cree une icone systray AISATOU avec menu contextuel."""
+    try:
+        import pystray
+        from PIL import Image, ImageDraw
+        import keyboard
+
+        def make_icon():
+            img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
+            draw.ellipse([2, 2, 62, 62], fill=(124, 58, 237, 255))
+            draw.text((20, 18), "A", fill=(255, 255, 255, 255))
+            return img
+
+        def open_hud(icon=None, item=None):
+            webbrowser.open(url)
+
+        def quit_app(icon, item):
+            icon.stop()
+            os._exit(0)
+
+        menu = pystray.Menu(
+            pystray.MenuItem("Ouvrir AISATOU", open_hud, default=True),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem("Quitter", quit_app),
+        )
+        icon = pystray.Icon("AISATOU", make_icon(), "AISATOU — IA active", menu)
+
+        try:
+            keyboard.add_hotkey("ctrl+shift+a", open_hud)
+            print("  Raccourci global : Ctrl+Shift+A -> ouvre AISATOU")
+        except Exception as e:
+            print(f"  [tray] Raccourci non disponible : {e}")
+
+        icon.run()
+
+    except Exception as e:
+        print(f"  [tray] Systray non disponible : {e}")
+
+
+def _run_uvicorn(port: int):
+    """Lance uvicorn dans un thread separe."""
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="warning")
+
+
 def main():
     import threading, time
 
     port = 7777
     url  = f"http://localhost:{port}"
 
-    print(f"\n  AISATOU HUD demarre sur {url}")
-    print("  Appuie sur Ctrl+C pour arreter.\n")
+    print("AISATOU HUD demarre sur " + url)
+    print("  Appuie sur Ctrl+C pour arreter.")
+    print("  Raccourci global : Ctrl+Shift+A")
 
-    # Ouvre le navigateur dans un thread sÃ©parÃ© pour Ã©viter les conflits d'event loop
+    # Lance uvicorn dans un thread (libere le main thread pour le tray)
+    server_thread = threading.Thread(target=_run_uvicorn, args=(port,), daemon=True)
+    server_thread.start()
+
+    # Ouvre le navigateur apres demarrage
     def open_browser():
-        time.sleep(1.5)
+        time.sleep(2.0)
         webbrowser.open(url)
-
     threading.Thread(target=open_browser, daemon=True).start()
 
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="warning")
+    # Lance le raccourci global
+    try:
+        import keyboard
+        keyboard.add_hotkey("ctrl+shift+a", lambda: webbrowser.open(url))
+        print("  [OK] Raccourci Ctrl+Shift+A actif")
+    except Exception as e:
+        print(f"  [warn] Raccourci non disponible : {e}")
+
+    # pystray dans le thread principal (obligatoire sur Windows)
+    try:
+        import pystray
+        from PIL import Image, ImageDraw
+
+        def make_icon():
+            img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
+            draw.ellipse([2, 2, 62, 62], fill=(124, 58, 237, 255))
+            draw.ellipse([8, 8, 56, 56], fill=(80, 20, 180, 255))
+            draw.text((22, 18), "A", fill=(255, 255, 255, 255))
+            return img
+
+        def open_hud(icon=None, item=None):
+            webbrowser.open(url)
+
+        def quit_app(icon, item):
+            icon.stop()
+            os._exit(0)
+
+        menu = pystray.Menu(
+            pystray.MenuItem("Ouvrir AISATOU", open_hud, default=True),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem("Quitter", quit_app),
+        )
+        icon = pystray.Icon("AISATOU", make_icon(), "AISATOU — IA active", menu)
+        print("  [OK] Tray icon actif — clic droit pour menu")
+        icon.run()  # bloquant dans le thread principal
+
+    except Exception as e:
+        print(f"  [warn] Tray icon non disponible : {e}")
+        server_thread.join()  # attend si pas de tray
 
 
 if __name__ == "__main__":

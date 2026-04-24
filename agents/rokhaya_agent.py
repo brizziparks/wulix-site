@@ -9,12 +9,17 @@ import smtplib
 from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).parent
 LOG_DIR = BASE_DIR / "logs"
 CONTENT_DIR = BASE_DIR / "content"
 CRM_FILE = BASE_DIR / "crm_contacts.json"
 LOG_DIR.mkdir(exist_ok=True)
+load_dotenv(BASE_DIR.parent / ".env")
+
+# Mode sécurisé : DRY_RUN=true par défaut (aucun email envoyé sans activation explicite)
+ROKHAYA_DRY_RUN = os.getenv("ROKHAYA_DRY_RUN", "true").lower() == "true"
 
 def log(msg):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -58,9 +63,6 @@ def add_buyer(email: str, prenom: str, produit: str):
 def send_email(to: str, subject: str, body_html: str) -> bool:
     """Envoie un email via Gmail SMTP"""
     try:
-        from dotenv import load_dotenv
-        load_dotenv(BASE_DIR.parent / ".env")
-
         gmail_user = os.getenv("GMAIL_USER")
         gmail_pass = os.getenv("GMAIL_APP_PASSWORD")
 

@@ -58,6 +58,8 @@ from tools import (
     recall, remember, forget, search_web, write_file,
     notify, remind,
     get_clipboard, set_clipboard,
+    volume_up, volume_down, volume_mute_toggle,
+    youtube_search_play, open_youtube_url,
     take_screenshot, set_volume, mute,
     get_unread_emails, search_emails, send_email, draft_email,
     get_calendar_today, get_calendar_range, create_meeting,
@@ -66,6 +68,17 @@ from tools import (
 )
 from voice.stt import listen
 from voice.tts import speak
+from tools.n8n_tool import trigger_webhook, list_workflows, activate_workflow
+from tools.clipboard_history import (
+    get_clipboard_history, get_last_clipboard, restore_clipboard,
+    clear_clipboard_history, start_clipboard_watcher, ClipboardHistory,
+)
+from tools.file_watcher import start_watching, stop_watching, get_recent_files, list_watchers
+from tools.ocr_screen import extract_text_from_screen, extract_text_from_image, find_text_on_screen
+from tools.google_workspace import (
+    create_doc, append_to_doc, read_doc,
+    create_sheet, append_to_sheet, read_sheet, list_drive_files,
+)
 
 # ─── Setup ───────────────────────────────────────────────────────────────────
 
@@ -108,6 +121,11 @@ TOOL_MAP = {
     "take_screenshot":      lambda i: take_screenshot(i.get("filename","")),
     "set_volume":           lambda i: set_volume(int(i["level"])),
     "mute":                 lambda i: mute(),
+    "volume_up":            lambda i: volume_up(int(i.get("steps", 5))),
+    "volume_down":          lambda i: volume_down(int(i.get("steps", 5))),
+    "volume_mute":          lambda i: volume_mute_toggle(),
+    "youtube_play":         lambda i: youtube_search_play(i["query"], i.get("fullscreen", True)),
+    "open_youtube_url":     lambda i: open_youtube_url(i["url"]),
     # Outlook
     "outlook_unread":       lambda i: get_unread_emails(int(i.get("count",10))),
     "outlook_search":       lambda i: search_emails(i["query"], int(i.get("count",5))),
@@ -127,6 +145,68 @@ TOOL_MAP = {
     "gcal_create":          lambda i: gcal_create(
         i["summary"], i["start"], int(i.get("duration_min",60)), i.get("description","")),
 }
+
+# ── Outils additionnels (vision, météo, math) ────────────────────────────────
+try:
+    from tools.vision_screen import vision_click, vision_type, vision_screenshot_describe
+    _VISION_OK = True
+except Exception:
+    _VISION_OK = False
+
+try:
+    from tools.weather import get_weather, get_forecast, get_weather_alert
+    _WEATHER_OK = True
+except Exception:
+    _WEATHER_OK = False
+
+from tools.math_solver import solve as _math_solve, convert_units as _convert_units
+
+# Injecter dans TOOL_MAP
+if _VISION_OK:
+    TOOL_MAP["vision_click"]    = lambda i: vision_click(i["instruction"])
+    TOOL_MAP["vision_type"]     = lambda i: vision_type(i["instruction"], i["text"])
+    TOOL_MAP["vision_describe"] = lambda i: vision_screenshot_describe(i.get("question", ""))
+
+if _WEATHER_OK:
+    TOOL_MAP["get_weather"]       = lambda i: get_weather(i.get("city", ""))
+    TOOL_MAP["get_forecast"]      = lambda i: get_forecast(i.get("city", ""), int(i.get("days", 3)))
+    TOOL_MAP["get_weather_alert"] = lambda i: get_weather_alert(i.get("city", ""))
+
+TOOL_MAP["math_solve"]     = lambda i: _math_solve(i["expression"]) or "Expression non résolue localement."
+TOOL_MAP["convert_units"]  = lambda i: _convert_units(float(i["value"]), i["from"], i["to"])
+
+# N8n
+TOOL_MAP["n8n_trigger"]        = lambda i: trigger_webhook(i["webhook"], i.get("data", {}))
+TOOL_MAP["n8n_list_workflows"] = lambda i: list_workflows()
+TOOL_MAP["n8n_activate"]       = lambda i: activate_workflow(i["id"], i.get("active", True))
+
+# Clipboard history
+TOOL_MAP["clipboard_history"]  = lambda i: get_clipboard_history(int(i.get("count", 10)))
+TOOL_MAP["clipboard_get"]      = lambda i: get_last_clipboard(int(i.get("position", 1)))
+TOOL_MAP["clipboard_restore"]  = lambda i: restore_clipboard(int(i.get("position", 1)))
+
+# File watcher
+TOOL_MAP["watch_folder"]       = lambda i: start_watching(i["folder"], i.get("name","default"), i.get("extensions"))
+TOOL_MAP["unwatch_folder"]     = lambda i: stop_watching(i.get("name","default"))
+TOOL_MAP["recent_files"]       = lambda i: get_recent_files(i.get("name","default"), int(i.get("count",10)))
+
+# OCR
+TOOL_MAP["ocr_screen"]         = lambda i: extract_text_from_screen(i.get("instruction",""))
+TOOL_MAP["ocr_image"]          = lambda i: extract_text_from_image(i["path"], i.get("instruction",""))
+TOOL_MAP["find_on_screen"]     = lambda i: find_text_on_screen(i["text"])
+
+# Google Workspace
+TOOL_MAP["gdocs_create"]       = lambda i: create_doc(i["title"], i.get("content",""))
+TOOL_MAP["gdocs_append"]       = lambda i: append_to_doc(i["content"], i.get("doc_id"))
+TOOL_MAP["gdocs_read"]         = lambda i: read_doc(i["doc_id"])
+TOOL_MAP["gsheets_create"]     = lambda i: create_sheet(i["title"], i.get("headers"))
+TOOL_MAP["gsheets_append"]     = lambda i: append_to_sheet(i["values"], i.get("sheet_id"))
+TOOL_MAP["gsheets_read"]       = lambda i: read_sheet(i["sheet_id"], i.get("range","A1:Z100"))
+TOOL_MAP["gdrive_list"]        = lambda i: list_drive_files(i.get("query",""), int(i.get("max",10)))
+
+# Démarrer la surveillance clipboard en arrière-plan
+ClipboardHistory.start()
+
 
 def _oj_exec(tool_name: str, **kwargs) -> str:
     """Exécute un outil OpenJarvis et retourne le résultat."""
@@ -182,6 +262,38 @@ Outils disponibles :
 - take_screenshot(filename?)               : prendre une capture d'ecran
 - set_volume(level)                        : regler le volume (0-100)
 - mute()                                   : couper/retablir le son
+- volume_up(steps?)                        : monter le volume (1-20 crans)
+- volume_down(steps?)                      : baisser le volume (1-20 crans)
+- volume_mute()                            : couper/retablir le son
+- youtube_play(query, fullscreen?)         : chercher et lancer une video YouTube
+- open_youtube_url(url)                    : ouvrir une URL YouTube directe
+- get_weather(city?)                       : meteo actuelle (ville ou Paris par defaut)
+- get_forecast(city?, days?)               : previsions meteo 1-5 jours
+- get_weather_alert(city?)                 : alerte meteo si conditions extremes
+- math_solve(expression)                   : calcul mathematique instantane offline
+- convert_units(value, from, to)           : convertir unites (km/miles, kg/lbs, c/f, l/gallons)
+- vision_click(instruction)               : cliquer sur un element de l'ecran via IA vision
+- vision_type(instruction, text)          : cliquer+taper dans un champ via IA vision
+- vision_describe(question?)              : decrire ou analyser l'ecran actuel
+- ocr_screen(instruction?)               : extraire le texte visible a l'ecran
+- ocr_image(path, instruction?)          : extraire le texte d'une image
+- find_on_screen(text)                   : verifier si un texte est visible a l'ecran
+- n8n_trigger(webhook, data?)            : declencher un workflow N8n via webhook
+- n8n_list_workflows()                   : lister les workflows N8n actifs
+- n8n_activate(id, active?)              : activer/desactiver un workflow N8n
+- clipboard_history(count?)              : historique des derniers textes copies
+- clipboard_get(position?)               : recuperer une copie specifique (1=derniere)
+- clipboard_restore(position?)           : remettre une ancienne copie dans le presse-papiers
+- watch_folder(folder, name?, extensions?): surveiller un dossier pour nouveaux fichiers
+- unwatch_folder(name?)                  : arreter la surveillance d'un dossier
+- recent_files(name?, count?)            : lister les fichiers recemment detectes
+- gdocs_create(title, content?)          : creer un Google Doc
+- gdocs_append(content, doc_id?)         : ajouter du texte a un Google Doc
+- gdocs_read(doc_id)                     : lire le contenu d'un Google Doc
+- gsheets_create(title, headers?)        : creer une Google Sheet
+- gsheets_append(values, sheet_id?)      : ajouter des lignes a une Sheet
+- gsheets_read(sheet_id, range?)         : lire des donnees d'une Sheet
+- gdrive_list(query?, max?)              : lister les fichiers Google Drive
 - outlook_unread(count?)                   : lire emails non lus Outlook
 - outlook_search(query, count?)            : rechercher emails Outlook
 - outlook_send(to, subject, body)          : envoyer email Outlook
@@ -360,6 +472,65 @@ async def run_turn_ollama(conversation: list, user_input: str, model: str = None
             # Reponse finale — nettoyer les artefacts eventuels
             clean = re.sub(r'TOOL:\s*\{.*?\}', '', response_text, flags=re.DOTALL).strip()
             conversation.append({"role": "user", "content": user_input})
+            conversation.append({"role": "assistant", "content": clean})
+            return clean
+
+    return response_text
+
+# ─── Backend Groq (Llama 3.3-70B, gratuit, très rapide) ──────────────────────
+
+GROQ_MODELS = {"llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768", "gemma2-9b-it"}
+
+def get_groq_client():
+    """Retourne un client OpenAI-compatible pointant sur l'API Groq."""
+    api_key = os.getenv("GROQ_API_KEY", "").strip()
+    if not api_key or api_key == "VOTRE_CLE_ICI":
+        return None
+    try:
+        from openai import OpenAI
+        return OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
+    except ImportError:
+        return None
+
+async def run_turn_groq(client, conversation: list, user_input: str,
+                        model: str = "llama-3.3-70b-versatile") -> str:
+    """Tour de conversation avec Groq (OpenAI-compatible, avec outils ReAct)."""
+    import asyncio
+    system = get_system_prompt()
+    messages = [{"role": "system", "content": system}]
+    for msg in conversation[-10:]:
+        if isinstance(msg.get("content"), str):
+            messages.append({"role": msg["role"], "content": msg["content"]})
+    messages.append({"role": "user", "content": user_input})
+
+    max_iterations = 5
+    for _ in range(max_iterations):
+        try:
+            response = await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=0.7,
+                    max_tokens=2048,
+                )
+            )
+            response_text = response.choices[0].message.content.strip()
+        except Exception as e:
+            return f"Erreur Groq : {e}"
+
+        tool_name, tool_args = parse_tool_call(response_text)
+        if tool_name:
+            console.print(f"  [tool]>> {tool_name}({str(tool_args)[:60]})[/]")
+            tool_result = execute_tool(tool_name, tool_args or {})
+            messages.append({"role": "assistant", "content": response_text})
+            messages.append({
+                "role": "user",
+                "content": f"Resultat de {tool_name}: {tool_result}\n\nMaintenant reponds a l'utilisateur."
+            })
+        else:
+            clean = re.sub(r'TOOL:\s*\{.*?\}', '', response_text, flags=re.DOTALL).strip()
+            conversation.append({"role": "user",      "content": user_input})
             conversation.append({"role": "assistant", "content": clean})
             return clean
 

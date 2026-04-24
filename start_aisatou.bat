@@ -1,9 +1,4 @@
-@echo off
-title AISATOU HUD
+﻿@echo off
 cd /d "C:\Users\USER\.claude\projects\projet jarvis"
-echo.
-echo   AISATOU demarre...
-echo   Acces local  : http://localhost:7777
-echo   Acces global : https://aisatou.rosmedia.fr
-echo.
-python aisatou_hud.py
+start /min "AISATOU" "C:\Users\USER\AppData\Local\Programs\Python\Python311\python.exe" "C:\Users\USER\.claude\projects\projet jarvis\aisatou_hud.py"
+

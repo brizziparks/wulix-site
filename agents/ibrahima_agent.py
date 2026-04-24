@@ -155,7 +155,7 @@ def create_blog_thumbnail(title: str, output_path: Path = None) -> Path:
         font_tag = ImageFont.load_default()
     draw.text((75, y+28), "WULIX Blog", fill="white", font=font_tag)
 
-    img.save(output_path, "JPEG", quality=92)
+    img.save(output_path, "PNG")
     log(f"Miniature créée: {output_path}")
     return output_path
 
@@ -201,8 +201,8 @@ def run(action="avatar"):
         path = create_malt_avatar()
         if path:
             log(f"Avatar disponible: {path}")
-            # Copie aussi dans ui/ pour usage web
             import shutil
+            UI_DIR.mkdir(exist_ok=True)
             shutil.copy(path, UI_DIR / "malt_avatar.png")
 
     elif action == "thumbnail":
