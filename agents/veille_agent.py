@@ -24,6 +24,7 @@ GMAIL_USER     = os.getenv("GMAIL_USER", "omarichard284@gmail.com")
 GMAIL_PASSWORD = os.getenv("GMAIL_APP_PASSWORD", "")
 DEST_EMAIL     = os.getenv("GMAIL_USER", "omarichard284@gmail.com")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
 
 # Flux RSS a surveiller
 RSS_FEEDS = [
@@ -73,8 +74,33 @@ def fetch_rss(url: str, max_items: int = 5) -> list[dict]:
     return items
 
 
+def collect_news_ddg() -> list[dict]:
+    """Cherche les vraies actus IA du jour via DuckDuckGo."""
+    items = []
+    queries = [
+        "AI automation news today 2026",
+        "n8n make.com update 2026",
+        "python AI agent news",
+    ]
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            for query in queries:
+                for r in ddgs.news(query, max_results=4):
+                    items.append({
+                        "title": r.get("title", ""),
+                        "link": r.get("url", ""),
+                        "desc": r.get("body", "")[:200],
+                        "source": f"Web — {r.get('source', query)}"
+                    })
+        log(f"DuckDuckGo: {len(items)} actus trouvées")
+    except Exception as e:
+        log(f"DuckDuckGo error: {e}")
+    return items
+
+
 def collect_news() -> list[dict]:
-    """Collecte les articles de tous les flux RSS."""
+    """Collecte les articles de tous les flux RSS + DuckDuckGo."""
     all_items = []
     for source, url in RSS_FEEDS:
         log(f"Fetch {source}...")
@@ -83,12 +109,15 @@ def collect_news() -> list[dict]:
             item["source"] = source
         all_items.extend(items)
         log(f"  {len(items)} articles")
+    # Enrichir avec recherche web directe
+    ddg_items = collect_news_ddg()
+    all_items.extend(ddg_items)
     return all_items
 
 
 def generate_digest_gemini(articles: list[dict]) -> str:
-    """Genere le digest avec Gemini."""
-    if not GEMINI_API_KEY:
+    """Genere le digest avec Groq (priorité) ou Gemini (fallback)."""
+    if not GEMINI_API_KEY and not GROQ_API_KEY:
         return generate_digest_simple(articles)
 
     # Construit le contexte
@@ -115,6 +144,24 @@ Le digest doit :
 5. Ton : professionnel mais direct, pas de blabla
 
 Format HTML simple (h2, p, ul, li, strong). Pas de CSS inline. En francais."""
+
+    # Groq en priorité (pas de limite de quota journalier)
+    if GROQ_API_KEY:
+        try:
+            import httpx, json as _json
+            ctx_lines = [f"- [{a['source']}] {a['title']}" for a in articles[:20]]
+            ctx = "\n".join(ctx_lines)
+            today = datetime.date.today().strftime("%d/%m/%Y")
+            prompt_groq = f"""Tu es KOFI, agent de veille IA pour WULIX.\nVoici les actualites IA et automatisation du {today} :\n\n{ctx}\n\nRedige un digest email HTML (h2, p, ul, li, strong) en français. 5 actus max, chacune en 2-3 lignes + impact WULIX. Termine par 1 opportunité business concrète pour WULIX."""
+            r = httpx.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
+                json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": prompt_groq}], "max_tokens": 1200, "temperature": 0.7},
+                timeout=25
+            )
+            return r.json()["choices"][0]["message"]["content"].strip()
+        except Exception as e:
+            log(f"Groq error: {e} — fallback Gemini")
 
     try:
         import urllib.request
@@ -254,5 +301,213 @@ def run():
     return {"status": "ok", "articles": len(articles), "email_sent": ok}
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# MODE "IDEES D'APPS VALIDEES" — scrape Reddit + HN pour detecter les pain points
+# Lance : python agents/veille_agent.py --ideas
+# ═══════════════════════════════════════════════════════════════════════════
+
+REDDIT_FEEDS = [
+    ("r/SaaS",                  "https://old.reddit.com/r/SaaS/.rss"),
+    ("r/EntrepreneurRideAlong", "https://old.reddit.com/r/EntrepreneurRideAlong/.rss"),
+    ("r/SideProject",           "https://old.reddit.com/r/SideProject/.rss"),
+    ("r/automate",              "https://old.reddit.com/r/automate/.rss"),
+    ("r/freelance",             "https://old.reddit.com/r/freelance/.rss"),
+]
+
+HN_FEED = ("Hacker News",       "https://news.ycombinator.com/rss")
+REDDIT_UA = "WULIX-Veille/1.0 (by /u/wulixfr; contact:contact@wulix.fr)"
+
+
+def fetch_reddit_rss(url: str, max_items: int = 15) -> list[dict]:
+    """Reddit-specific fetcher avec UA approprie pour eviter le 403."""
+    items = []
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": REDDIT_UA})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            raw = resp.read()
+        root = ET.fromstring(raw)
+        ns = {"atom": "http://www.w3.org/2005/Atom"}
+        for entry in root.findall(".//atom:entry", ns)[:max_items]:
+            title = entry.findtext("atom:title", "", ns).strip()
+            link_el = entry.find("atom:link", ns)
+            link = link_el.get("href", "") if link_el is not None else ""
+            content = entry.findtext("atom:content", "", ns).strip()
+            # Strip HTML tags pour le matching de keywords
+            import re as _re
+            desc = _re.sub(r'<[^>]+>', ' ', content)[:300]
+            items.append({"title": title, "link": link, "desc": desc})
+    except Exception as e:
+        log(f"Erreur Reddit {url[:50]} : {e}")
+    return items
+
+# Mots-cles signalant un pain point / besoin d'outil
+PAIN_KEYWORDS = [
+    "looking for", "is there a tool", "need a tool", "best way to", "how do you",
+    "any recommendations", "tired of", "annoying", "wish there was", "frustrating",
+    "anyone built", "how to automate", "is there any way",
+    "cherche un outil", "comment automatiser", "y a-t-il", "besoin d'un",
+    "quel outil", "marre de", "frustrant",
+]
+
+
+def collect_pain_points() -> list[dict]:
+    """Collecte les posts Reddit + HN qui ressemblent a des pain points."""
+    candidates = []
+    feeds = REDDIT_FEEDS + [HN_FEED]
+
+    for source, url in feeds:
+        log(f"Scan {source}...")
+        # Reddit utilise un fetcher dedie (UA specifique anti-403)
+        if "reddit.com" in url:
+            items = fetch_reddit_rss(url, max_items=15)
+        else:
+            items = fetch_rss(url, max_items=15)
+        for item in items:
+            text = (item.get("title", "") + " " + item.get("desc", "")).lower()
+            score = sum(1 for kw in PAIN_KEYWORDS if kw in text)
+            if score > 0:
+                item["source"] = source
+                item["pain_score"] = score
+                candidates.append(item)
+        log(f"  {len([c for c in candidates if c['source']==source])} pain points")
+
+    # Trie par score decroissant
+    candidates.sort(key=lambda x: x.get("pain_score", 0), reverse=True)
+    return candidates
+
+
+def generate_app_ideas_report(pain_points: list[dict]) -> str:
+    """Genere un rapport d'idees d'apps via Gemini/Groq a partir des pain points."""
+    if not pain_points:
+        return "<p>Aucun pain point detecte cette semaine.</p>"
+
+    if not GEMINI_API_KEY and not GROQ_API_KEY:
+        # Fallback simple
+        lines = ["<h2>Pain points detectes (top 10)</h2>", "<ul>"]
+        for p in pain_points[:10]:
+            lines.append(f'<li><strong>[{p["source"]}]</strong> <a href="{p["link"]}">{p["title"]}</a></li>')
+        lines.append("</ul>")
+        return "\n".join(lines)
+
+    # Contexte pour le LLM
+    ctx_lines = []
+    for p in pain_points[:25]:
+        ctx_lines.append(f"- [{p['source']} - score {p['pain_score']}] {p['title']}")
+        if p.get("desc"):
+            ctx_lines.append(f"  {p['desc'][:150]}")
+        if p.get("link"):
+            ctx_lines.append(f"  Lien: {p['link']}")
+    ctx = "\n".join(ctx_lines)
+
+    today = datetime.date.today().strftime("%d/%m/%Y")
+    prompt = f"""Tu es KOFI, agent veille pour WULIX (agence automatisation IA freelance/PME).
+
+Voici 25 posts Reddit/HN du {today} avec des mots-cles de pain points :
+
+{ctx}
+
+Mission : extrais les **10 IDEES D'APPS VALIDEES** les plus prometteuses (vraies demandes, pas du bruit).
+
+Pour chaque idee, format HTML :
+
+<div style="margin-bottom:20px;padding:12px;background:#f8f9ff;border-left:3px solid #7c3aed;border-radius:4px">
+  <h3 style="margin:0 0 6px;color:#7c3aed">N. Titre court de l'idee</h3>
+  <p><strong>Probleme :</strong> ...</p>
+  <p><strong>Solution :</strong> ... (2 lignes max, technique simple Python/n8n/IA)</p>
+  <p><strong>Difficulte :</strong> Facile/Moyen/Difficile · <strong>Potentiel :</strong> Faible/Moyen/Eleve</p>
+  <p style="font-size:11px;color:#7c88a8"><strong>Source :</strong> <a href="LIEN">[source]</a></p>
+</div>
+
+Commence par <h2>10 idees d'apps validees — semaine du {today}</h2>.
+Termine par <p><em>Selectionnees parmi {len(pain_points)} pain points detectes.</em></p>"""
+
+    return _call_llm(prompt, max_tokens=2500) or generate_app_ideas_report_fallback(pain_points)
+
+
+def generate_app_ideas_report_fallback(pain_points):
+    lines = ["<h2>Pain points detectes (top 10)</h2>", "<ul>"]
+    for p in pain_points[:10]:
+        lines.append(f'<li><strong>[{p["source"]}]</strong> <a href="{p["link"]}">{p["title"]}</a></li>')
+    lines.append("</ul>")
+    return "\n".join(lines)
+
+
+def _call_llm(prompt: str, max_tokens: int = 2000) -> str:
+    """Appelle Groq (priorite) ou Gemini pour generer du contenu."""
+    # Reuse la logique de generate_digest_gemini sans wrapper
+    if GROQ_API_KEY:
+        try:
+            req = urllib.request.Request(
+                "https://api.groq.com/openai/v1/chat/completions",
+                data=json.dumps({
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [{"role": "user", "content": prompt}],
+                    "max_tokens": max_tokens,
+                    "temperature": 0.6,
+                }).encode("utf-8"),
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {GROQ_API_KEY}"
+                }
+            )
+            with urllib.request.urlopen(req, timeout=45) as resp:
+                data = json.loads(resp.read())
+            return data["choices"][0]["message"]["content"]
+        except Exception as e:
+            log(f"Groq error: {e} — fallback Gemini")
+
+    if GEMINI_API_KEY:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+            req = urllib.request.Request(url,
+                data=json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8"),
+                headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=45) as resp:
+                data = json.loads(resp.read())
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except Exception as e:
+            log(f"Gemini error: {e}")
+    return ""
+
+
+def run_ideas():
+    """Point d'entree mode 'idees d'apps validees'."""
+    today = datetime.date.today().strftime("%d/%m/%Y")
+    log(f"=== KOFI Idees d'apps — {today} ===")
+
+    pain_points = collect_pain_points()
+    log(f"Total : {len(pain_points)} pain points detectes")
+
+    if not pain_points:
+        log("Aucun pain point — arret")
+        return
+
+    log("Generation du rapport d'idees...")
+    report_html = generate_app_ideas_report(pain_points)
+    log(f"Rapport genere ({len(report_html)} caracteres)")
+
+    # Sauvegarde
+    out_dir = Path(__file__).parent / "content" / "ideas"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / f"idees_apps_{datetime.date.today().strftime('%Y%m%d')}.html"
+    out_file.write_text(report_html, encoding="utf-8")
+    log(f"Sauvegarde : {out_file}")
+
+    # Email
+    subject = f"[WULIX Ideas] 10 idees d'apps validees — {today}"
+    ok = send_email(subject, report_html)
+
+    if ok:
+        log("=== KOFI Ideas termine avec succes ===")
+    else:
+        log("=== KOFI Ideas termine (email non envoye) ===")
+
+    return {"status": "ok", "pain_points": len(pain_points), "email_sent": ok}
+
+
 if __name__ == "__main__":
-    run()
+    import sys
+    if "--ideas" in sys.argv:
+        run_ideas()
+    else:
+        run()

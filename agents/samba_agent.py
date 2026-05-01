@@ -22,6 +22,51 @@ def log(msg):
 
 ARTICLE_TOPICS = [
     {
+        "title": "Lancer un business solo avec Claude AI en 30 jours : la roadmap réaliste 2026",
+        "keyword": "business solo claude ai 30 jours",
+        "intro": "Vous voulez créer un business à 1 personne en utilisant Claude comme cofondateur virtuel ? Voici la roadmap en 4 semaines, validée par les solo founders qui réussissent en 2026.",
+        "sections": [
+            ("Pourquoi Claude change la donne pour les solo founders", "Avec Claude (Sonnet 4.7 / Opus 4.7), un solo peut maintenant remplacer une équipe de 3-5 personnes : développement, design, marketing, support. Ce qui prenait 6 mois prend 6 semaines. Le coût d'expérimentation s'effondre."),
+            ("Semaine 1 : trouver une idée validée", "N'inventez pas — récoltez. Scannez Reddit (r/SaaS, r/EntrepreneurRideAlong), Hacker News, Product Hunt pour les pain points répétés. Notre agent KOFI fait ça automatiquement chaque semaine. Validez avec 5 interviews clients avant tout code."),
+            ("Semaine 2 : MVP avec Claude Code", "Claude Code transforme une spec en code production en quelques heures. Stack recommandée pour solo : FastAPI + HTMX + SQLite (déploiement Cloudflare Pages ou Render gratuit). Démo en local dès jour 4."),
+            ("Semaine 3 : design avec Claude Design", "Claude Design (Anthropic Labs) génère vos maquettes UI à partir d'un brief texte + votre design system. Plus besoin de Figma ni de designer. Vous itérez en 1 jour ce qui prendrait 1 semaine."),
+            ("Semaine 4 : automation marketing avec n8n + agents IA", "Setup MARIAMA (LinkedIn auto-post), SAMBA (SEO articles), KOFI (veille). Premier client en jour 28 grâce à 30 posts LinkedIn générés automatiquement."),
+            ("Le piège à éviter", "Ne tombez pas dans le rabbit hole technique. Claude permet d'aller vite, mais ce qui vend c'est la traction, pas le code. Limitez le dev à 30% de votre temps. Le reste : prospection, contenu, ventes."),
+            ("Combien ça coûte ?", "Setup minimum : Claude Pro (20$/mois) ou Max (100$/mois) + Cloudflare Pages (gratuit) + nom de domaine (10€/an). Total < 150€ pour démarrer. Comparez à un cofondateur dev à 50k€/an."),
+            ("Conclusion : à toi de jouer", "WULIX est exactement ce business solo : 1 personne (Omar Sylla) + Claude + 14 agents IA = agence d'automatisation. Si on a pu, vous pouvez. Pour aller plus vite, jetez un œil au Pack Scripts Python sur wulix.gumroad.com.")
+        ]
+    },
+    {
+        "title": "Le workflow IA ultime pour créer un site pro en 2026 : Claude Design + GPT Image + Claude Code",
+        "keyword": "workflow ia créer site pro 2026",
+        "intro": "Combiner les bons outils IA permet de livrer un site web professionnel en 2 jours au lieu de 2 semaines. Voici le workflow exact que nous utilisons à WULIX.",
+        "sections": [
+            ("Le trio gagnant", "Claude Design pour les maquettes (UI/UX), GPT Image 2 pour les illustrations et visuels custom, Claude Code pour l'implémentation HTML/CSS/JS. Trois outils qui se complètent parfaitement."),
+            ("Étape 1 : brief design + design system", "Avant de générer quoi que ce soit, écrivez un brief structuré : palette, typo, ton, sections obligatoires. Uploadez-le à Claude Design avec votre repo existant. Il génère un design system unifié réutilisable."),
+            ("Étape 2 : maquettes haute-fidélité", "Demandez à Claude Design vos pages dans l'ordre : home, services, contact. Itérez avec des commentaires inline. Comptez 30 min par page bien faite. Mobile + desktop générés en parallèle."),
+            ("Étape 3 : visuels custom avec GPT Image 2", "Pour les illustrations qui font la différence (hero, covers produits, OG images), GPT Image 2 produit des visuels cohérents avec votre branding. Stable Diffusion XL en alternative gratuite."),
+            ("Étape 4 : implémentation avec Claude Code", "Vous coller les maquettes + assets dans Claude Code (CLI ou claude.ai). Il code en HTML/CSS/JS pur, prêt pour Cloudflare Pages. Notre site wulix.fr a été refait comme ça en 2 jours."),
+            ("Le vrai gain : itération rapide", "Avant : changer une couleur principale = 2h de boulot. Avec ce workflow : 5 minutes (Claude Design met à jour le design system, Claude Code applique). C'est ce qui change tout."),
+            ("Limites à connaître", "Claude Design est en research preview (Pro/Max/Team uniquement). GPT Image 2 a un quota limité. Mais combinés, ils remplacent un designer + un développeur front pour 90% des sites."),
+            ("Notre offre WULIX", "Si vous voulez ce workflow appliqué à votre projet : audit + maquettes + dev livrés en 5 jours sur wulix.fr/offre. Ou achetez nos templates sur wulix.gumroad.com pour démarrer seul.")
+        ]
+    },
+    {
+        "title": "Trouver des idées d'apps profitables avec un agent IA : la méthode KOFI",
+        "keyword": "trouver idees apps profitables ia 2026",
+        "intro": "La meilleure idée de business est celle que les gens cherchent déjà. Voici comment notre agent IA KOFI scanne Reddit, Hacker News et Product Hunt pour identifier 10 opportunités validées chaque semaine.",
+        "sections": [
+            ("Pourquoi 90% des solo founders échouent", "Ils inventent une solution avant de chercher un problème. La méthode inverse : trouvez d'abord la douleur récurrente, ensuite construisez la solution. C'est ce que fait KOFI automatiquement."),
+            ("Comment KOFI fonctionne techniquement", "L'agent scrape les RSS de r/SaaS, r/EntrepreneurRideAlong, r/SideProject, r/automate, r/freelance et HN. Il filtre avec 20+ mots-clés signalant un pain point (\"looking for\", \"is there a tool\", \"tired of\", etc.)."),
+            ("L'enrichissement par LLM", "Les pain points bruts sont injectés dans un LLM (Llama 3.3-70B via Groq, gratuit). Il extrait les 10 idées les plus prometteuses avec : problème, solution technique, difficulté estimée, potentiel de revenu."),
+            ("Exemple concret", "Cette semaine, KOFI a détecté : \"freelances cherchent un outil pour automatiser leurs relances clients sans Zapier\". Solution simple : script Python + Gmail API. Coût de dev : 4h. Marché : 100k+ freelances."),
+            ("Reproduire chez vous", "Le code de KOFI est disponible dans le Pack Scripts Python WULIX (29€). Adaptable en 20 minutes à votre niche. Il vous envoie un email chaque vendredi avec 10 nouvelles idées validées."),
+            ("Au-delà des apps : services", "KOFI ne sert pas qu'à trouver des idées d'apps. Il identifie aussi des opportunités de services freelance : \"besoin d'un consultant Notion\", \"cherche dev FastAPI\". Vous répondez avant les autres."),
+            ("Combiner avec d'autres signaux", "KOFI + Google Trends + Twitter Search + LinkedIn Sales Navigator = vous savez avant tout le monde où sont les marchés émergents. C'est l'avantage déloyal des solo founders en 2026."),
+            ("Pour aller plus loin", "Notre Pack Scripts Python inclut KOFI + 4 autres agents prêts à déployer. Disponible sur wulix.gumroad.com. Garantie satisfaction 7 jours.")
+        ]
+    },
+    {
         "title": "Comment automatiser ses relances clients avec Python en 30 minutes",
         "keyword": "automatiser relances clients python",
         "intro": "Vous perdez du temps à relancer manuellement vos clients ? Voici comment Python peut le faire pour vous en 30 minutes de setup.",

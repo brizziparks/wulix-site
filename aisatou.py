@@ -204,6 +204,92 @@ TOOL_MAP["gsheets_append"]     = lambda i: append_to_sheet(i["values"], i.get("s
 TOOL_MAP["gsheets_read"]       = lambda i: read_sheet(i["sheet_id"], i.get("range","A1:Z100"))
 TOOL_MAP["gdrive_list"]        = lambda i: list_drive_files(i.get("query",""), int(i.get("max",10)))
 
+# ── Hermes Agent (NousResearch) — délégation tâches techniques lourdes ──────
+try:
+    from tools.hermes_tool import hermes_run, hermes_status, hermes_skills
+    TOOL_MAP["hermes_run"]    = lambda i: hermes_run(i["task"], int(i.get("timeout", 180)))
+    TOOL_MAP["hermes_status"] = lambda i: hermes_status()
+    TOOL_MAP["hermes_skills"] = lambda i: hermes_skills()
+except Exception as _e_hermes:
+    pass  # Hermes optionnel
+
+# ── Outils WULIX ─────────────────────────────────────────────────────────────
+import subprocess as _sp
+import json as _json_w
+import datetime as _dt_w
+
+def _run_wulix_agent(name: str) -> str:
+    _agents_map = {
+        "samba":  "agents/samba_agent.py",
+        "ndeye":  "agents/ndeye_agent.py",
+        "kofi":   "agents/veille_agent.py",
+        "crew":   "agents/crewai_prospector.py",
+        "lamine": "agents/lamine_agent.py",
+        "kouman": "agents/prospecteur_agent.py",
+        "faktour":"agents/facturation_agent.py",
+    }
+    script = _agents_map.get(name.lower())
+    if not script:
+        return f"Agent inconnu: {name}. Dispo: {', '.join(_agents_map.keys())}"
+    try:
+        r = _sp.run(["python", script], cwd=str(BASE_DIR),
+                    capture_output=True, text=True, timeout=120)
+        last = "\n".join((r.stdout or r.stderr).strip().split("\n")[-6:])
+        return f"Agent {name} termine:\n{last}"
+    except Exception as e:
+        return f"Erreur {name}: {e}"
+
+def _get_today_leads() -> str:
+    today = _dt_w.date.today().isoformat()
+    leads_file = BASE_DIR / "agents" / "content" / "leads" / f"crew_leads_{today}.json"
+    if not leads_file.exists():
+        return f"Aucun leads pour {today}. Lance CREW d'abord."
+    data = _json_w.loads(leads_file.read_text(encoding="utf-8"))
+    leads = data.get("leads", [])
+    if not leads:
+        return "0 lead qualifie aujourd'hui."
+    lines = [f"{len(leads)} leads — {today}:"]
+    for i, lead in enumerate(leads[:5], 1):
+        q = lead.get("qualif", {})
+        lines.append(f"{i}. [{q.get('score','?')}/10] {lead['title'][:65]}")
+        lines.append(f"   {lead['url']}")
+        msg = lead.get("approach_message","")[:100]
+        lines.append(f"   >> {msg}...")
+    return "\n".join(lines)
+
+def _deploy_wulix_site() -> str:
+    try:
+        r = _sp.run(
+            ["powershell", "-File", r"C:\Users\USER\Scripts\WULIX\deploy_cloudflare.ps1"],
+            capture_output=True, text=True, timeout=120
+        )
+        last = "\n".join((r.stdout or "").strip().split("\n")[-4:])
+        return f"Deploy wulix.fr:\n{last}"
+    except Exception as e:
+        return f"Erreur deploy: {e}"
+
+def _wulix_status() -> str:
+    today = _dt_w.date.today().isoformat()
+    leads_file = BASE_DIR / "agents" / "content" / "leads" / f"crew_leads_{today}.json"
+    n_leads = 0
+    if leads_file.exists():
+        try:
+            d = _json_w.loads(leads_file.read_text(encoding="utf-8"))
+            n_leads = d.get("qualified_leads", 0)
+        except Exception:
+            pass
+    logs = list((BASE_DIR / "agents" / "logs").glob("*.log"))
+    return (f"WULIX status — {today}\n"
+            f"Leads du jour : {n_leads}\n"
+            f"Logs agents   : {len(logs)} fichiers\n"
+            f"Site          : https://wulix.fr\n"
+            f"Gumroad       : https://wulix.gumroad.com")
+
+TOOL_MAP["run_wulix_agent"] = lambda i: _run_wulix_agent(i.get("name",""))
+TOOL_MAP["get_today_leads"] = lambda i: _get_today_leads()
+TOOL_MAP["deploy_wulix"]    = lambda i: _deploy_wulix_site()
+TOOL_MAP["wulix_status"]    = lambda i: _wulix_status()
+
 # Démarrer la surveillance clipboard en arrière-plan
 ClipboardHistory.start()
 
@@ -281,6 +367,9 @@ Outils disponibles :
 - n8n_trigger(webhook, data?)            : declencher un workflow N8n via webhook
 - n8n_list_workflows()                   : lister les workflows N8n actifs
 - n8n_activate(id, active?)              : activer/desactiver un workflow N8n
+- hermes_run(task, timeout?)             : DELEGUER une tache technique lourde a Hermes Agent (Linux WSL2). A utiliser pour : refactor de code complexe, browser automation, taches qui demandent un sandbox isole, generation de diagrammes/manim/ascii art. Timeout par defaut 180s. Reponds avec le resultat de Hermes.
+- hermes_status()                        : verifier que Hermes Agent est installe et fonctionnel
+- hermes_skills()                        : lister les 89 skills built-in de Hermes (architecture-diagram, design-md, manim-video, opencode, etc.)
 - clipboard_history(count?)              : historique des derniers textes copies
 - clipboard_get(position?)               : recuperer une copie specifique (1=derniere)
 - clipboard_restore(position?)           : remettre une ancienne copie dans le presse-papiers
@@ -312,6 +401,12 @@ Outils disponibles :
 - code_interpreter(code)                   : executer du code Python
 - http_request(url, method?, body?)        : faire une requete HTTP
 - think(thought)                           : raisonner etape par etape
+
+── Outils WULIX (gestion agence) ──
+- run_wulix_agent(name)                    : lancer un agent WULIX (samba/ndeye/kofi/crew/lamine/faktour)
+- get_today_leads()                        : leads qualifies du jour (Reddit/web)
+- deploy_wulix()                           : deployer wulix.fr sur Cloudflare Pages
+- wulix_status()                           : statut general WULIX (leads, logs, sites)
 
 Apres avoir vu le resultat d'un outil, reponds normalement a l'utilisateur.
 N'utilise les outils que quand c'est utile.
@@ -635,16 +730,27 @@ async def main():
 
     loop = asyncio.get_event_loop()
 
-    # Detection du backend
+    # Detection du backend — priorité : Gemini > Groq > Ollama > Claude API
+    gemini_client = get_gemini_client()
+    groq_client   = get_groq_client()
+    use_gemini    = gemini_client is not None
+    use_groq      = groq_client is not None and not use_gemini
     claude_client = get_claude_client()
-    use_ollama    = is_ollama_running()
+    use_ollama    = not use_gemini and not use_groq and is_ollama_running()
 
-    if not use_ollama and not claude_client:
+    if not use_gemini and not use_groq and not use_ollama and not claude_client:
         console.print("[error]Aucun backend disponible.[/]")
-        console.print("[dim]Demarre Ollama (ollama serve) ou ajoute ANTHROPIC_API_KEY dans .env[/]")
+        console.print("[dim]Ajoute GEMINI_API_KEY ou GROQ_API_KEY dans .env[/]")
         sys.exit(1)
 
-    backend_name = f"Ollama ({OLLAMA_MODEL})" if use_ollama else "Claude API"
+    if use_gemini:
+        backend_name = f"Gemini ({os.getenv('AISATOU_MODEL', 'gemini-2.0-flash-lite')})"
+    elif use_groq:
+        backend_name = "Groq (llama-3.3-70b-versatile)"
+    elif use_ollama:
+        backend_name = f"Ollama ({OLLAMA_MODEL})"
+    else:
+        backend_name = "Claude API"
 
     # Banniere
     console.print()
@@ -662,9 +768,57 @@ async def main():
     if use_wake:  mode_parts.append("[magenta]Wake word actif — dis 'Aisatou'[/]")
     if not mode_parts: mode_parts.append("[dim]Mode texte  (--voice ou --wake pour le micro)[/]")
     console.print(f"  {' · '.join(mode_parts)}")
-    console.print("[dim]  'au revoir' ou 'exit' pour quitter.\n[/]")
+    n_tools = len(TOOL_MAP)
+    console.print(f"  [dim]{n_tools} outils charges  ·  /help pour l'aide  ·  /leads  ·  /agents  ·  exit pour quitter[/]\n")
+
+    async def groq_ask_httpx(user_input: str) -> str:
+        """Appel Groq via httpx direct (contourne les blocages VPN du client OpenAI)."""
+        import httpx as _hx
+        import asyncio as _aio
+        system = get_system_prompt()
+        messages = [{"role": "system", "content": system}]
+        for msg in conversation[-10:]:
+            if isinstance(msg.get("content"), str):
+                messages.append({"role": msg["role"], "content": msg["content"]})
+        messages.append({"role": "user", "content": user_input})
+        for _ in range(5):
+            r = await _aio.get_event_loop().run_in_executor(None, lambda: _hx.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {os.getenv('GROQ_API_KEY','')}"},
+                json={"model": "llama-3.3-70b-versatile", "messages": messages,
+                      "max_tokens": 1024, "temperature": 0.7},
+                timeout=30
+            ))
+            r.raise_for_status()
+            response_text = r.json()["choices"][0]["message"]["content"].strip()
+            tool_name, tool_args = parse_tool_call(response_text)
+            if tool_name:
+                console.print(f"  [tool]>> {tool_name}({str(tool_args)[:60]})[/]")
+                tool_result = execute_tool(tool_name, tool_args or {})
+                messages.append({"role": "assistant", "content": response_text})
+                messages.append({"role": "user", "content": f"Resultat de {tool_name}: {tool_result}\n\nMaintenant reponds."})
+            else:
+                clean = re.sub(r'TOOL:\s*\{.*?\}', '', response_text, flags=re.DOTALL).strip()
+                conversation.append({"role": "user", "content": user_input})
+                conversation.append({"role": "assistant", "content": clean})
+                return clean
+        return response_text
 
     async def ask(user_input: str) -> str:
+        if use_gemini:
+            try:
+                return await run_turn_gemini(gemini_client, conversation, user_input)
+            except Exception as e:
+                err = str(e)
+                if "429" in err or "quota" in err.lower():
+                    console.print("  [dim]Gemini quota — fallback Groq[/]")
+                else:
+                    raise
+        # Fallback Groq (httpx direct, fonctionne sans VPN)
+        try:
+            return await groq_ask_httpx(user_input)
+        except Exception as e:
+            console.print(f"  [dim]Groq error: {e} — fallback Ollama[/]")
         if use_ollama:
             return await run_turn_ollama(conversation, user_input)
         return await run_turn_claude(claude_client, conversation, user_input)
@@ -754,6 +908,63 @@ async def main():
 
             if not user_input:
                 continue
+
+            # ── Slash commands ────────────────────────────────────────────────
+            if user_input.strip().startswith("/"):
+                cmd = user_input.strip().lower().lstrip("/").split()[0]
+                if cmd in ("help", "aide", "h", "?"):
+                    console.print(Panel(
+                        "[cyan]/help[/]    — cette aide\n"
+                        "[cyan]/tools[/]   — liste de tous les outils\n"
+                        "[cyan]/agents[/]  — agents WULIX disponibles\n"
+                        "[cyan]/leads[/]   — leads qualifies du jour\n"
+                        "[cyan]/deploy[/]  — deployer wulix.fr\n"
+                        "[cyan]/status[/]  — statut WULIX\n"
+                        "[cyan]/memory[/]  — voir la memoire\n"
+                        "[cyan]/clear[/]   — effacer l'historique\n"
+                        "[cyan]exit[/]     — quitter",
+                        title="[aisatou]Commandes AISATOU[/]", border_style="magenta"
+                    ))
+                elif cmd in ("tools", "outils"):
+                    tools_list = "  ".join(sorted(TOOL_MAP.keys()))
+                    console.print(Panel(
+                        "\n".join(f"• {t}" for t in sorted(TOOL_MAP.keys())),
+                        title=f"[aisatou]{len(TOOL_MAP)} outils disponibles[/]", border_style="cyan"
+                    ))
+                elif cmd in ("agents",):
+                    console.print(Panel(
+                        "• [cyan]samba[/]   — SEO, publie 1 article/semaine\n"
+                        "• [cyan]ndeye[/]   — Analytics, rapport ventes quotidien\n"
+                        "• [cyan]kofi[/]    — Veille IA, digest quotidien\n"
+                        "• [cyan]crew[/]    — Prospection, leads Reddit/web\n"
+                        "• [cyan]lamine[/]  — Support, repond emails Gmail\n"
+                        "• [cyan]faktour[/] — Facturation, PDF factures\n\n"
+                        "Usage: dis 'lance l'agent crew' ou 'run_wulix_agent(crew)'",
+                        title="[aisatou]Agents WULIX[/]", border_style="purple"
+                    ))
+                elif cmd in ("leads",):
+                    console.print(Panel(
+                        _get_today_leads(),
+                        title="[aisatou]Leads du jour[/]", border_style="green"
+                    ))
+                elif cmd in ("deploy",):
+                    console.print("[dim]  Deploiement en cours...[/]")
+                    result_deploy = _deploy_wulix_site()
+                    console.print(Panel(result_deploy, title="[aisatou]Deploy WULIX[/]", border_style="cyan"))
+                elif cmd in ("status",):
+                    console.print(Panel(_wulix_status(), title="[aisatou]WULIX Status[/]", border_style="gold1"))
+                elif cmd in ("memory", "memoire"):
+                    mem = load_memory(MEMORY_FILE)
+                    console.print(Panel(mem[:2000] + ("..." if len(mem)>2000 else ""),
+                                        title="[aisatou]Memoire[/]", border_style="dim"))
+                elif cmd in ("clear", "reset"):
+                    conversation.clear()
+                    console.print("[dim]  Historique efface.[/]")
+                else:
+                    console.print(f"[dim]Commande inconnue: /{cmd} — tape /help[/]")
+                continue
+            # ─────────────────────────────────────────────────────────────────
+
             if user_input.strip().lower() in ("exit", "quit", "au revoir", "goodbye", "quitter"):
                 bye = "Au revoir ! Reviens quand tu as besoin de moi."
                 console.print(f"\n[dim magenta]{bye}[/]")
