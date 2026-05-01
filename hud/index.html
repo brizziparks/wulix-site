@@ -1986,38 +1986,80 @@ setInterval(() => {
 // ── Historique / Export ──────────────────────────────────────────────────
 async function exportHistory() {
   try {
-    const r = await fetch('/history', {headers: {Authorization: 'Basic ' + btoa(AUTH)}});
+    const r = await fetch('/history', {headers: AUTH});
     const data = await r.json();
     if (!data.history || data.history.length === 0) {
-      addMsg('aisatou', 'Aucune conversation sauvegardee pour le moment.'); return;
+      addMessage('ai','Aucune conversation sauvegardee pour le moment.'); return;
     }
     // Telecharge le fichier le plus recent
     const latest = data.history[0];
     const a = document.createElement('a');
-    a.href = '/history/' + latest.file + '?auth=' + btoa(AUTH);
+    a.href = '/history/' + latest.file + '?auth=' + btoa('aisatou:3eAeq9k!hk!H4SFK');
     a.download = latest.file;
     a.click();
-    addMsg('aisatou', 'Export: ' + latest.file + ' (' + latest.count + ' echanges)');
+    addMessage('ai','Export: ' + latest.file + ' (' + latest.count + ' echanges)');
   } catch(e) {
-    addMsg('aisatou', 'Erreur export: ' + e.message);
+    addMessage('ai','Erreur export: ' + e.message);
   }
 }
 
 async function showHistory() {
   try {
-    const r = await fetch('/history', {headers: {Authorization: 'Basic ' + btoa(AUTH)}});
+    const r = await fetch('/history', {headers: AUTH});
     const data = await r.json();
     if (!data.history || data.history.length === 0) {
-      addMsg('aisatou', 'Aucune conversation sauvegardee.'); return;
+      addMessage('ai','Aucune conversation sauvegardee.'); return;
     }
     let msg = '**Historique des conversations:**\n';
     data.history.slice(0, 10).forEach(h => {
       msg += `\n- \`${h.session}\` — ${h.count} echanges`;
     });
-    addMsg('aisatou', msg);
-  } catch(e) { addMsg('aisatou', 'Erreur: ' + e.message); }
+    addMessage('ai',msg);
+  } catch(e) { addMessage('ai','Erreur: ' + e.message); }
 }
 
+
+// Toggle l'état d'un item todo (coché / non-coché) + persistance localStorage
+function toggleTodo(item) {
+  const isDone = item.classList.toggle('done');
+  const check = item.querySelector('.tcheck');
+  const label = item.querySelector('.tlabel');
+  if (check) check.classList.toggle('checked', isDone);
+  if (label) {
+    label.style.textDecoration = isDone ? 'line-through' : '';
+    label.style.opacity = isDone ? '.5' : '';
+  }
+  // Persistance — sauvegarde l'état des todos par texte de label
+  try {
+    const states = JSON.parse(localStorage.getItem('aisatou_todos') || '{}');
+    states[label?.textContent || ''] = isDone;
+    localStorage.setItem('aisatou_todos', JSON.stringify(states));
+  } catch(e) {}
+  if (isDone) {
+    addLog((label?.textContent || 'Tâche') + ' — ✓', 'ok', 'TODO');
+    playNotif('done');
+  }
+}
+
+// Restaure les todos cochés depuis localStorage au chargement
+(function restoreTodos() {
+  try {
+    const states = JSON.parse(localStorage.getItem('aisatou_todos') || '{}');
+    document.querySelectorAll('.todo-item').forEach(item => {
+      const label = item.querySelector('.tlabel')?.textContent || '';
+      if (states[label] && !item.classList.contains('done')) {
+        item.classList.add('done');
+        const check = item.querySelector('.tcheck');
+        const lblEl = item.querySelector('.tlabel');
+        if (check) check.classList.add('checked');
+        if (lblEl) {
+          lblEl.style.textDecoration = 'line-through';
+          lblEl.style.opacity = '.5';
+        }
+      }
+    });
+  } catch(e) {}
+})();
 
 // Theme clair/sombre
 function toggleTheme() {

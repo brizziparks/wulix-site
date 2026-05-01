@@ -23,7 +23,9 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 
 CLIENT_ID     = os.getenv("LINKEDIN_CLIENT_ID", "")
 CLIENT_SECRET = os.getenv("LINKEDIN_CLIENT_SECRET", "")
-REDIRECT_URI  = "https://wulix.fr/linkedin/callback"   # doit être enregistrée dans l'app LinkedIn
+# Redirect URI : serveur local pour récupérer le code automatiquement
+# (à enregistrer dans l'app LinkedIn : http://localhost:8765/callback)
+REDIRECT_URI  = "http://localhost:8765/callback"
 
 # Scopes nécessaires pour poster sur la page entreprise
 SCOPES = [
@@ -138,6 +140,94 @@ def verify_org_access(token: str):
 
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
+def auto_capture_code():
+    """Démarre un mini serveur HTTP local sur :8765 pour capturer le code OAuth.
+    L'utilisateur clique le lien → LinkedIn redirige sur localhost:8765/callback?code=...
+    → on récupère le code, on l'échange contre un token, et on ferme le serveur.
+    """
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    import threading
+
+    captured = {"code": None, "error": None, "state": None}
+
+    class CallbackHandler(BaseHTTPRequestHandler):
+        def log_message(self, format, *args):
+            pass  # silencieux
+
+        def do_GET(self):
+            parsed = urlparse(self.path)
+            if not parsed.path.startswith("/callback"):
+                self.send_response(404)
+                self.end_headers()
+                return
+            params = parse_qs(parsed.query)
+            captured["code"]  = params.get("code",  [None])[0]
+            captured["error"] = params.get("error", [None])[0]
+            captured["state"] = params.get("state", [None])[0]
+
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+
+            if captured["code"]:
+                html = """<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>WULIX LinkedIn OAuth</title>
+<style>body{font-family:system-ui,sans-serif;background:#0a0015;color:#e2e8f0;text-align:center;padding:80px 20px}
+.box{max-width:520px;margin:0 auto;background:#0f0025;border:1px solid #00d4ff;border-radius:12px;padding:40px}
+h1{color:#00dc82;margin:0 0 16px}p{color:#7c88a8;line-height:1.6}
+.code{font-family:monospace;background:#1a0030;padding:8px 12px;border-radius:6px;font-size:11px;word-break:break-all}</style>
+</head><body><div class="box"><h1>OK Code recu</h1>
+<p>Tu peux fermer cet onglet. Le terminal continue automatiquement.</p>
+<div class="code">""" + captured["code"][:30] + "..." + """</div></div></body></html>"""
+            else:
+                html = """<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="font-family:system-ui;background:#0a0015;color:#ef4444;text-align:center;padding:80px">
+<h1>Erreur OAuth</h1><p>""" + (captured["error"] or "Code manquant") + """</p></body></html>"""
+
+            self.wfile.write(html.encode("utf-8"))
+
+    server = HTTPServer(("localhost", 8765), CallbackHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+
+    # Ouvre l'URL d'autorisation
+    url = get_auth_url()
+    if not url:
+        server.shutdown()
+        return None
+
+    print("\n" + "="*65)
+    print("LINKEDIN OAUTH — Page WULIX")
+    print("="*65)
+    print("\n[1] Ouverture du navigateur sur LinkedIn...")
+    print("[2] Connecte-toi avec le compte admin de la page WULIX")
+    print("[3] Autorise l'application")
+    print("[4] Le code sera capture automatiquement par le serveur local\n")
+
+    webbrowser.open(url)
+
+    # Attend jusqu'à 5 minutes le code
+    print("[INFO] Serveur local sur http://localhost:8765 — en attente du code...")
+    import time
+    timeout = 300
+    start = time.time()
+    while captured["code"] is None and captured["error"] is None:
+        time.sleep(0.5)
+        if time.time() - start > timeout:
+            print("[ERREUR] Timeout (5 min) — relance le script")
+            server.shutdown()
+            return None
+
+    server.shutdown()
+
+    if captured["error"]:
+        print(f"[ERREUR] OAuth: {captured['error']}")
+        return None
+
+    print(f"\n[OK] Code recu, echange contre un token...")
+    return exchange_code(captured["code"])
+
+
 if __name__ == "__main__":
     if "--code" in sys.argv:
         idx = sys.argv.index("--code")
@@ -154,21 +244,15 @@ if __name__ == "__main__":
         else:
             print("[ERREUR] Aucun token sauvegarde. Lance d'abord sans argument.")
 
-    else:
-        # Étape 1 : Affiche l'URL
+    elif "--manual" in sys.argv:
+        # Mode manuel : juste affiche l'URL (pour quand le serveur local ne peut pas tourner)
         url = get_auth_url()
         if url:
-            print("\n" + "="*65)
-            print("LINKEDIN OAUTH — Configuration page WULIX")
-            print("="*65)
-            print("\n1. Ouvre cette URL dans ton navigateur :")
-            print(f"\n   {url}\n")
-            print("2. Connecte-toi avec le compte Omar Sylla (admin de la page WULIX)")
-            print("3. Autorise l'application")
-            print("4. Tu seras redirigé vers wulix.fr/linkedin/callback?code=XXXX")
-            print("5. Copie le parametre 'code' et lance :")
-            print("   python agents/linkedin_oauth_setup.py --code <CODE>\n")
-            print("="*65)
+            print("\nOuvre cette URL :\n")
+            print(f"  {url}\n")
+            print("Apres autorisation, copie le 'code' dans l'URL de retour et lance :")
+            print("  python agents/linkedin_oauth_setup.py --code <CODE>\n")
 
-            if "--open" in sys.argv:
-                webbrowser.open(url)
+    else:
+        # Mode AUTO (défaut) : serveur local + capture auto
+        auto_capture_code()
