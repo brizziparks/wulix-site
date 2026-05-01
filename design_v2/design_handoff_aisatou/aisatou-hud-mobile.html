@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>AISATOU — Mobile HUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root {
+  --bg:      #050510;
+  --panel:   #0a0a1a;
+  --panel2:  #06060e;
+  --border:  #1a1a3a;
+  --accent:  #7c3aed;
+  --cyan:    #00e5ff;
+  --green:   #00dc82;
+  --orange:  #f59e0b;
+  --red:     #ef4444;
+  --gold:    #e2b33a;
+  --text:    #e0e0f0;
+  --muted:   #555577;
+  --font-b:  'Inter', system-ui, sans-serif;
+  --font-m:  'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ══════════════════════════════════════════
+   BASE
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); }
+body {
+  color: var(--text); font-family: var(--font-b); font-size: 14px;
+  display: flex; flex-direction: column;
+  /* Scanlines */
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 39px,
+    rgba(0,229,255,.012) 39px, rgba(0,229,255,.012) 40px
+  );
+}
+
+/* Ambient glow */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%,   rgba(124,58,237,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 100%,  rgba(0,229,255,.06) 0%, transparent 60%);
+}
+
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+.header {
+  position: relative; z-index: 10;
+  background: var(--panel);
+  border-bottom: 1px solid var(--accent);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+/* Orb */
+.orb {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  background: radial-gradient(circle, var(--cyan) 0%, var(--accent) 55%, transparent 100%);
+  box-shadow: 0 0 14px rgba(0,229,255,.5);
+  transition: transform .1s;
+  position: relative;
+}
+.orb::after {
+  content: ''; position: absolute; inset: 3px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.3) 0%, transparent 70%);
+}
+.orb.speaking { animation: orbPulse .4s ease-in-out infinite alternate; }
+@keyframes orbPulse {
+  from { transform: scale(1);   box-shadow: 0 0 14px rgba(0,229,255,.5); }
+  to   { transform: scale(1.25); box-shadow: 0 0 28px rgba(0,229,255,.9); }
+}
+
+/* Title + status */
+.header-center { flex: 1; min-width: 0; }
+.header-title {
+  font-family: var(--font-m); font-size: 16px; font-weight: 700;
+  letter-spacing: 3px; color: var(--cyan);
+  text-shadow: 0 0 10px rgba(0,229,255,.6);
+  line-height: 1;
+}
+.header-title span { color: var(--accent); }
+.header-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--muted); margin-top: 3px; font-family: var(--font-m);
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot.on   { background: var(--green); box-shadow: 0 0 5px rgba(0,220,130,.8); animation: dotPulse 2s infinite; }
+.dot.off  { background: var(--red); }
+.dot.warn { background: var(--orange); }
+@keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* Model selector */
+.model-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--border); border: 1px solid var(--accent);
+  border-radius: 6px; padding: 5px 10px; cursor: pointer;
+  font-size: 10px; font-family: var(--font-m); color: var(--cyan);
+  flex-shrink: 0; transition: background .15s;
+}
+.model-pill:hover { background: rgba(124,58,237,.2); }
+.model-arrow { font-size: 8px; color: var(--muted); }
+
+/* Model dropdown */
+.model-dropdown {
+  position: absolute; top: 58px; right: 12px;
+  background: var(--panel); border: 1px solid var(--accent);
+  border-radius: 8px; overflow: hidden; z-index: 100;
+  display: none; min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.6);
+}
+.model-dropdown.open { display: block; }
+.model-option {
+  padding: 10px 14px; font-size: 12px; font-family: var(--font-m);
+  color: var(--muted); cursor: pointer; transition: background .15s, color .15s;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.model-option:last-child { border-bottom: none; }
+.model-option:hover, .model-option.active { background: rgba(0,229,255,.08); color: var(--cyan); }
+.model-option .mdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   CHAT AREA
+══════════════════════════════════════════ */
+.chat-wrap {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 12px 14px 8px;
+  scroll-behavior: smooth;
+  position: relative; z-index: 1;
+  /* subtle horizontal grid lines */
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 31px,
+    rgba(124,58,237,.025) 31px, rgba(124,58,237,.025) 32px
+  );
+}
+.chat-wrap::-webkit-scrollbar { width: 2px; }
+.chat-wrap::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.msg {
+  display: flex; gap: 8px; margin-bottom: 14px;
+  animation: msgIn .25s ease;
+}
+@keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.msg-avatar {
+  width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; font-family: var(--font-m);
+}
+.msg.ai   .msg-avatar { background: #0a1a2a; border: 1px solid var(--cyan); color: var(--cyan); }
+.msg.user .msg-avatar { background: var(--accent); color: #fff; }
+.msg.tool .msg-avatar { background: #0a1a0a; border: 1px solid var(--green); color: var(--green); font-size: 9px; }
+
+.msg-body { flex: 1; min-width: 0; }
+.msg-author {
+  font-size: 10px; color: var(--muted); margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-m);
+}
+.msg-text {
+  font-size: 14px; line-height: 1.7; color: var(--text); word-break: break-word;
+}
+.msg.ai   .msg-text { color: #d0e0f0; }
+.msg.tool .msg-text {
+  font-size: 11px; color: var(--green); font-family: var(--font-m);
+  background: #030d03; border-left: 2px solid var(--green);
+  padding: 5px 8px; border-radius: 0 4px 4px 0; line-height: 1.5;
+}
+.msg-text strong { color: #fff; }
+.msg-text code {
+  font-family: var(--font-m); font-size: 12px;
+  background: rgba(0,0,20,.7); color: var(--cyan);
+  padding: 1px 5px; border-radius: 4px;
+}
+
+/* Typing indicator */
+.thinking { display: flex; gap: 4px; padding: 6px 0; align-items: center; }
+.thinking span {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--cyan);
+  animation: bounce 1.2s infinite;
+}
+.thinking span:nth-child(2) { animation-delay: .2s; }
+.thinking span:nth-child(3) { animation-delay: .4s; }
+@keyframes bounce { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+/* ══════════════════════════════════════════
+   INPUT BAR
+══════════════════════════════════════════ */
+.input-bar {
+  position: relative; z-index: 10;
+  background: var(--panel); border-top: 1px solid rgba(124,58,237,.3);
+  padding: 10px 12px;
+  display: flex; gap: 8px; align-items: flex-end;
+  flex-shrink: 0;
+}
+.input-prompt {
+  font-family: var(--font-m); font-size: 12px; font-weight: 700;
+  color: var(--cyan); text-shadow: 0 0 8px rgba(0,229,255,.7);
+  padding-bottom: 10px; flex-shrink: 0; letter-spacing: 1px;
+}
+.input-field {
+  flex: 1; background: rgba(0,0,10,.6);
+  border: 1px solid rgba(124,58,237,.3); border-radius: 20px;
+  color: var(--cyan); font-family: var(--font-m); font-size: 13px;
+  padding: 9px 14px; resize: none; outline: none;
+  min-height: 40px; max-height: 110px;
+  line-height: 1.5; caret-color: var(--cyan);
+  transition: border-color .2s;
+}
+.input-field:focus { border-color: rgba(0,229,255,.6); box-shadow: 0 0 12px rgba(0,229,255,.1); }
+.input-field::placeholder { color: rgba(100,100,180,.4); }
+.btn-send {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), #5b21b6);
+  border: 1px solid rgba(124,58,237,.5); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; transition: all .2s;
+}
+.btn-send:hover { background: linear-gradient(135deg, var(--cyan), var(--accent)); color: #000; }
+.btn-send:active { transform: scale(.92); }
+.btn-mic {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: var(--panel2); border: 1px solid var(--border);
+  color: var(--muted); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.btn-mic.active { background: rgba(255,107,53,.15); border-color: #ff6b35; color: #ff6b35; animation: micPulse 1s ease-in-out infinite alternate; }
+@keyframes micPulse { from { box-shadow: 0 0 4px rgba(255,107,53,.3); } to { box-shadow: 0 0 14px rgba(255,107,53,.8); } }
+
+/* ══════════════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════════════ */
+.bottom-nav {
+  position: relative; z-index: 10;
+  background: var(--panel); border-top: 1px solid var(--border);
+  display: flex; align-items: stretch;
+  flex-shrink: 0;
+}
+.nav-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 8px 4px;
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  color: var(--muted); font-size: 10px; font-weight: 600;
+  letter-spacing: .04em; transition: color .15s, background .15s;
+  border-right: 1px solid var(--border); position: relative;
+}
+.nav-tab:last-child { border-right: none; }
+.nav-tab.active { color: var(--cyan); }
+.nav-tab.active::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+}
+.nav-tab:hover { background: rgba(0,229,255,.04); color: var(--cyan); }
+.tab-icon { font-size: 18px; line-height: 1; }
+.tab-badge {
+  position: absolute; top: 6px; right: 10px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--orange); color: #000; font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ══════════════════════════════════════════
+   BOTTOM SHEETS
+══════════════════════════════════════════ */
+.sheet-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px); z-index: 50;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.sheet-overlay.open { opacity: 1; pointer-events: all; }
+
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 51;
+  background: var(--panel);
+  border-top: 1px solid var(--accent);
+  border-radius: 20px 20px 0 0;
+  transform: translateY(100%); transition: transform .35s cubic-bezier(.32,1,.36,1);
+  max-height: 80vh; display: flex; flex-direction: column;
+}
+.sheet.open { transform: translateY(0); }
+
+.sheet-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--border); margin: 10px auto 0; flex-shrink: 0;
+}
+.sheet-header {
+  display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 10px;
+  flex-shrink: 0; border-bottom: 1px solid var(--border);
+}
+.sheet-title {
+  font-family: var(--font-m); font-size: 12px; font-weight: 700;
+  letter-spacing: 2px; color: var(--cyan); text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px;
+}
+.sheet-title::before { content: '◈'; color: var(--cyan); }
+.sheet-close {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  border-radius: 4px; padding: 3px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
+  transition: all .15s;
+}
+.sheet-close:hover { border-color: var(--red); color: var(--red); }
+.sheet-body { flex: 1; overflow-y: auto; padding: 14px 16px 24px; }
+.sheet-body::-webkit-scrollbar { width: 2px; }
+.sheet-body::-webkit-scrollbar-thumb { background: var(--accent); }
+
+/* ── Agents sheet ── */
+.hex-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 4px 0 12px; }
+.hex-cell {
+  width: 56px; height: 62px;
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background: #0a0a1a;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; cursor: pointer; transition: all .2s;
+  border: none; outline: none; font-family: inherit; color: var(--text);
+}
+.hex-cell.active { background: linear-gradient(135deg,#0a1a10,#0d2a0d); filter: drop-shadow(0 0 8px rgba(0,220,130,.5)); }
+.hex-cell.busy   { background: linear-gradient(135deg,#1a100a,#2a1a0d); filter: drop-shadow(0 0 8px rgba(245,158,11,.5)); }
+.hex-cell.warn   { background: linear-gradient(135deg,#1a0a0a,#2a0d0d); filter: drop-shadow(0 0 8px rgba(239,68,68,.4)); }
+.hex-cell:hover  { transform: scale(1.1); z-index: 2; }
+.hex-icon { font-size: 18px; line-height: 1; }
+.hex-name { font-size: 9px; letter-spacing: .5px; color: rgba(200,220,255,.7); font-weight: 700; font-family: var(--font-m); }
+
+/* Agent quick-run list */
+.agent-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.agent-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  background: var(--panel2); border: 1px solid var(--border);
+  transition: border-color .15s;
+}
+.agent-row:hover { border-color: rgba(0,229,255,.25); }
+.agent-row-icon { font-size: 18px; flex-shrink: 0; }
+.agent-row-info { flex: 1; min-width: 0; }
+.agent-row-name { font-size: 12px; font-weight: 700; color: var(--cyan); font-family: var(--font-m); }
+.agent-row-role { font-size: 10px; color: var(--muted); }
+.agent-row-status { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.adot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.adot.warn { background: var(--orange); }
+.adot.off  { background: var(--muted); }
+.run-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  border-radius: 4px; padding: 4px 10px; font-size: 11px; font-family: inherit;
+  cursor: pointer; transition: all .15s;
+}
+.run-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.run-btn.running { border-color: var(--orange); color: var(--orange); }
+
+/* Mission countdown pills */
+.mission-pills { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.mission-pill {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  background: var(--panel2); border: 1px solid var(--border); border-radius: 8px;
+}
+.mission-icon { font-size: 16px; flex-shrink: 0; }
+.mission-info { flex: 1; min-width: 0; }
+.mission-name { font-size: 12px; color: #b0c0e0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mission-sched { font-size: 10px; color: var(--muted); }
+.mission-bar { height: 2px; background: #0a0a1a; border-radius: 1px; margin-top: 4px; overflow: hidden; }
+.mission-fill { height: 2px; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 1px; }
+.mission-cd { font-size: 11px; font-weight: 700; color: var(--cyan); font-family: var(--font-m); text-shadow: 0 0 8px rgba(0,229,255,.6); flex-shrink: 0; }
+.mission-cd.soon { color: var(--orange); text-shadow: 0 0 8px rgba(245,158,11,.6); }
+
+/* ── CrowdSec sheet ── */
+.cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.cs-card {
+  background: var(--panel2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px; text-align: center;
+}
+.cs-val { font-size: 28px; font-weight: 700; font-family: var(--font-m); line-height: 1; margin-bottom: 4px; }
+.cs-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.cs-info-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.cs-info-row:last-child { border-bottom: none; }
+.cs-info-lbl { color: var(--muted); }
+.cs-info-val { font-family: var(--font-m); color: var(--cyan); }
+.cs-refresh {
+  width: 100%; margin-top: 12px; padding: 9px; border-radius: 8px;
+  background: rgba(0,212,255,.06); border: 1px solid rgba(0,212,255,.2);
+  color: var(--cyan); font-size: 12px; font-family: inherit; cursor: pointer;
+  transition: background .15s;
+}
+.cs-refresh:hover { background: rgba(0,212,255,.12); }
+
+/* ── Revenue sheet ── */
+.rev-hero {
+  background: linear-gradient(135deg, #0a0a1a, #060612);
+  border: 1px solid rgba(0,229,255,.15); border-radius: 12px;
+  padding: 16px 18px; margin-bottom: 14px; position: relative; overflow: hidden;
+}
+.rev-hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 80% 20%, rgba(0,229,255,.06), transparent 60%);
+}
+.rev-label { font-size: 10px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; font-family: var(--font-m); }
+.rev-amount { font-size: 36px; font-weight: 700; color: var(--cyan); font-family: var(--font-m); text-shadow: 0 0 16px rgba(0,229,255,.5); line-height: 1; }
+.rev-sub { font-size: 12px; color: #5a7a9a; margin-top: 4px; }
+.rev-sub span { color: var(--green); }
+.rev-progress { margin-top: 12px; }
+.rev-progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+.rev-track { height: 5px; background: #0a0a20; border-radius: 3px; overflow: hidden; }
+.rev-fill  { height: 5px; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 3px; transition: width .8s ease; }
+.rev-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.rev-stat { background: var(--panel2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+.rev-stat-val { font-size: 18px; font-weight: 700; color: var(--green); font-family: var(--font-m); }
+.rev-stat-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+.rev-history { display: flex; flex-direction: column; gap: 6px; }
+.rev-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.rev-row:last-child { border-bottom: none; }
+.rev-row-date { color: var(--muted); width: 50px; flex-shrink: 0; font-family: var(--font-m); font-size: 11px; }
+.rev-row-product { flex: 1; color: #b0c0d0; }
+.rev-row-amount { color: var(--gold); font-weight: 700; font-family: var(--font-m); }
+
+/* ══════════════════════════════════════════
+   QUICK ACTIONS (inline in chat)
+══════════════════════════════════════════ */
+.quick-actions {
+  display: flex; gap: 6px; flex-wrap: wrap; padding: 6px 14px 0;
+  position: relative; z-index: 1;
+}
+.qa-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  background: var(--panel); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; font-family: inherit;
+  transition: all .15s; white-space: nowrap;
+}
+.qa-chip:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,.06); }
+.qa-chip.running { border-color: var(--orange); color: var(--orange); }
+.qa-chip.done    { border-color: var(--green); color: var(--green); }
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+#toast-container {
+  position: fixed; top: 70px; right: 12px; z-index: 200;
+  display: flex; flex-direction: column; gap: 6px; pointer-events: none;
+}
+.toast {
+  background: var(--panel); border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 8px; padding: 9px 12px; font-size: 12px; max-width: 240px;
+  animation: toastIn .3s ease; box-shadow: 0 4px 20px rgba(0,0,0,.6);
+}
+.toast.warn { border-left-color: var(--orange); }
+.toast.err  { border-left-color: var(--red); }
+.toast-title { color: #fff; font-weight: 700; margin-bottom: 2px; }
+.toast-msg   { color: var(--muted); }
+@keyframes toastIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="orb" id="orb"></div>
+  <div class="header-center">
+    <div class="header-title">AI<span>SATOU</span></div>
+    <div class="header-status">
+      <span class="dot on" id="ws-dot"></span>
+      <span id="ws-label">Connectée</span>
+      <span style="margin-left:8px;color:rgba(0,229,255,.4)">// NEXUS</span>
+    </div>
+  </div>
+  <div class="model-pill" id="modelPill" onclick="toggleModelDropdown()">
+    <span id="model-label">gemini-flash</span>
+    <span class="model-arrow">▾</span>
+  </div>
+  <div class="model-dropdown" id="modelDropdown">
+    <div class="model-option active" onclick="selectModel('gemini-2.0-flash','gemini-flash',this)">
+      <span class="mdot" style="background:#00dc82;"></span>gemini-2.0-flash
+    </div>
+    <div class="model-option" onclick="selectModel('claude-3-5-sonnet','claude-sonnet',this)">
+      <span class="mdot" style="background:#a855f7;"></span>claude-3-5-sonnet
+    </div>
+    <div class="model-option" onclick="selectModel('groq-llama-70b','groq-llama',this)">
+      <span class="mdot" style="background:#f59e0b;"></span>groq-llama-70b
+    </div>
+    <div class="model-option" onclick="selectModel('gemini-2.0-pro','gemini-pro',this)">
+      <span class="mdot" style="background:#00e5ff;"></span>gemini-2.0-pro
+    </div>
+  </div>
+</div>
+
+<!-- ══ QUICK ACTIONS ══ -->
+<div class="quick-actions" id="quickActions">
+  <button class="qa-chip" onclick="quickRun(this,'SAMBA','Publier article SEO...')">📝 Publier</button>
+  <button class="qa-chip" onclick="quickRun(this,'MARIAMA','Post LinkedIn...')">💼 LinkedIn</button>
+  <button class="qa-chip" onclick="quickRun(this,'NDEYE','Rapport revenus...')">📊 Rapport</button>
+  <button class="qa-chip" onclick="quickRun(this,'BINTOU','Leads Reddit...')">🔍 Leads</button>
+  <button class="qa-chip" onclick="quickRun(this,'DEPLOY','Deploy wulix.fr...')">🚀 Deploy</button>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div class="chat-wrap" id="chatWrap">
+
+  <div class="msg ai">
+    <div class="msg-avatar">A</div>
+    <div class="msg-body">
+      <div class="msg-author">AISATOU</div>
+      <div class="msg-text">Bienvenue Omar. <strong>14 agents actifs</strong>, NEXUS opérationnel.<br>Dis-moi ce que tu veux faire — ou utilise les raccourcis ci-dessus.</div>
+    </div>
+  </div>
+
+  <div class="msg user">
+    <div class="msg-avatar">O</div>
+    <div class="msg-body">
+      <div class="msg-author">OMAR</div>
+      <div class="msg-text">Lance SAMBA pour publier un article sur l'automatisation LinkedIn.</div>
+    </div>
+  </div>
+
+  <div class="msg tool">
+    <div class="msg-avatar">T</div>
+    <div class="msg-body">
+      <div class="msg-author" style="color:var(--green)">OUTIL</div>
+      <div class="msg-text">⚙ run_agent("samba", task="publish-seo") → {"status": "running", "task_id": "t-0x7f3a"}</div>
+    </div>
+  </div>
+
+  <div class="msg ai">
+    <div class="msg-avatar">A</div>
+    <div class="msg-body">
+      <div class="msg-author">AISATOU</div>
+      <div class="msg-text">
+        SAMBA est lancé ✓<br><br>
+        Sujet généré : <strong>"Comment automatiser sa prospection LinkedIn avec Python et n8n"</strong><br>
+        → 847 mots · SEO score <code>94/100</code><br>
+        → Publication wulix.fr dans ~3 min
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ INPUT BAR ══ -->
+<div class="input-bar">
+  <span class="input-prompt">›</span>
+  <textarea class="input-field" id="inputField" placeholder="Commande…" rows="1"></textarea>
+  <button class="btn-mic" id="micBtn" onclick="toggleMic()">🎙</button>
+  <button class="btn-send" onclick="sendMsg()">➤</button>
+</div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<div class="bottom-nav">
+  <button class="nav-tab active" onclick="switchTab('chat',this)">
+    <span class="tab-icon">💬</span>
+    Chat
+  </button>
+  <button class="nav-tab" onclick="openSheet('agents')">
+    <span class="tab-icon">🤖</span>
+    Agents
+    <span class="tab-badge" id="agentBadge">14</span>
+  </button>
+  <button class="nav-tab" onclick="openSheet('crowdsec')">
+    <span class="tab-icon">🛡</span>
+    Sécu
+    <span class="tab-badge" id="secBadge" style="background:var(--orange);display:none">2</span>
+  </button>
+  <button class="nav-tab" onclick="openSheet('revenue')">
+    <span class="tab-icon">💰</span>
+    Revenus
+  </button>
+</div>
+
+<!-- ══ SHEET OVERLAY ══ -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
+
+<!-- ══ AGENTS SHEET ══ -->
+<div class="sheet" id="sheet-agents">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">Réseau agents</span>
+    <button class="sheet-close" onclick="closeSheet()">✕ Fermer</button>
+  </div>
+  <div class="sheet-body">
+    <!-- Hex grid -->
+    <div class="hex-grid">
+      <button class="hex-cell active"><span class="hex-icon">🚀</span><span class="hex-name">LAMINE</span></button>
+      <button class="hex-cell active"><span class="hex-icon">📊</span><span class="hex-name">NDEYE</span></button>
+      <button class="hex-cell"><span class="hex-icon">📧</span><span class="hex-name">ROKHAYA</span></button>
+      <button class="hex-cell active"><span class="hex-icon">📝</span><span class="hex-name">SAMBA</span></button>
+      <button class="hex-cell active"><span class="hex-icon">📣</span><span class="hex-name">MARIAMA</span></button>
+      <button class="hex-cell warn"><span class="hex-icon">💬</span><span class="hex-name">SEYDOU</span></button>
+      <button class="hex-cell active"><span class="hex-icon">💰</span><span class="hex-name">FATOU</span></button>
+      <button class="hex-cell busy"><span class="hex-icon">👥</span><span class="hex-name">AMINATA</span></button>
+      <button class="hex-cell active"><span class="hex-icon">📈</span><span class="hex-name">DJENEBA</span></button>
+      <button class="hex-cell active"><span class="hex-icon">🔍</span><span class="hex-name">BINTOU</span></button>
+      <button class="hex-cell active"><span class="hex-icon">🖥️</span><span class="hex-name">ADAMA</span></button>
+      <button class="hex-cell"><span class="hex-icon">✍️</span><span class="hex-name">KOUMBA</span></button>
+      <button class="hex-cell active"><span class="hex-icon">📉</span><span class="hex-name">IBRA</span></button>
+      <button class="hex-cell active"><span class="hex-icon">⚖️</span><span class="hex-name">MODIBO</span></button>
+    </div>
+
+    <!-- Quick-run list -->
+    <div class="agent-list">
+      <div class="agent-row">
+        <span class="agent-row-icon">📝</span>
+        <div class="agent-row-info"><div class="agent-row-name">SAMBA</div><div class="agent-row-role">Rédaction SEO · Lundi 08:00</div></div>
+        <div class="agent-row-status"><span class="adot"></span></div>
+        <button class="run-btn" onclick="sheetRun(this,'SAMBA')">▶ Run</button>
+      </div>
+      <div class="agent-row">
+        <span class="agent-row-icon">📣</span>
+        <div class="agent-row-info"><div class="agent-row-name">MARIAMA</div><div class="agent-row-role">LinkedIn · Lundi 09:00</div></div>
+        <div class="agent-row-status"><span class="adot"></span></div>
+        <button class="run-btn" onclick="sheetRun(this,'MARIAMA')">▶ Run</button>
+      </div>
+      <div class="agent-row">
+        <span class="agent-row-icon">📊</span>
+        <div class="agent-row-info"><div class="agent-row-name">NDEYE</div><div class="agent-row-role">Rapport daily · 08:30</div></div>
+        <div class="agent-row-status"><span class="adot"></span></div>
+        <button class="run-btn" onclick="sheetRun(this,'NDEYE')">▶ Run</button>
+      </div>
+      <div class="agent-row">
+        <span class="agent-row-icon">💬</span>
+        <div class="agent-row-info"><div class="agent-row-name">SEYDOU</div><div class="agent-row-role">Prospection · Quota KO</div></div>
+        <div class="agent-row-status"><span class="adot warn"></span></div>
+        <button class="run-btn" onclick="sheetRun(this,'SEYDOU')">▶ Fix</button>
+      </div>
+      <div class="agent-row">
+        <span class="agent-row-icon">🔍</span>
+        <div class="agent-row-info"><div class="agent-row-name">BINTOU</div><div class="agent-row-role">Scout Fiverr · Mercredi 10:00</div></div>
+        <div class="agent-row-status"><span class="adot"></span></div>
+        <button class="run-btn" onclick="sheetRun(this,'BINTOU')">▶ Run</button>
+      </div>
+    </div>
+
+    <!-- Mission countdowns -->
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin:16px 0 8px;font-family:var(--font-m);">◈ Missions planifiées</div>
+    <div class="mission-pills">
+      <div class="mission-pill">
+        <span class="mission-icon">📝</span>
+        <div class="mission-info">
+          <div class="mission-name">SAMBA — Article SEO</div>
+          <div class="mission-sched">Lundi 08:00</div>
+          <div class="mission-bar"><div class="mission-fill" style="width:72%"></div></div>
+        </div>
+        <span class="mission-cd" id="mcd1">—</span>
+      </div>
+      <div class="mission-pill">
+        <span class="mission-icon">📊</span>
+        <div class="mission-info">
+          <div class="mission-name">NDEYE — Rapport daily</div>
+          <div class="mission-sched">Quotidien 08:30</div>
+          <div class="mission-bar"><div class="mission-fill" style="width:95%"></div></div>
+        </div>
+        <span class="mission-cd soon" id="mcd2">00h08m</span>
+      </div>
+      <div class="mission-pill">
+        <span class="mission-icon">🔍</span>
+        <div class="mission-info">
+          <div class="mission-name">BINTOU — Scout Fiverr</div>
+          <div class="mission-sched">Mercredi 10:00</div>
+          <div class="mission-bar"><div class="mission-fill" style="width:30%"></div></div>
+        </div>
+        <span class="mission-cd" id="mcd3">—</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CROWDSEC SHEET ══ -->
+<div class="sheet" id="sheet-crowdsec">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">CrowdSec — nas-dh2300</span>
+    <button class="sheet-close" onclick="closeSheet()">✕ Fermer</button>
+  </div>
+  <div class="sheet-body">
+    <div class="cs-grid">
+      <div class="cs-card">
+        <div class="cs-val" style="color:var(--orange)">2</div>
+        <div class="cs-lbl">Alertes</div>
+      </div>
+      <div class="cs-card">
+        <div class="cs-val" style="color:var(--red)">14</div>
+        <div class="cs-lbl">IPs bloquées</div>
+      </div>
+    </div>
+    <div class="cs-info-row"><span class="cs-info-lbl">Scénarios actifs</span><span class="cs-info-val">57</span></div>
+    <div class="cs-info-row"><span class="cs-info-lbl">Bouncer CF</span><span class="cs-info-val" style="color:var(--green)">Actif ✓</span></div>
+    <div class="cs-info-row"><span class="cs-info-lbl">Dernière activité</span><span class="cs-info-val">today 08:35</span></div>
+    <div class="cs-info-row"><span class="cs-info-lbl">Motif principal</span><span class="cs-info-val">bruteforce/ssh</span></div>
+    <div class="cs-info-row"><span class="cs-info-lbl">Status NAS</span><span class="cs-info-val" style="color:var(--green)">Online ✓</span></div>
+    <button class="cs-refresh" onclick="toast('CrowdSec','Données rafraîchies','ok')">↻ Rafraîchir les données</button>
+    <div style="margin-top:12px;padding:10px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;font-size:12px;color:#d4b86a;line-height:1.5;">
+      ⚠ 2 alertes actives — vérifier les IPs sur le dashboard NAS
+    </div>
+  </div>
+</div>
+
+<!-- ══ REVENUE SHEET ══ -->
+<div class="sheet" id="sheet-revenue">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">Revenus — NDEYE</span>
+    <button class="sheet-close" onclick="closeSheet()">✕ Fermer</button>
+  </div>
+  <div class="sheet-body">
+    <div class="rev-hero">
+      <div class="rev-label">Aujourd'hui</div>
+      <div class="rev-amount">47.00 €</div>
+      <div class="rev-sub">Projection mois : <span>611 €</span></div>
+      <div class="rev-progress">
+        <div class="rev-progress-labels"><span>9.4% de l'objectif</span><span style="color:var(--cyan)">Obj. 500€</span></div>
+        <div class="rev-track"><div class="rev-fill" id="revBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="rev-stats">
+      <div class="rev-stat"><div class="rev-stat-val">3</div><div class="rev-stat-lbl">Ventes</div></div>
+      <div class="rev-stat"><div class="rev-stat-val" style="color:var(--cyan)">47€</div><div class="rev-stat-lbl">Total</div></div>
+      <div class="rev-stat"><div class="rev-stat-val" style="color:var(--gold)">15.7€</div><div class="rev-stat-lbl">Moy.</div></div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;font-family:var(--font-m);">◈ Dernières ventes</div>
+    <div class="rev-history">
+      <div class="rev-row"><span class="rev-row-date">01-05</span><span class="rev-row-product">Pack Scripts Python</span><span class="rev-row-amount">+29€</span></div>
+      <div class="rev-row"><span class="rev-row-date">01-05</span><span class="rev-row-product">Pipeline LinkedIn n8n</span><span class="rev-row-amount">+19€</span></div>
+      <div class="rev-row"><span class="rev-row-date">30-04</span><span class="rev-row-product">Guide 5 tâches</span><span class="rev-row-amount">+9€</span></div>
+      <div class="rev-row"><span class="rev-row-date">29-04</span><span class="rev-row-product">Pack Scripts Python</span><span class="rev-row-amount">+29€</span></div>
+      <div class="rev-row"><span class="rev-row-date">28-04</span><span class="rev-row-product">Pipeline LinkedIn n8n</span><span class="rev-row-amount">+19€</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ Model selector ══
+let currentModel = 'gemini-2.0-flash';
+function toggleModelDropdown() {
+  document.getElementById('modelDropdown').classList.toggle('open');
+}
+function selectModel(full, short, el) {
+  currentModel = full;
+  document.getElementById('model-label').textContent = short;
+  document.querySelectorAll('.model-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('modelDropdown').classList.remove('open');
+  toast('Modèle', full + ' sélectionné', 'ok');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.model-pill') && !e.target.closest('.model-dropdown')) {
+    document.getElementById('modelDropdown').classList.remove('open');
+  }
+});
+
+// ══ Chat ══
+const chatWrap = document.getElementById('chatWrap');
+const inputField = document.getElementById('inputField');
+
+function sendMsg() {
+  const text = inputField.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  inputField.value = '';
+  inputField.style.height = 'auto';
+  const think = addThinking();
+  setTimeout(() => {
+    think.remove();
+    addMsg('ai', 'Compris Omar. Je traite ta demande — résultat dans quelques instants.');
+  }, 1800);
+}
+
+inputField.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+inputField.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 110) + 'px';
+});
+
+function addMsg(role, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const avatar = role === 'user' ? 'O' : 'A';
+  const author  = role === 'user' ? 'OMAR' : 'AISATOU';
+  div.innerHTML = `
+    <div class="msg-avatar">${avatar}</div>
+    <div class="msg-body">
+      <div class="msg-author">${author}</div>
+      <div class="msg-text">${text.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>
+    </div>`;
+  chatWrap.appendChild(div);
+  chatWrap.scrollTop = chatWrap.scrollHeight;
+}
+
+function addThinking() {
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.innerHTML = `
+    <div class="msg-avatar">A</div>
+    <div class="msg-body">
+      <div class="msg-author">AISATOU</div>
+      <div class="thinking"><span></span><span></span><span></span></div>
+    </div>`;
+  chatWrap.appendChild(div);
+  chatWrap.scrollTop = chatWrap.scrollHeight;
+  return div;
+}
+
+// ══ Quick actions ══
+function quickRun(btn, agent, msg) {
+  if (btn.classList.contains('running')) return;
+  btn.classList.add('running');
+  addMsg('user', `▶ ${agent} — ${msg}`);
+  toast(agent, msg, 'ok');
+  const think = addThinking();
+  setTimeout(() => {
+    think.remove();
+    btn.classList.remove('running');
+    btn.classList.add('done');
+    addMsg('ai', `${agent} terminé ✓\n→ Tâche exécutée avec succès.`);
+    toast(agent + ' ✓', 'Exécuté avec succès', 'ok');
+    setTimeout(() => btn.classList.remove('done'), 3000);
+  }, 2200 + Math.random() * 800);
+}
+
+// ══ Sheet run ══
+function sheetRun(btn, agent) {
+  btn.classList.add('running');
+  btn.textContent = '⟳';
+  toast(agent, 'Lancement en cours...', 'ok');
+  setTimeout(() => {
+    btn.classList.remove('running');
+    btn.textContent = '✓';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    toast(agent + ' ✓', 'Exécuté', 'ok');
+    setTimeout(() => { btn.textContent = '▶ Run'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+  }, 2000);
+}
+
+// ══ Bottom sheets ══
+let currentSheet = null;
+function openSheet(name) {
+  closeSheet();
+  currentSheet = name;
+  document.getElementById('sheetOverlay').classList.add('open');
+  document.getElementById('sheet-' + name).classList.add('open');
+  // Animate revenue bar
+  if (name === 'revenue') {
+    setTimeout(() => { document.getElementById('revBar').style.width = '9.4%'; }, 300);
+  }
+}
+function closeSheet() {
+  document.getElementById('sheetOverlay').classList.remove('open');
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+  currentSheet = null;
+}
+
+// ══ Tab switching ══
+function switchTab(name, btn) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ══ Mic toggle ══
+let micOn = false;
+function toggleMic() {
+  micOn = !micOn;
+  const btn = document.getElementById('micBtn');
+  btn.classList.toggle('active', micOn);
+  toast('Micro', micOn ? 'Écoute active — dis "Aisatou"' : 'Micro désactivé', 'ok');
+}
+
+// ══ Countdowns ══
+function getNext(day, h, m) {
+  const now = new Date(), t = new Date(now);
+  t.setHours(h, m, 0, 0);
+  if (day === -1) { if (t <= now) t.setDate(t.getDate() + 1); }
+  else { let d = day - now.getDay(); if (d < 0 || (d === 0 && t <= now)) d += 7; t.setDate(t.getDate() + d); }
+  return t;
+}
+function fmtMs(ms) {
+  if (ms <= 0) return 'MAINTENANT';
+  const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000), s = Math.floor((ms % 60000) / 1000);
+  if (h >= 24) return `${Math.floor(h/24)}j ${h%24}h${String(m).padStart(2,'0')}`;
+  return `${h}h${String(m).padStart(2,'0')}m${String(s).padStart(2,'0')}s`;
+}
+function updateCountdowns() {
+  const now = Date.now();
+  const missions = [
+    {id:'mcd1', day:1,  h:8,  m:0,  period:7*24*3600000},
+    {id:'mcd2', day:-1, h:8,  m:30, period:24*3600000},
+    {id:'mcd3', day:3,  h:10, m:0,  period:7*24*3600000},
+  ];
+  missions.forEach(m => {
+    const ms = getNext(m.day, m.h, m.m).getTime() - now;
+    const el = document.getElementById(m.id);
+    if (!el) return;
+    el.textContent = fmtMs(ms);
+    el.className = 'mission-cd' + (ms < 3600000 ? ' soon' : '');
+  });
+}
+updateCountdowns();
+setInterval(updateCountdowns, 1000);
+
+// ══ Toast ══
+function toast(title, msg, type='ok') {
+  const c = document.getElementById('toast-container');
+  const d = document.createElement('div');
+  d.className = `toast${type==='err'?' err':type==='warn'?' warn':''}`;
+  d.innerHTML = `<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
+  c.appendChild(d);
+  setTimeout(() => { d.style.opacity='0'; d.style.transition='opacity .3s'; setTimeout(()=>d.remove(),300); }, 3500);
+}
+
+// ══ Orb speaking sim ══
+setInterval(() => {
+  const orb = document.getElementById('orb');
+  orb.classList.add('speaking');
+  setTimeout(() => orb.classList.remove('speaking'), 800 + Math.random() * 600);
+}, 8000);
+
+// ══ Show security badge ══
+setTimeout(() => {
+  document.getElementById('secBadge').style.display = 'flex';
+}, 2000);
+
+// Boot toast
+setTimeout(() => toast('NEXUS', '14 agents en ligne', 'ok'), 600);
+setTimeout(() => toast('CrowdSec', '2 alertes détectées', 'warn'), 1800);
+</script>
+</body>
+</html>
