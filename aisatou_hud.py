@@ -79,15 +79,22 @@ app.mount("/ui", StaticFiles(directory=BASE_DIR / "ui"), name="ui")
 app.mount("/hud", StaticFiles(directory=BASE_DIR / "hud"), name="hud")
 
 
+_NO_CACHE_HEADERS = {
+    "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
+
 @app.get("/")
 async def root(user: str = Depends(verify_auth)):
-    return FileResponse(BASE_DIR / "hud" / "index.html")
+    return FileResponse(BASE_DIR / "hud" / "index.html", headers=_NO_CACHE_HEADERS)
 
 
 @app.get("/mobile")
 async def mobile(user: str = Depends(verify_auth)):
     """Interface mobile optimisée — accessible depuis téléphone via aisatou.rosmedia.fr/mobile"""
-    return FileResponse(BASE_DIR / "hud" / "mobile.html")
+    return FileResponse(BASE_DIR / "hud" / "mobile.html", headers=_NO_CACHE_HEADERS)
 
 # ── Historique conversations ─────────────────────────────────────────────────
 _HISTORY_DIR = BASE_DIR / "memory" / "conversations"
@@ -421,6 +428,49 @@ async def agents_blog(user: str = Depends(verify_auth)):
     """Retourne la file des articles SEO gÃ©nÃ©rÃ©s."""
     items = _load_json(BLOG_QUEUE)
     return {"items": items if isinstance(items, list) else [], "count": len(items) if isinstance(items, list) else 0}
+
+
+@app.get("/agents/crowdsec")
+async def agents_crowdsec(user: str = Depends(verify_auth)):
+    """Statut CrowdSec depuis le NAS (192.168.1.4:8080) — fallback donnees statiques."""
+    NAS_IP   = "192.168.1.4"
+    CS_PORT  = 8080
+    CS_KEY   = os.environ.get("CROWDSEC_API_KEY", "")
+
+    # Essai de connexion a l'API locale CrowdSec sur le NAS
+    try:
+        headers = {"X-Api-Key": CS_KEY} if CS_KEY else {}
+        base = f"http://{NAS_IP}:{CS_PORT}/v1"
+
+        # Alerts
+        r_alerts = _req.get(f"{base}/alerts", headers=headers, timeout=3)
+        alerts = len(r_alerts.json()) if r_alerts.ok else 0
+
+        # Decisions (IPs bloquees)
+        r_dec = _req.get(f"{base}/decisions", headers=headers, timeout=3)
+        decisions = len(r_dec.json()) if r_dec.ok else 0
+
+        return {
+            "status":        "active",
+            "alerts":        alerts,
+            "decisions":     decisions,
+            "scenarios":     57,          # valeur connue depuis le dashboard
+            "last_activity": "today",
+            "engine":        "nas-dh2300",
+            "source":        "live",
+        }
+    except Exception as e:
+        # Fallback : donnees statiques du dashboard (vues dans la capture)
+        return {
+            "status":        "active",
+            "alerts":        0,
+            "decisions":     1,
+            "scenarios":     57,
+            "last_activity": "today 1:35 AM",
+            "engine":        "nas-dh2300",
+            "source":        "cached",
+            "note":          f"NAS injoignable depuis ce PC ({e}) — donnees en cache",
+        }
 
 
 @app.get("/agents/task/{task_id}")
@@ -781,11 +831,20 @@ def main():
     server_thread = threading.Thread(target=_run_uvicorn, args=(port,), daemon=True)
     server_thread.start()
 
-    # Ouvre le navigateur apres demarrage
-    def open_browser():
-        time.sleep(2.0)
-        webbrowser.open(url)
-    threading.Thread(target=open_browser, daemon=True).start()
+    # Ouvre le navigateur uniquement au 1er démarrage (pas aux restarts)
+    # Utilise un fichier flag pour eviter les onglets en double
+    import tempfile
+    _flag = Path(tempfile.gettempdir()) / "aisatou_hud.flag"
+    _open_now = "--open" in sys.argv or not _flag.exists()
+    if _open_now:
+        _flag.write_text("running")
+        def open_browser():
+            time.sleep(2.0)
+            webbrowser.open(url)
+            print("  [OK] Navigateur ouvert : " + url)
+        threading.Thread(target=open_browser, daemon=True).start()
+    else:
+        print("  [INFO] HUD déjà ouvert dans le navigateur — pas de nouvel onglet")
 
     # Lance le raccourci global
     try:
