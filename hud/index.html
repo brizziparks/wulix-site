@@ -6,17 +6,37 @@
   <title>AISATOU — Interface IA</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
+    /* ── Fonts locales (Claude Design v2) ── */
+    @font-face {
+      font-family: 'Orbitron';
+      src: url('/hud/fonts/Orbitron-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('/hud/fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
     :root {
       --bg: #050510;
       --panel: #0a0a1a;
+      --panel2: #06060e;
       --border: #1a1a3a;
       --accent: #7c3aed;
       --accent2: #00e5ff;
+      --cyan: #00e5ff;
       --green: #00dc82;
       --orange: #f59e0b;
       --red: #ef4444;
+      --gold: #e2b33a;
       --text: #e0e0f0;
       --muted: #555577;
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
     }
     body.light {
       --bg: #f0f2f8;
@@ -40,8 +60,14 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* Scanlines subtiles (Claude Design v2) */
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 39px,
+        rgba(0,229,255,.012) 39px, rgba(0,229,255,.012) 40px
+      );
     }
-    code, .cmd-prompt, #input, .ops-feed, .hex-name { font-family: 'Courier New', monospace; }
+    body.light { background-image: none; }
+    code, .cmd-prompt, #input, .ops-feed, .hex-name { font-family: var(--font-mono); }
 
     /* ── Header ── */
     header {
@@ -54,7 +80,30 @@
       flex-shrink: 0;
       gap: 12px;
     }
-    .logo { font-size: 20px; font-weight: bold; color: var(--accent2); letter-spacing: 3px; }
+    /* ── Logo + Orbe animé (Claude Design v2) ── */
+    .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .orb {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle, var(--cyan) 0%, var(--accent) 55%, transparent 100%);
+      box-shadow: 0 0 14px rgba(0,229,255,.5);
+      flex-shrink: 0; position: relative;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .orb::after {
+      content: ''; position: absolute; inset: 3px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.3) 0%, transparent 70%);
+    }
+    @keyframes orbPulse {
+      from { transform: scale(1);    box-shadow: 0 0 14px rgba(0,229,255,.5); }
+      to   { transform: scale(1.25); box-shadow: 0 0 28px rgba(0,229,255,.9); }
+    }
+    .orb.speaking { animation: orbPulse .4s ease-in-out infinite alternate; }
+    .orb.thinking { animation: orbPulse 1.2s ease-in-out infinite alternate; }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 900;
+      color: var(--cyan); letter-spacing: 3px;
+    }
     .logo span { color: var(--accent); }
     .header-right { display: flex; align-items: center; gap: 14px; }
     .status-pill {
@@ -448,6 +497,16 @@
     .qa-btn .qa-icon { font-size: 16px; display: block; margin-bottom: 3px; }
     .qa-btn.running { border-color: var(--orange); color: var(--orange); animation: pulse 1s infinite; }
     .qa-btn.done { border-color: var(--green); color: var(--green); }
+    /* Shimmer sur le bouton "Lancer tous les agents" (Claude Design v2) */
+    #qa-all { position: relative; overflow: hidden; }
+    #qa-all::after {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 40%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+      transform: skewX(-15deg); transition: left .6s cubic-bezier(.22,1,.36,1);
+      pointer-events: none;
+    }
+    #qa-all:hover::after { left: 140%; }
 
     /* Metrics */
     .metric-row {
@@ -482,9 +541,12 @@
     .rev-progress-bar { height: 4px; background: #0a0a20; border-radius: 2px; overflow: hidden; }
     .rev-progress-fill {
       height: 4px; border-radius: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transition: width .8s ease; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--gold));
+      background-size: 200% 100%;
+      animation: revShine 4s linear infinite;
+      transition: width .8s cubic-bezier(.22,1,.36,1); width: 0%;
     }
+    @keyframes revShine { 0% { background-position: 0 0 } 100% { background-position: -200% 0 } }
     .rev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
     .rev-stat { background: #06060e; border: 1px solid var(--border); border-radius: 5px; padding: 6px 8px; text-align: center; }
     .rev-stat-val { font-size: 14px; font-weight: bold; color: var(--green); }
@@ -630,7 +692,10 @@
 </div>
 
 <header>
-  <div class="logo">AI<span>SATOU</span></div>
+  <div class="logo-wrap">
+    <div class="orb" id="aisatou-orb" title="AISATOU"></div>
+    <div class="logo">AI<span>SATOU</span></div>
+  </div>
   <div class="header-right">
     <div class="status-pill">
       <div class="dot on" id="ws-dot"></div>
@@ -753,7 +818,10 @@
       <div class="input-zone">
         <span class="cmd-prompt">NEXUS&nbsp;›</span>
         <textarea id="input" placeholder="Commande pour AISATOU... (Entrée pour envoyer)" rows="1"></textarea>
-        <button id="send-btn" title="Envoyer (Entrée)">EXEC&nbsp;➤</button>
+        <button id="send-btn" title="Envoyer (Entrée)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span style="vertical-align:middle">EXEC</span>
+        </button>
         <button id="voice-btn" title="Activer / désactiver la voix AISATOU" onclick="toggleVoice()">🎤</button>
         <button id="mic-btn" title="Wake word navigateur — dis 'Aisatou'" onclick="toggleBrowserSTT()">🎙</button>
         <button id="stop-btn" title="Couper la parole" onclick="stopAudio()" style="display:none">⏹</button>
@@ -1163,8 +1231,16 @@ function stopAudio() {
 function handleVoiceState(state) {
   const btn   = document.getElementById('voice-btn');
   const stop  = document.getElementById('stop-btn');
-  if (!btn) return;
+  const orb   = document.getElementById('aisatou-orb');
 
+  // Synchronise l'orbe header avec l'état voix (Claude Design v2)
+  if (orb) {
+    orb.classList.remove('speaking', 'thinking');
+    if (state === 'speaking') orb.classList.add('speaking');
+    else if (state === 'thinking') orb.classList.add('thinking');
+  }
+
+  if (!btn) return;
   // Effacer toutes les classes d'état
   btn.classList.remove('voice-on', 'voice-speaking', 'voice-listening');
 
@@ -1190,7 +1266,7 @@ function handleVoiceState(state) {
 
 function updateVoiceVolume(vol) {
   // Anime l'orbe en fonction du volume TTS
-  const orb = document.querySelector('.orb-ring');
+  const orb = document.getElementById('aisatou-orb') || document.querySelector('.orb-ring');
   if (!orb) return;
   const scale = 1 + vol * 0.25;
   orb.style.transform = `scale(${scale})`;
