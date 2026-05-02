@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AISATOU — HUD Interface</title>
+<style>
+  @font-face {
+    font-family: 'Orbitron';
+    src: url('../../fonts/Orbitron-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #050510;
+    --panel:   #0a0a1a;
+    --panel2:  #06060e;
+    --border:  #1a1a3a;
+    --accent:  #7c3aed;
+    --cyan:    #00e5ff;
+    --green:   #00dc82;
+    --orange:  #f59e0b;
+    --red:     #ef4444;
+    --text:    #e0e0f0;
+    --muted:   #555577;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px; height: 100vh;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  code, .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--panel); border-bottom: 1px solid var(--accent);
+    padding: 10px 20px; display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; gap: 12px; z-index: 10;
+  }
+  .logo { font-size: 20px; font-weight: bold; color: var(--cyan); letter-spacing: 3px; font-family: 'JetBrains Mono', monospace; }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .status-pill { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot.on  { background: var(--green); animation: pulse 2s infinite; }
+  .dot.warn { background: var(--orange); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .model-select {
+    background: var(--border); color: var(--cyan); border: 1px solid var(--accent);
+    padding: 4px 8px; border-radius: 4px; font-size: 11px; font-family: inherit; cursor: pointer;
+  }
+
+  /* ── LAYOUT ── */
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px; background: var(--panel); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+  }
+  .sidebar-title {
+    font-size: 10px; color: var(--muted); letter-spacing: 2px;
+    padding: 12px 12px 5px; text-transform: uppercase;
+  }
+  .agent-card { margin: 3px 7px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .agent-header {
+    padding: 8px 10px; cursor: pointer; display: flex; align-items: center;
+    justify-content: space-between; gap: 6px; transition: background .15s;
+  }
+  .agent-header:hover { background: #0d0d20; }
+  .agent-header.open { border-bottom: 1px solid var(--border); background: #0a0a1e; }
+  .agent-left { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; }
+  .agent-icon { font-size: 14px; flex-shrink: 0; }
+  .aname { color: var(--cyan); font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .arole { color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aright { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .adot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .adot.warn { background: var(--orange); }
+  .adot.off  { background: var(--muted); }
+  .achevron { color: var(--muted); font-size: 10px; transition: transform .2s; }
+  .agent-header.open .achevron { transform: rotate(90deg); }
+  .agent-tasks { display: none; padding: 4px 0; }
+  .agent-tasks.open { display: block; }
+  .task-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-bottom: 1px solid #0a0a18; font-size: 11px;
+  }
+  .task-row:last-child { border-bottom: none; }
+  .task-name { flex: 1; color: #b0b0d0; line-height: 1.4; }
+  .task-badge {
+    font-size: 9px; padding: 2px 5px; border-radius: 3px;
+    background: #0a1520; color: var(--cyan); border: 1px solid #1a2a3a;
+  }
+  .task-badge.manual { background: #1a1010; color: var(--muted); border-color: #2a1a1a; }
+  .task-sdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: var(--muted); }
+  .task-sdot.ok  { background: var(--green); }
+  .task-sdot.err { background: var(--red); }
+  .run-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 3px; padding: 3px 8px; cursor: pointer; font-size: 11px;
+    font-family: inherit; transition: all .15s; flex-shrink: 0;
+  }
+  .run-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .sys-info {
+    margin-top: auto; padding: 10px; font-size: 10px;
+    color: var(--muted); border-top: 1px solid var(--border);
+  }
+  .sys-info div { margin-bottom: 3px; }
+  .sys-info span { color: var(--green); }
+
+  /* ── NEXUS CENTER ── */
+  .nexus-center { flex: 1; display: flex; overflow: hidden; min-width: 0; position: relative; }
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px; z-index: 10; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,.15), rgba(124,58,237,.2), rgba(0,229,255,.15), transparent);
+    animation: scanMove 6s linear infinite;
+  }
+  @keyframes scanMove { 0%{top:0%} 100%{top:100%} }
+
+  /* ── OPS PANEL ── */
+  .nexus-ops {
+    width: 300px; flex-shrink: 0; background: #06060e;
+    border-right: 1px solid rgba(0,229,255,.12);
+    display: flex; flex-direction: column; overflow: hidden; position: relative;
+  }
+  .nexus-ops::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(124,58,237,.05) 0%, transparent 60%),
+      radial-gradient(circle at 80% 70%, rgba(0,229,255,.04) 0%, transparent 60%);
+  }
+  .nx-section {
+    padding: 10px 12px 8px; border-bottom: 1px solid rgba(0,229,255,.07); flex-shrink: 0;
+  }
+  .nx-section.grow { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; }
+  .nx-title {
+    font-size: 10px; letter-spacing: 2px; color: rgba(0,229,255,.6);
+    text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .nx-title::before { content: '◈'; color: var(--cyan); font-size: 10px; }
+  .nx-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,229,255,.3), transparent); }
+
+  /* Hex grid */
+  .hex-grid { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding: 4px 0 6px; }
+  .hex-cell {
+    width: 44px; height: 48px; position: relative; cursor: pointer;
+    clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    background: #0a0a1a;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: all .2s; gap: 2px; border: none; outline: none; font-family: inherit; color: var(--text);
+  }
+  .hex-cell:hover { transform: scale(1.12); z-index: 2; }
+  .hex-cell.active { background: linear-gradient(135deg,#0a1a10,#0d2a0d); filter: drop-shadow(0 0 6px rgba(0,220,130,.4)); }
+  .hex-cell.busy   { background: linear-gradient(135deg,#1a100a,#2a1a0d); filter: drop-shadow(0 0 6px rgba(245,158,11,.4)); }
+  .hex-cell.warn   { background: linear-gradient(135deg,#1a0a0a,#2a0d0d); filter: drop-shadow(0 0 6px rgba(239,68,68,.3)); }
+  .hex-icon { font-size: 14px; line-height: 1; }
+  .hex-name { font-size: 8px; letter-spacing: .5px; color: rgba(200,220,255,.7); font-weight: bold; font-family: 'JetBrains Mono', monospace; }
+
+  /* Missions */
+  .mission-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12px;
+  }
+  .mission-item:last-child { border-bottom: none; }
+  .mission-icon { font-size: 13px; flex-shrink: 0; }
+  .mission-info { flex: 1; min-width: 0; }
+  .mission-name { color: #b0c0e0; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mission-sched { font-size: 9px; color: var(--muted); }
+  .mission-bar { width: 100%; height: 2px; background: #0a0a1a; border-radius: 1px; margin-top: 3px; }
+  .mission-progress { height: 2px; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 1px; }
+  .countdown { font-size: 11px; font-weight: bold; color: var(--cyan); font-family: 'JetBrains Mono', monospace; letter-spacing: .5px; text-shadow: 0 0 8px rgba(0,229,255,.6); flex-shrink: 0; }
+  .countdown.soon { color: var(--orange); text-shadow: 0 0 8px rgba(245,158,11,.6); }
+
+  /* Ops feed */
+  .ops-feed { flex: 1; overflow-y: auto; padding: 4px 0; font-size: 11px; min-height: 0; }
+  .ops-feed::-webkit-scrollbar { width: 3px; }
+  .ops-feed::-webkit-scrollbar-thumb { background: var(--accent); }
+  .ops-entry { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,.03); line-height: 1.4; }
+  .ops-time  { color: #444466; font-size: 10px; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; }
+  .ops-agent { color: var(--cyan); font-weight: bold; flex-shrink: 0; min-width: 56px; font-size: 10px; letter-spacing: .5px; font-family: 'JetBrains Mono', monospace; }
+  .ops-msg   { color: #7788bb; flex: 1; }
+  .ops-entry.ok  .ops-msg { color: #5aaf7a; }
+  .ops-entry.err .ops-msg { color: #af5a5a; }
+  .ops-entry.run .ops-msg { color: #af9a3a; }
+  .ops-entry.sys .ops-agent { color: var(--accent); }
+  .ops-entry.sys .ops-msg  { color: #6a5aaf; }
+
+  /* ── CHAT ── */
+  .nexus-chat {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+    background: #080814; position: relative;
+  }
+  .nexus-chat::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(124,58,237,.03) 0%, transparent 40%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,229,255,.015) 39px, rgba(0,229,255,.015) 40px);
+  }
+  .chat-header {
+    padding: 9px 18px; border-bottom: 1px solid rgba(124,58,237,.25);
+    font-size: 11px; letter-spacing: 2px; color: rgba(124,58,237,.8);
+    text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0; background: rgba(10,10,26,.8);
+  }
+  .chat-header::before { content: '▮▮'; color: var(--accent); font-size: 10px; animation: blink 1.5s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .messages { flex: 1; overflow-y: auto; padding: 14px 18px; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
+  .messages::-webkit-scrollbar { width: 3px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  .msg { display: flex; gap: 10px; align-items: flex-start; }
+  .msg-avatar {
+    width: 28px; height: 28px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: bold; flex-shrink: 0;
+  }
+  .msg.user .msg-avatar { background: var(--accent); color: #fff; }
+  .msg.ai   .msg-avatar { background: #0a1a2a; border: 1px solid var(--cyan); color: var(--cyan); }
+  .msg.tool .msg-avatar { background: #0a1a0a; border: 1px solid var(--green); color: var(--green); font-size: 10px; }
+  .msg-content { flex: 1; min-width: 0; }
+  .msg-author { font-size: 11px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .msg-text { font-size: 14px; line-height: 1.8; color: var(--text); word-break: break-word; }
+  .msg.ai   .msg-text { color: #d0e0f0; }
+  .msg.tool .msg-text {
+    font-size: 11px; color: var(--green); font-family: 'JetBrains Mono', monospace;
+    background: #030d03; border-left: 2px solid var(--green);
+    padding: 5px 8px; border-radius: 0 4px 4px 0;
+  }
+  .msg-text strong { color: #fff; }
+  .msg-text code { background: #0a0a20; color: var(--cyan); padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+
+  .thinking { display: flex; gap: 4px; padding: 4px 0; }
+  .thinking span { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: bounce 1.2s infinite; }
+  .thinking span:nth-child(2) { animation-delay: .2s; }
+  .thinking span:nth-child(3) { animation-delay: .4s; }
+  @keyframes bounce { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+  /* Input zone */
+  .input-zone {
+    border-top: 1px solid rgba(124,58,237,.3); background: rgba(8,8,20,.95);
+    padding: 10px 14px; display: flex; gap: 8px; align-items: flex-end;
+    flex-shrink: 0; position: relative; z-index: 1;
+  }
+  .cmd-prompt { color: var(--cyan); font-size: 12px; font-weight: bold; letter-spacing: 1px; padding-bottom: 11px; flex-shrink: 0; text-shadow: 0 0 8px rgba(0,229,255,.8); font-family: 'JetBrains Mono', monospace; }
+  .chat-input {
+    flex: 1; background: rgba(0,0,10,.6); border: 1px solid rgba(124,58,237,.3);
+    border-radius: 4px; color: var(--cyan); font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; padding: 9px 12px; resize: none; outline: none;
+    min-height: 40px; transition: border-color .2s; caret-color: var(--cyan);
+  }
+  .chat-input:focus { border-color: rgba(0,229,255,.6); box-shadow: 0 0 12px rgba(0,229,255,.1); }
+  .chat-input::placeholder { color: rgba(100,100,180,.4); }
+  .btn-send {
+    background: linear-gradient(135deg, var(--accent), #5b21b6);
+    border: 1px solid rgba(124,58,237,.5); color: #fff; border-radius: 4px;
+    padding: 9px 16px; cursor: pointer; font-size: 12px;
+    font-family: 'JetBrains Mono', monospace; font-weight: bold; letter-spacing: 1px;
+    transition: all .2s; height: 40px; flex-shrink: 0;
+  }
+  .btn-send:hover { background: linear-gradient(135deg, var(--cyan), var(--accent)); color: #000; box-shadow: 0 0 16px rgba(0,229,255,.4); }
+  .btn-icon {
+    background: #0d1117; border: 1px solid #2a2a3a; color: var(--muted);
+    border-radius: 4px; padding: 9px 12px; cursor: pointer; font-size: 14px;
+    height: 40px; flex-shrink: 0; transition: all .2s;
+  }
+  .btn-icon:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    width: 290px; background: var(--panel); border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+  }
+  .rp-section { padding: 12px 12px 8px; border-bottom: 1px solid var(--border); }
+  .rp-title { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+
+  /* Quick Actions */
+  .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .qa-btn {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 8px 6px; font-size: 11px; cursor: pointer;
+    text-align: center; font-family: inherit; transition: all .15s; line-height: 1.3;
+  }
+  .qa-btn:hover { border-color: var(--accent); color: var(--cyan); background: #0d0d20; }
+  .qa-btn:active { transform: scale(.97); }
+  .qa-icon { font-size: 15px; display: block; margin-bottom: 3px; }
+  .qa-all { grid-column: span 2; background: rgba(124,58,237,.15); border-color: rgba(124,58,237,.4); }
+
+  /* Revenue */
+  .rev-card {
+    background: linear-gradient(135deg,#0a0a1a,#060612);
+    border: 1px solid rgba(0,229,255,.15); border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 8px; position: relative; overflow: hidden;
+  }
+  .rev-card::before { content:''; position:absolute; inset:0; pointer-events:none; background: radial-gradient(circle at 80% 20%, rgba(0,229,255,.04), transparent 60%); }
+  .rev-amount { font-size: 22px; font-weight: bold; color: var(--cyan); letter-spacing: 1px; text-shadow: 0 0 12px rgba(0,229,255,.4); font-family: 'JetBrains Mono', monospace; }
+  .rev-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .rev-sub { font-size: 11px; color: #5a7a9a; margin-top: 3px; }
+  .rev-sub span { color: var(--green); }
+  .rev-bar-wrap { margin-top: 8px; }
+  .rev-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .rev-bar-track { height: 4px; background: #0a0a20; border-radius: 2px; overflow: hidden; }
+  .rev-bar-fill { height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--cyan)); width: 0; transition: width .8s ease; }
+  .rev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .rev-stat { background: #06060e; border: 1px solid var(--border); border-radius: 5px; padding: 6px 8px; text-align: center; }
+  .rev-stat-val { font-size: 14px; font-weight: bold; color: var(--green); }
+  .rev-stat-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
+
+  /* Metrics */
+  .metric-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px;
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: var(--muted); }
+  .metric-val { color: var(--cyan); font-weight: bold; }
+  .metric-val.g { color: var(--green); }
+  .metric-val.o { color: var(--orange); }
+
+  /* Todo */
+  .todo-item {
+    display: flex; align-items: flex-start; gap: 7px;
+    padding: 5px 0; border-bottom: 1px solid #0d0d1a;
+    font-size: 12px; line-height: 1.5; cursor: pointer;
+  }
+  .todo-item:last-child { border-bottom: none; }
+  .tcheck {
+    width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--muted);
+    flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .todo-item.done .tcheck { background: var(--green); border-color: var(--green); color: #000; font-size: 9px; }
+  .todo-item.done .tlabel { color: var(--muted); text-decoration: line-through; }
+  .tlabel { flex: 1; }
+  .ttag { font-size: 10px; padding: 2px 6px; border-radius: 8px; background: #1a1a2a; color: var(--muted); flex-shrink: 0; }
+  .ttag.prio { background: rgba(226,179,58,.1); color: #e2b33a; }
+  .ttag.sek  { background: rgba(0,212,255,.1); color: var(--cyan); }
+
+  /* CrowdSec */
+  .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .cs-stat { background: rgba(0,0,20,.4); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 10px; text-align: center; }
+  .cs-val { font-size: 20px; font-weight: bold; }
+  .cs-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* Toast */
+  #toast-container { position: fixed; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 9999; }
+  .toast {
+    background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--green);
+    border-radius: 6px; padding: 10px 14px; font-size: 12px; max-width: 260px;
+    animation: slideIn .3s ease; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  }
+  .toast.warn { border-left-color: var(--orange); }
+  .toast.err  { border-left-color: var(--red); }
+  .toast-title { color: #fff; font-weight: bold; margin-bottom: 2px; }
+  .toast-msg { color: var(--muted); }
+  @keyframes slideIn { from{transform:translateX(120%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+  .cs-badge { margin-left: auto; font-size: 9px; padding: 2px 7px; border-radius: 8px; background: rgba(0,220,130,.1); color: var(--green); border: 1px solid rgba(0,220,130,.2); }
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">AI<span>SATOU</span></div>
+  <div class="header-right">
+    <div class="status-pill">
+      <div class="dot on"></div>
+      <span>Connectée</span>
+    </div>
+    <div class="status-pill">
+      <div class="dot on"></div>
+      <span id="backend-lbl">gemini-2.0-flash</span>
+    </div>
+    <select class="model-select">
+      <option>gemini-2.0-flash</option>
+      <option>claude-3-5-sonnet</option>
+      <option>groq-llama-70b</option>
+    </select>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">⟳ Équipe agents</div>
+
+    <div class="sidebar-title" style="margin-top:6px">⚙ Ops quotidiens</div>
+
+    <div class="agent-card">
+      <div class="agent-header open" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">🚀</span><div><div class="aname">LAMINE</div><div class="arole">Orchestration · 3 tâches</div></div></div>
+        <div class="aright"><span style="font-size:9px;color:var(--green)">2⏰</span><div class="adot"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks open">
+        <div class="task-row"><div class="task-sdot ok"></div><div class="task-name">Rapport quotidien</div><span class="task-badge">⏰ auto</span><button class="run-btn">▶</button></div>
+        <div class="task-row"><div class="task-sdot"></div><div class="task-name">Veille marché IA</div><span class="task-badge manual">🖱 manuel</span><button class="run-btn">▶</button></div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-header" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">📊</span><div><div class="aname">NDEYE</div><div class="arole">Analytics · 4 tâches</div></div></div>
+        <div class="aright"><span style="font-size:9px;color:var(--green)">3⏰</span><div class="adot"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks">
+        <div class="task-row"><div class="task-sdot ok"></div><div class="task-name">Revenue daily</div><span class="task-badge">⏰ auto</span><button class="run-btn">▶</button></div>
+        <div class="task-row"><div class="task-sdot"></div><div class="task-name">Projections mensuelles</div><span class="task-badge">⏰ auto</span><button class="run-btn">▶</button></div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-header" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">📝</span><div><div class="aname">SAMBA</div><div class="arole">Rédaction SEO · 4 tâches</div></div></div>
+        <div class="aright"><span style="font-size:9px;color:var(--green)">2⏰</span><div class="adot"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks"></div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-header" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">📣</span><div><div class="aname">MARIAMA</div><div class="arole">LinkedIn · 3 tâches</div></div></div>
+        <div class="aright"><span style="font-size:9px;color:var(--green)">2⏰</span><div class="adot"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks"></div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-header" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">💬</span><div><div class="aname">SEYDOU</div><div class="arole">Prospection · 3 tâches</div></div></div>
+        <div class="aright"><div class="adot warn"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks"></div>
+    </div>
+
+    <div class="sidebar-title" style="margin-top:6px">📊 Stratégie</div>
+
+    <div class="agent-card">
+      <div class="agent-header" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">🔍</span><div><div class="aname">BINTOU</div><div class="arole">Scout Fiverr · 2 tâches</div></div></div>
+        <div class="aright"><div class="adot"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks"></div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-header" onclick="toggleAgent(this)">
+        <div class="agent-left"><span class="agent-icon">💰</span><div><div class="aname">FATOU</div><div class="arole">Revenue ops · 3 tâches</div></div></div>
+        <div class="aright"><div class="adot"></div><span class="achevron">▶</span></div>
+      </div>
+      <div class="agent-tasks"></div>
+    </div>
+
+    <div class="sys-info">
+      <div>Site : <span>wulix.fr ✓</span></div>
+      <div>Blog : <span>14 articles</span></div>
+      <div>Produits : <span>5 × Gumroad</span></div>
+      <div>CrowdSec : <span>NAS ✓</span></div>
+    </div>
+  </div>
+
+  <!-- NEXUS CENTER -->
+  <div class="nexus-center">
+    <div class="scan-line"></div>
+
+    <!-- OPS PANEL -->
+    <div class="nexus-ops">
+
+      <div class="nx-section">
+        <div class="nx-title">RÉSEAU AGENTS <div class="nx-line"></div></div>
+        <div class="hex-grid">
+          <button class="hex-cell active"><span class="hex-icon">🚀</span><span class="hex-name">LAMINE</span></button>
+          <button class="hex-cell active"><span class="hex-icon">📊</span><span class="hex-name">NDEYE</span></button>
+          <button class="hex-cell"><span class="hex-icon">📧</span><span class="hex-name">ROKHAYA</span></button>
+          <button class="hex-cell active"><span class="hex-icon">📝</span><span class="hex-name">SAMBA</span></button>
+          <button class="hex-cell active"><span class="hex-icon">📣</span><span class="hex-name">MARIAMA</span></button>
+          <button class="hex-cell warn"><span class="hex-icon">💬</span><span class="hex-name">SEYDOU</span></button>
+          <button class="hex-cell active"><span class="hex-icon">💰</span><span class="hex-name">FATOU</span></button>
+          <button class="hex-cell busy"><span class="hex-icon">👥</span><span class="hex-name">AMINATA</span></button>
+          <button class="hex-cell active"><span class="hex-icon">📈</span><span class="hex-name">DJENEBA</span></button>
+          <button class="hex-cell active"><span class="hex-icon">🔍</span><span class="hex-name">BINTOU</span></button>
+          <button class="hex-cell active"><span class="hex-icon">🖥️</span><span class="hex-name">ADAMA</span></button>
+          <button class="hex-cell"><span class="hex-icon">✍️</span><span class="hex-name">KOUMBA</span></button>
+          <button class="hex-cell active"><span class="hex-icon">📉</span><span class="hex-name">IBRA</span></button>
+          <button class="hex-cell active"><span class="hex-icon">⚖️</span><span class="hex-name">MODIBO</span></button>
+        </div>
+      </div>
+
+      <div class="nx-section">
+        <div class="nx-title">MISSIONS PLANIFIÉES <div class="nx-line"></div></div>
+        <div class="mission-item">
+          <span class="mission-icon">📝</span>
+          <div class="mission-info">
+            <div class="mission-name">SAMBA — Article SEO</div>
+            <div class="mission-sched">Lundi 08:00</div>
+            <div class="mission-bar"><div class="mission-progress" id="mp1" style="width:0%"></div></div>
+          </div>
+          <span class="countdown" id="cd1">—</span>
+        </div>
+        <div class="mission-item">
+          <span class="mission-icon">📣</span>
+          <div class="mission-info">
+            <div class="mission-name">MARIAMA — LinkedIn</div>
+            <div class="mission-sched">Lundi 09:00</div>
+            <div class="mission-bar"><div class="mission-progress" id="mp2" style="width:0%"></div></div>
+          </div>
+          <span class="countdown" id="cd2">—</span>
+        </div>
+        <div class="mission-item">
+          <span class="mission-icon">📊</span>
+          <div class="mission-info">
+            <div class="mission-name">NDEYE — Rapport daily</div>
+            <div class="mission-sched">Quotidien 08:30</div>
+            <div class="mission-bar"><div class="mission-progress" id="mp3" style="width:95%"></div></div>
+          </div>
+          <span class="countdown soon" id="cd3">00h08m</span>
+        </div>
+        <div class="mission-item">
+          <span class="mission-icon">🔍</span>
+          <div class="mission-info">
+            <div class="mission-name">BINTOU — Scout Fiverr</div>
+            <div class="mission-sched">Mercredi 10:00</div>
+            <div class="mission-bar"><div class="mission-progress" id="mp4" style="width:30%"></div></div>
+          </div>
+          <span class="countdown" id="cd4">—</span>
+        </div>
+      </div>
+
+      <div class="nx-section grow">
+        <div class="nx-title">FLUX OPS EN DIRECT <div class="nx-line"></div></div>
+        <div class="ops-feed" id="ops-feed">
+          <div class="ops-entry ok"><span class="ops-time">08:32:14</span><span class="ops-agent">SAMBA</span><span class="ops-msg">Article SEO publié — wulix.fr/blog ✓</span></div>
+          <div class="ops-entry run"><span class="ops-time">08:35:07</span><span class="ops-agent">NDEYE</span><span class="ops-msg">Génération rapport daily en cours...</span></div>
+          <div class="ops-entry ok"><span class="ops-time">08:36:00</span><span class="ops-agent">MARIAMA</span><span class="ops-msg">Post LinkedIn planifié — 09:00 ✓</span></div>
+          <div class="ops-entry err"><span class="ops-time">08:37:41</span><span class="ops-agent">SEYDOU</span><span class="ops-msg">Erreur API LinkedIn — quota dépassé</span></div>
+          <div class="ops-entry ok"><span class="ops-time">08:39:00</span><span class="ops-agent">FATOU</span><span class="ops-msg">3 nouvelles ventes Gumroad détectées</span></div>
+          <div class="ops-entry sys"><span class="ops-time">08:40:00</span><span class="ops-agent">NEXUS</span><span class="ops-msg">14 agents en ligne — WULIX opérationnel</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="nexus-chat">
+      <div class="chat-header">
+        <span>INTERFACE AISATOU //</span>
+        <span style="opacity:.7">WULIX COMMAND CENTER</span>
+        <span style="margin-left:auto;color:rgba(0,220,130,.7);font-size:10px;">gemini-2.0-flash</span>
+        <span style="color:rgba(0,212,255,.6);font-size:10px;">~147 tok</span>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="msg ai">
+          <div class="msg-avatar">A</div>
+          <div class="msg-content">
+            <div class="msg-author">AISATOU</div>
+            <div class="msg-text">Bienvenue Omar. Systèmes en ligne. <strong>14 agents actifs</strong>, NEXUS opérationnel.<br><br>Tu peux me parler directement, lancer une mission depuis la sidebar, ou utiliser les Quick Actions à droite.</div>
+          </div>
+        </div>
+        <div class="msg user">
+          <div class="msg-avatar">O</div>
+          <div class="msg-content">
+            <div class="msg-author">OMAR</div>
+            <div class="msg-text">Génère un rapport sur les performances de la semaine dernière et propose 3 actions concrètes pour augmenter les revenus Gumroad.</div>
+          </div>
+        </div>
+        <div class="msg ai">
+          <div class="msg-avatar">A</div>
+          <div class="msg-content">
+            <div class="msg-author">AISATOU</div>
+            <div class="msg-text">
+              <strong>📊 Rapport semaine S17 — WULIX</strong><br><br>
+              • Ventes Gumroad : <code>3 ventes · 47€</code><br>
+              • Fiverr impressions : <code>+23%</code> vs S16<br>
+              • Blog trafic : <code>847 visites</code> · bounce 38%<br>
+              • Agents uptime : <code>99.2%</code> (SEYDOU quota KO)<br><br>
+              <strong>🎯 3 actions recommandées :</strong><br>
+              1. Relancer le Pack Scripts Python avec -20% promo (peak S17)<br>
+              2. Corriger quota SEYDOU LinkedIn — passer sur compte pro<br>
+              3. Publier 2 articles supplémentaires cette semaine (SAMBA prêt)
+            </div>
+          </div>
+        </div>
+        <div class="msg tool">
+          <div class="msg-avatar">T</div>
+          <div class="msg-content">
+            <div class="msg-author" style="color:var(--green)">OUTIL</div>
+            <div class="msg-text">⚙ fetch_revenue(period="week", source="gumroad") → {"total": 47.0, "sales": 3, "top_product": "pack-scripts"}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-zone">
+        <span class="cmd-prompt">NEXUS ›</span>
+        <textarea class="chat-input" id="chat-input" placeholder="Commande pour AISATOU... (Entrée pour envoyer)" rows="1"></textarea>
+        <button class="btn-send" onclick="sendMsg()">EXEC ➤</button>
+        <button class="btn-icon" title="Voix">🎤</button>
+        <button class="btn-icon" title="Micro">🎙</button>
+        <button class="btn-icon" title="Thème" onclick="document.body.classList.toggle('light')">☀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div class="rp-section">
+      <div class="rp-title">⚡ Quick Actions</div>
+      <div class="qa-grid">
+        <button class="qa-btn" onclick="fakeRun(this,'SAMBA','Publier article...')"><span class="qa-icon">📝</span>Publier article</button>
+        <button class="qa-btn" onclick="fakeRun(this,'MARIAMA','Post LinkedIn...')"><span class="qa-icon">💼</span>Post LinkedIn</button>
+        <button class="qa-btn" onclick="fakeRun(this,'NDEYE','Rapport ventes...')"><span class="qa-icon">📊</span>Rapport ventes</button>
+        <button class="qa-btn" onclick="fakeRun(this,'DEPLOY','Deploy wulix.fr...')"><span class="qa-icon">🚀</span>Deploy wulix.fr</button>
+        <button class="qa-btn" onclick="fakeRun(this,'CREW','Leads Reddit...')"><span class="qa-icon">🔍</span>Leads Reddit</button>
+        <button class="qa-btn" onclick="fakeRun(this,'KOFI','Veille IA...')"><span class="qa-icon">🗞</span>Veille IA</button>
+        <button class="qa-btn qa-all" onclick="fakeRun(this,'NEXUS','Lancement de tous les agents...')"><span class="qa-icon">⚡</span>Lancer tous les agents</button>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">💰 Revenus NDEYE</div>
+      <div class="rev-card">
+        <div class="rev-label">Aujourd'hui</div>
+        <div class="rev-amount" id="rev-today">47.00 €</div>
+        <div class="rev-sub">Projection mois : <span id="rev-proj">611 €</span></div>
+        <div class="rev-bar-wrap">
+          <div class="rev-bar-labels"><span id="rev-pct">9.4%</span><span style="color:var(--cyan)">Obj. 500€</span></div>
+          <div class="rev-bar-track"><div class="rev-bar-fill" id="rev-bar" style="width:9.4%"></div></div>
+        </div>
+      </div>
+      <div class="rev-grid">
+        <div class="rev-stat"><div class="rev-stat-val">3</div><div class="rev-stat-lbl">Ventes</div></div>
+        <div class="rev-stat"><div class="rev-stat-val">01-05</div><div class="rev-stat-lbl">Dernier rapport</div></div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">📈 Pipeline agents</div>
+      <div class="metric-row"><span class="metric-label">File contenu</span><span class="metric-val">3 articles</span></div>
+      <div class="metric-row"><span class="metric-label">Prospects</span><span class="metric-val">12 leads</span></div>
+      <div class="metric-row"><span class="metric-label">Outreach</span><span class="metric-val">5 en attente</span></div>
+      <div class="metric-row"><span class="metric-label">Dernier run</span><span class="metric-val g">08:32</span></div>
+      <div class="metric-row"><span class="metric-label">Tâches actives</span><span class="metric-val o">2</span></div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title" style="display:flex;align-items:center;gap:6px">
+        🛡 CrowdSec — nas-dh2300
+        <span class="cs-badge">ACTIF</span>
+      </div>
+      <div class="cs-grid">
+        <div class="cs-stat"><div class="cs-val" style="color:var(--orange)">2</div><div class="cs-lbl">Alertes</div></div>
+        <div class="cs-stat"><div class="cs-val" style="color:var(--red)">14</div><div class="cs-lbl">IPs bloquées</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;">
+        <div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:var(--muted)">Scénarios actifs</span><span style="color:var(--cyan)">57</span></div>
+        <div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:var(--muted)">Dernière activité</span><span style="color:var(--green)">today 8:35 AM</span></div>
+      </div>
+      <button style="width:100%;margin-top:8px;padding:6px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:6px;color:var(--cyan);font-size:11px;cursor:pointer;font-family:inherit;">↻ Rafraîchir</button>
+    </div>
+
+    <div class="rp-section" style="flex:1">
+      <div class="rp-title">⏳ À faire (Omar)</div>
+      <div id="todo-list">
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck">✓</div>
+          <div class="tlabel">Produits Gumroad x5 + descriptions</div>
+          <span class="ttag">Gumroad</span>
+        </div>
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck">✓</div>
+          <div class="tlabel">offre.html déployé sur Cloudflare</div>
+          <span class="ttag">Site</span>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">SIRET — CNI + justificatif domicile</div>
+          <span class="ttag prio">Priorité</span>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">3-5 premières reviews Fiverr</div>
+          <span class="ttag prio">Priorité</span>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">LinkedIn App — developers.linkedin.com</div>
+          <span class="ttag">LinkedIn</span>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">crowdsec_cf_bouncer.py (cron NAS)</div>
+          <span class="ttag sek">Sécu</span>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">Redesign wulix.fr + AISATOU</div>
+          <span class="ttag" style="background:rgba(168,85,247,.15);color:#a855f7">Design</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Agent accordion ──
+  function toggleAgent(header) {
+    const tasks = header.nextElementSibling;
+    const isOpen = header.classList.contains('open');
+    header.classList.toggle('open', !isOpen);
+    tasks.classList.toggle('open', !isOpen);
+  }
+
+  // ── Todo toggle ──
+  function toggleTodo(item) {
+    item.classList.toggle('done');
+    const check = item.querySelector('.tcheck');
+    if (item.classList.contains('done')) { check.textContent = '✓'; check.style.background = 'var(--green)'; check.style.borderColor = 'var(--green)'; check.style.color = '#000'; }
+    else { check.textContent = ''; check.style.background = ''; check.style.borderColor = ''; check.style.color = ''; }
+  }
+
+  // ── Fake quick actions ──
+  function fakeRun(btn, agent, msg) {
+    if (btn.classList.contains('running')) return;
+    const icon = btn.querySelector('.qa-icon');
+    const orig = icon ? icon.textContent : '';
+    btn.classList.add('running');
+    btn.style.borderColor = 'var(--orange)';
+    btn.style.color = 'var(--orange)';
+    if (icon) icon.textContent = '⏳';
+    toast(agent, msg, 'ok');
+    addOpsEntry(agent, msg, 'run');
+    setTimeout(() => {
+      btn.classList.remove('running');
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      if (icon) icon.textContent = orig;
+      btn.style.borderColor = 'var(--green)';
+      btn.style.color = 'var(--green)';
+      toast(agent + ' ✓', 'Exécuté avec succès', 'ok');
+      addOpsEntry(agent, 'Terminé avec succès ✓', 'ok');
+      setTimeout(() => { btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+    }, 2000 + Math.random() * 1000);
+  }
+
+  // ── Chat ──
+  function sendMsg() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.innerHTML = `<div class="msg-avatar">O</div><div class="msg-content"><div class="msg-author">OMAR</div><div class="msg-text">${text.replace(/</g,'&lt;')}</div></div>`;
+    msgs.appendChild(div);
+    input.value = '';
+    input.style.height = 'auto';
+    // Thinking dots
+    const think = document.createElement('div');
+    think.className = 'msg ai';
+    think.innerHTML = `<div class="msg-avatar">A</div><div class="msg-content"><div class="msg-author">AISATOU</div><div class="thinking"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(think);
+    msgs.scrollTop = msgs.scrollHeight;
+    setTimeout(() => {
+      think.remove();
+      const resp = document.createElement('div');
+      resp.className = 'msg ai';
+      resp.innerHTML = `<div class="msg-avatar">A</div><div class="msg-content"><div class="msg-author">AISATOU</div><div class="msg-text">Compris Omar. Je traite ta demande et analyse les données disponibles. Résultats disponibles dans quelques instants.</div></div>`;
+      msgs.appendChild(resp);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1800);
+  }
+
+  document.getElementById('chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+  });
+  document.getElementById('chat-input').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 110) + 'px';
+  });
+
+  // ── Ops feed ──
+  function addOpsEntry(agent, msg, type='ok') {
+    const feed = document.getElementById('ops-feed');
+    const now = new Date().toLocaleTimeString('fr', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const div = document.createElement('div');
+    div.className = `ops-entry ${type}`;
+    div.style.animation = 'none';
+    div.innerHTML = `<span class="ops-time">${now}</span><span class="ops-agent">${agent}</span><span class="ops-msg">${msg}</span>`;
+    feed.insertBefore(div, feed.firstChild);
+    if (feed.children.length > 30) feed.removeChild(feed.lastChild);
+  }
+
+  // ── Toast ──
+  function toast(title, msg, type='ok') {
+    const c = document.getElementById('toast-container');
+    const div = document.createElement('div');
+    div.className = `toast${type === 'err' ? ' err' : type === 'warn' ? ' warn' : ''}`;
+    div.innerHTML = `<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
+    c.appendChild(div);
+    setTimeout(() => { div.style.opacity = '0'; div.style.transition = 'opacity .3s'; setTimeout(() => div.remove(), 300); }, 3500);
+  }
+
+  // ── Countdowns ──
+  function getNext(day, h, m) {
+    const now = new Date();
+    const t = new Date(now);
+    t.setHours(h, m, 0, 0);
+    if (day === -1) { if (t <= now) t.setDate(t.getDate() + 1); }
+    else { let diff = day - now.getDay(); if (diff < 0 || (diff === 0 && t <= now)) diff += 7; t.setDate(t.getDate() + diff); }
+    return t;
+  }
+  function fmtMs(ms) {
+    if (ms <= 0) return 'MAINTENANT';
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    if (h >= 24) return `${Math.floor(h/24)}j ${h%24}h${String(m).padStart(2,'0')}`;
+    return `${h}h${String(m).padStart(2,'0')}m${String(s).padStart(2,'0')}s`;
+  }
+  const missions = [
+    {id:1, day:1, h:8,  m:0,  period:7*24*3600000},
+    {id:2, day:1, h:9,  m:0,  period:7*24*3600000},
+    {id:3, day:-1,h:8,  m:30, period:24*3600000},
+    {id:4, day:3, h:10, m:0,  period:7*24*3600000},
+  ];
+  function updateCountdowns() {
+    const now = Date.now();
+    missions.forEach(m => {
+      const next = getNext(m.day, m.h, m.m);
+      const ms = next.getTime() - now;
+      const el = document.getElementById('cd' + m.id);
+      const bar = document.getElementById('mp' + m.id);
+      if (el) { el.textContent = fmtMs(ms); el.className = 'countdown' + (ms < 3600000 ? ' soon' : ''); }
+      if (bar) { bar.style.width = Math.max(0, Math.min(100, 100 - ms/m.period*100)) + '%'; }
+    });
+  }
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+
+  // ── Boot log ──
+  setTimeout(() => addOpsEntry('SYS', 'NEXUS COMMAND initialisé', 'sys'), 500);
+  setTimeout(() => addOpsEntry('SYS', '14 agents en ligne — prêt', 'ok'), 1200);
+</script>
+</body>
+</html>
