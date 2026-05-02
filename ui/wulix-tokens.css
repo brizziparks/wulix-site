@@ -1,0 +1,226 @@
+/**
+ * WULIX Design System v2 — Tokens unifiés
+ * Synchronisés avec AISATOU HUD pour cohérence de marque
+ * Source : Claude Design (Anthropic Labs) - 2026-05-01
+ */
+
+/* ── Fonts locales (servies depuis /hud/fonts/ via FastAPI mount) ── */
+/* Fallback Google Fonts si HUD inaccessible (Cloudflare Pages standalone) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE TOKENS — WULIX.FR WEBSITE
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Brand Colors ── */
+  --wulix-cyan:        #00d4ff;
+  --wulix-purple:      #a855f7;
+  --wulix-gold:        #e2b33a;
+  --wulix-green:       #00dc82;
+  --wulix-red:         #ef4444;
+  --wulix-orange:      #f59e0b;
+
+  /* Aliases courts (utilisés dans le code existant) */
+  --cyan:              #00d4ff;
+  --purple:            #a855f7;
+  --gold:              #e2b33a;
+  --green:             #00dc82;
+  --red:               #ef4444;
+  --orange:            #f59e0b;
+
+  /* ── Backgrounds ── */
+  --bg:                #0a0015;
+  --bg2:               #0f0025;
+  --bg-primary:        #0a0015;
+  --bg-secondary:      #0f0025;
+  --bg-panel:          rgba(15, 0, 40, 0.70);
+  --bg-panel-solid:    #0a0a1a;
+  --bg-input:          rgba(0, 0, 20, 0.60);
+
+  /* ── Text ── */
+  --text:              #e2e8f0;
+  --dim:               #7c88a8;
+  --text-primary:      #e2e8f0;
+  --text-secondary:    #7c88a8;
+
+  /* ── Panels ── */
+  --panel:             rgba(15,0,40,0.7);
+
+  /* ── Borders ── */
+  --border-subtle:     rgba(255, 255, 255, 0.06);
+  --border-cyan-weak:  rgba(0, 212, 255, 0.12);
+  --border-cyan-mid:   rgba(0, 212, 255, 0.25);
+  --border-cyan-strong:rgba(0, 212, 255, 0.60);
+  --border-purple-weak:rgba(168, 85, 247, 0.15);
+  --border-purple-mid: rgba(168, 85, 247, 0.40);
+
+  /* ── Gradients ── */
+  --grad-cta:          linear-gradient(135deg, #00d4ff, #a855f7);
+  --grad-text:         linear-gradient(90deg, #00d4ff, #a855f7);
+  --grad-hero:         linear-gradient(90deg, #00d4ff 0%, #a855f7 60%, #e2b33a 100%);
+  --grad-gold:         linear-gradient(90deg, #e2b33a, #00d4ff);
+
+  /* ── Glows / Shadows ── */
+  --glow-cyan-subtle:  0 0 24px rgba(0, 212, 255, 0.25);
+  --glow-cyan-strong:  0 0 40px rgba(0, 212, 255, 0.40);
+  --glow-purple:       0 0 20px rgba(168, 85, 247, 0.30);
+  --glow-green:        0 0 12px rgba(0, 220, 130, 0.40);
+
+  /* ── Radius ── */
+  --radius-sm:         6px;
+  --radius-md:         10px;
+  --radius-lg:         16px;
+  --radius-xl:         20px;
+  --radius-pill:       999px;
+
+  /* ── Typography ── */
+  --font-display:      'Orbitron', monospace;
+  --font-body:         'Inter', system-ui, sans-serif;
+  --font-mono:         'JetBrains Mono', 'Courier New', monospace;
+
+  /* ── Transitions ── */
+  --transition-fast:   0.15s ease;
+  --transition-base:   0.20s ease;
+  --transition-slow:   0.30s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES réutilisables (à ajouter via class dans le HTML)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Gradient text */
+.text-gradient {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-hero {
+  background: var(--grad-hero);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textShine 6s linear infinite;
+}
+@keyframes textShine { 0% { background-position: 0 0 } 100% { background-position: -200% 0 } }
+
+.text-gradient-gold {
+  background: var(--grad-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow utilities */
+.glow-cyan      { box-shadow: var(--glow-cyan-subtle); }
+.glow-purple    { box-shadow: var(--glow-purple); }
+.glow-cyan-text { text-shadow: 0 0 8px rgba(0, 212, 255, 0.6); }
+
+/* Hover lift card */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 212, 255, 0.15), 0 0 0 1px rgba(0, 212, 255, 0.2);
+}
+
+/* CTA button gradient */
+.btn-cta {
+  background: var(--grad-cta);
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: all var(--transition-base);
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.25);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.45);
+}
+
+/* Section label */
+.label-section {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* Animated cyan border (focus ring) */
+.focus-ring {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS GLOBALES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Fade in on scroll (à activer via JS IntersectionObserver) */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Shimmer effect (pour badges "popular" ou CTAs) */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -60%;
+  width: 40%; height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transform: skewX(-15deg);
+  transition: left .6s cubic-bezier(.22,1,.36,1);
+  pointer-events: none;
+}
+.shimmer:hover::after { left: 140%; }
+
+/* Pulse subtle (statut online) */
+@keyframes pulse-soft { 0%, 100% { opacity: 1 } 50% { opacity: 0.5 } }
+.pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+/* ═══════════════════════════════════════════════════════════════
+   AMBIENT BACKGROUND (pour le body — ajoute la classe .ambient-bg)
+   ═══════════════════════════════════════════════════════════════ */
+.ambient-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 10% 0%,  rgba(0,212,255,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 90% 100%, rgba(168,85,247,.10) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(226,179,58,.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scroll smooth */
+html { scroll-behavior: smooth; }
+
+/* Selection highlight */
+::selection { background: rgba(0, 212, 255, 0.3); color: #ffffff; }
+::-moz-selection { background: rgba(0, 212, 255, 0.3); color: #ffffff; }

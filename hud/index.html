@@ -6,17 +6,49 @@
   <title>AISATOU — Interface IA</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
+    /* ── Fonts locales (Claude Design v2) ── */
+    @font-face {
+      font-family: 'Orbitron';
+      src: url('/hud/fonts/Orbitron-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('/hud/fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
     :root {
       --bg: #050510;
       --panel: #0a0a1a;
+      --panel2: #06060e;
       --border: #1a1a3a;
       --accent: #7c3aed;
       --accent2: #00e5ff;
+      --cyan: #00e5ff;
       --green: #00dc82;
       --orange: #f59e0b;
       --red: #ef4444;
+      --gold: #e2b33a;
       --text: #e0e0f0;
       --muted: #555577;
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    }
+    body.light {
+      --bg: #f0f2f8;
+      --panel: #ffffff;
+      --border: #d0d4e8;
+      --accent: #7c3aed;
+      --accent2: #0066cc;
+      --green: #16a34a;
+      --orange: #d97706;
+      --red: #dc2626;
+      --text: #1a1a2e;
+      --muted: #7070a0;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -28,8 +60,14 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* Scanlines subtiles (Claude Design v2) */
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 39px,
+        rgba(0,229,255,.012) 39px, rgba(0,229,255,.012) 40px
+      );
     }
-    code, .cmd-prompt, #input, .ops-feed, .hex-name { font-family: 'Courier New', monospace; }
+    body.light { background-image: none; }
+    code, .cmd-prompt, #input, .ops-feed, .hex-name { font-family: var(--font-mono); }
 
     /* ── Header ── */
     header {
@@ -42,7 +80,30 @@
       flex-shrink: 0;
       gap: 12px;
     }
-    .logo { font-size: 20px; font-weight: bold; color: var(--accent2); letter-spacing: 3px; }
+    /* ── Logo + Orbe animé (Claude Design v2) ── */
+    .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .orb {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle, var(--cyan) 0%, var(--accent) 55%, transparent 100%);
+      box-shadow: 0 0 14px rgba(0,229,255,.5);
+      flex-shrink: 0; position: relative;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .orb::after {
+      content: ''; position: absolute; inset: 3px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.3) 0%, transparent 70%);
+    }
+    @keyframes orbPulse {
+      from { transform: scale(1);    box-shadow: 0 0 14px rgba(0,229,255,.5); }
+      to   { transform: scale(1.25); box-shadow: 0 0 28px rgba(0,229,255,.9); }
+    }
+    .orb.speaking { animation: orbPulse .4s ease-in-out infinite alternate; }
+    .orb.thinking { animation: orbPulse 1.2s ease-in-out infinite alternate; }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 900;
+      color: var(--cyan); letter-spacing: 3px;
+    }
     .logo span { color: var(--accent); }
     .header-right { display: flex; align-items: center; gap: 14px; }
     .status-pill {
@@ -368,6 +429,49 @@
     #send-btn:hover { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #000; box-shadow: 0 0 16px rgba(0,229,255,.4); }
     #send-btn:disabled { background: #1a1a2a; border-color: #2a2a3a; color: var(--muted); cursor: not-allowed; box-shadow: none; text-shadow: none; }
 
+    #voice-btn {
+      background: #0d1117; border: 1px solid #2a2a3a; color: var(--muted);
+      border-radius: 4px; padding: 9px 12px; cursor: pointer;
+      font-size: 14px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #voice-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    #voice-btn.voice-on  { border-color: #00e676; color: #00e676; box-shadow: 0 0 10px rgba(0,230,118,.3); }
+    #voice-btn.voice-speaking { animation: pulse-voice .5s ease-in-out infinite alternate; }
+    @keyframes pulse-voice {
+      from { box-shadow: 0 0 6px rgba(0,230,118,.3); }
+      to   { box-shadow: 0 0 20px rgba(0,230,118,.8); }
+    }
+    #stop-btn {
+      background: #1a0a0a; border: 1px solid #5a1a1a; color: #ff5555;
+      border-radius: 4px; padding: 9px 10px; cursor: pointer;
+      font-size: 13px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #stop-btn:hover { background: #ff5555; color: #fff; }
+    
+    #export-btn {
+      background: #0a1a0a; border: 1px solid #1a4a1a; color: #00dc82;
+      border-radius: 4px; padding: 9px 10px; cursor: pointer;
+      font-size: 13px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #export-btn:hover { border-color: #00dc82; background: #0a2a0a; }
+
+    #theme-btn {
+      background: #0a0a1a; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 4px; padding: 9px 10px; cursor: pointer;
+      font-size: 14px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #theme-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    body.light #theme-btn { background: #fff; }
+#mic-btn {
+      background: #0d1117; border: 1px solid #2a2a3a; color: var(--muted);
+      border-radius: 4px; padding: 9px 12px; cursor: pointer;
+      font-size: 14px; height: 40px; flex-shrink: 0; transition: all .2s;
+    }
+    #mic-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    #mic-btn.stt-on { border-color: #ff6b35; color: #ff6b35; box-shadow: 0 0 10px rgba(255,107,53,.3); animation: pulse-mic 1s ease-in-out infinite alternate; }
+    #mic-btn.stt-listening { border-color: #ff1744; color: #ff1744; box-shadow: 0 0 18px rgba(255,23,68,.6); }
+    @keyframes pulse-mic { from { opacity: .7; } to { opacity: 1.0; } }
+
     /* ── Right panel ── */
     .right-panel {
       width: 300px; background: var(--panel);
@@ -393,6 +497,16 @@
     .qa-btn .qa-icon { font-size: 16px; display: block; margin-bottom: 3px; }
     .qa-btn.running { border-color: var(--orange); color: var(--orange); animation: pulse 1s infinite; }
     .qa-btn.done { border-color: var(--green); color: var(--green); }
+    /* Shimmer sur le bouton "Lancer tous les agents" (Claude Design v2) */
+    #qa-all { position: relative; overflow: hidden; }
+    #qa-all::after {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 40%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+      transform: skewX(-15deg); transition: left .6s cubic-bezier(.22,1,.36,1);
+      pointer-events: none;
+    }
+    #qa-all:hover::after { left: 140%; }
 
     /* Metrics */
     .metric-row {
@@ -427,9 +541,12 @@
     .rev-progress-bar { height: 4px; background: #0a0a20; border-radius: 2px; overflow: hidden; }
     .rev-progress-fill {
       height: 4px; border-radius: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transition: width .8s ease; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--gold));
+      background-size: 200% 100%;
+      animation: revShine 4s linear infinite;
+      transition: width .8s cubic-bezier(.22,1,.36,1); width: 0%;
     }
+    @keyframes revShine { 0% { background-position: 0 0 } 100% { background-position: -200% 0 } }
     .rev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
     .rev-stat { background: #06060e; border: 1px solid var(--border); border-radius: 5px; padding: 6px 8px; text-align: center; }
     .rev-stat-val { font-size: 14px; font-weight: bold; color: var(--green); }
@@ -575,7 +692,10 @@
 </div>
 
 <header>
-  <div class="logo">AI<span>SATOU</span></div>
+  <div class="logo-wrap">
+    <div class="orb" id="aisatou-orb" title="AISATOU"></div>
+    <div class="logo">AI<span>SATOU</span></div>
+  </div>
   <div class="header-right">
     <div class="status-pill">
       <div class="dot on" id="ws-dot"></div>
@@ -598,8 +718,9 @@
     </div>
     <div class="sys-info">
       <div>Site : <span id="site-status">wulix.fr ✓</span></div>
-      <div>Blog : <span id="blog-count">6 articles</span></div>
-      <div>Produits : <span>4 × Gumroad</span></div>
+      <div>Blog : <span id="blog-count">— articles</span></div>
+      <div>Produits : <span>5 × Gumroad</span></div>
+      <div>CrowdSec : <span id="cs-sidebar" style="color:var(--green)">NAS ✓</span></div>
     </div>
   </div>
 
@@ -677,9 +798,11 @@
 
     <!-- RIGHT: Chat panel -->
     <div class="nexus-chat">
-      <div class="nexus-chat-header">
-        INTERFACE AISATOU &nbsp;// &nbsp;<span>WULIX COMMAND CENTER</span>
-        &nbsp;&nbsp;<span id="nx-model-label" style="margin-left:auto;color:rgba(0,220,130,.7);font-size:10px;letter-spacing:1px">—</span>
+      <div class="nexus-chat-header chat-header" style="display:flex;align-items:center;gap:8px">
+        <span>INTERFACE AISATOU //</span>
+        <span style="opacity:.7">WULIX COMMAND CENTER</span>
+        <span id="nx-model-label" style="margin-left:auto;color:rgba(0,220,130,.7);font-size:10px;letter-spacing:1px">—</span>
+        <span id="token-counter" title="Tokens estimés conversation" style="color:rgba(0,212,255,.6);font-size:10px;letter-spacing:1px">~0 tok</span>
       </div>
 
       <div id="messages">
@@ -695,7 +818,15 @@
       <div class="input-zone">
         <span class="cmd-prompt">NEXUS&nbsp;›</span>
         <textarea id="input" placeholder="Commande pour AISATOU... (Entrée pour envoyer)" rows="1"></textarea>
-        <button id="send-btn" title="Envoyer (Entrée)">EXEC&nbsp;➤</button>
+        <button id="send-btn" title="Envoyer (Entrée)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span style="vertical-align:middle">EXEC</span>
+        </button>
+        <button id="voice-btn" title="Activer / désactiver la voix AISATOU" onclick="toggleVoice()">🎤</button>
+        <button id="mic-btn" title="Wake word navigateur — dis 'Aisatou'" onclick="toggleBrowserSTT()">🎙</button>
+        <button id="stop-btn" title="Couper la parole" onclick="stopAudio()" style="display:none">⏹</button>
+  <button id="export-btn" onclick="exportHistory()" title="Exporter historique">&#128190;</button>
+  <button id="theme-btn" onclick="toggleTheme()" title="Basculer theme clair/sombre">&#9788;</button>
       </div>
     </div>
 
@@ -719,6 +850,15 @@
         </button>
         <button class="qa-btn" id="qa-deploy" onclick="runDeploy(this)">
           <span class="qa-icon">🚀</span>Deploy wulix.fr
+        </button>
+        <button class="qa-btn" id="qa-crew" onclick="runAgent('crew', this)">
+          <span class="qa-icon">🔍</span>Leads Reddit
+        </button>
+        <button class="qa-btn" id="qa-kofi" onclick="runAgent('kofi', this)">
+          <span class="qa-icon">🗞</span>Veille IA
+        </button>
+        <button class="qa-btn" id="qa-all" onclick="runAllAgents(this)" style="grid-column:span 2;background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.4)">
+          <span class="qa-icon">⚡</span>Lancer tous les agents
         </button>
       </div>
     </div>
@@ -792,47 +932,100 @@
     <div class="rp-section" style="flex:1">
       <div class="rp-title">⏳ À faire (Omar)</div>
       <div class="todo-list" id="todo-list">
+        <!-- ✅ FAIT -->
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck checked"></div>
+          <div class="tlabel" style="text-decoration:line-through;opacity:.5">Produits Gumroad x5 + descriptions + covers</div>
+          <div class="ttag" style="opacity:.4">Gumroad</div>
+        </div>
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck checked"></div>
+          <div class="tlabel" style="text-decoration:line-through;opacity:.5">offre.html + ikm-protection.pages.dev déployés</div>
+          <div class="ttag" style="opacity:.4">Site</div>
+        </div>
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck checked"></div>
+          <div class="tlabel" style="text-decoration:line-through;opacity:.5">Hermes Agent v0.12.0 installé (WSL2 + Groq)</div>
+          <div class="ttag" style="opacity:.4">IA</div>
+        </div>
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck checked"></div>
+          <div class="tlabel" style="text-decoration:line-through;opacity:.5">CrowdSec NAS intégré au HUD (widget + API)</div>
+          <div class="ttag" style="opacity:.4">Sécu</div>
+        </div>
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck checked"></div>
+          <div class="tlabel" style="text-decoration:line-through;opacity:.5">Blog : 26 corrections d'encodage UTF-8</div>
+          <div class="ttag" style="opacity:.4">Site</div>
+        </div>
+        <div class="todo-item done" onclick="toggleTodo(this)">
+          <div class="tcheck checked"></div>
+          <div class="tlabel" style="text-decoration:line-through;opacity:.5">MARIAMA → page WULIX (code corrigé)</div>
+          <div class="ttag" style="opacity:.4">LinkedIn</div>
+        </div>
+        <!-- ⏳ EN COURS / À FAIRE OMAR -->
         <div class="todo-item" onclick="toggleTodo(this)">
           <div class="tcheck"></div>
-          <div class="tlabel">Créer Produit 4 sur Gumroad (5€)</div>
+          <div class="tlabel">SIRET — CNI + justificatif domicile (auto-entrepreneur.urssaf.fr)</div>
+          <div class="ttag" style="background:rgba(226,179,58,.1);color:var(--gold)">Priorité</div>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">3-5 premières reviews Fiverr (prix réduit, réseau)</div>
+          <div class="ttag" style="background:rgba(226,179,58,.1);color:var(--gold)">Priorité</div>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">LinkedIn App — créer sur developers.linkedin.com</div>
+          <div class="ttag">LinkedIn</div>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">Déployer crowdsec_cf_bouncer.py (cron NAS)</div>
+          <div class="ttag" style="background:rgba(0,212,255,.1);color:var(--accent2)">Sécu</div>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">Redesign wulix.fr + AISATOU (passer Claude)</div>
+          <div class="ttag" style="background:rgba(168,85,247,.15);color:#a855f7">Design</div>
+        </div>
+        <div class="todo-item" onclick="toggleTodo(this)">
+          <div class="tcheck"></div>
+          <div class="tlabel">Vérifier wulix.gumroad.com (5 produits visibles ?)</div>
           <div class="ttag">Gumroad</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">Créer Bundle (45€) sur Gumroad</div>
-          <div class="ttag">Gumroad</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">Lancer CGV_Gumroad.bat (4 produits)</div>
-          <div class="ttag">CGV</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">Make.com affiliation (35%/12 mois)</div>
-          <div class="ttag">Affiliation</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">n8n affiliation (n8n.io/partner-program)</div>
-          <div class="ttag">Affiliation</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">Révoquer Gmail App Password</div>
-          <div class="ttag">Sécurité</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">SIRET — CNI + justif domicile</div>
-          <div class="ttag">Admin</div>
-        </div>
-        <div class="todo-item" onclick="toggleTodo(this)">
-          <div class="tcheck"></div>
-          <div class="tlabel">Configurer GUMROAD_ACCESS_TOKEN (.env)</div>
-          <div class="ttag">Dev</div>
         </div>
       </div>
+    </div>
+
+    <!-- CrowdSec Security Widget -->
+    <div class="rp-section" id="crowdsec-widget">
+      <div class="rp-title" style="display:flex;align-items:center;gap:6px">
+        🛡 CrowdSec — nas-dh2300
+        <span id="cs-badge" style="margin-left:auto;font-size:9px;padding:2px 7px;border-radius:8px;background:rgba(0,220,130,.1);color:var(--green);border:1px solid rgba(0,220,130,.2)">ACTIF</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+        <div style="background:rgba(0,0,20,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px;text-align:center">
+          <div id="cs-alerts" style="font-size:20px;font-weight:bold;color:var(--orange)">—</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">Alertes</div>
+        </div>
+        <div style="background:rgba(0,0,20,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px;text-align:center">
+          <div id="cs-decisions" style="font-size:20px;font-weight:bold;color:var(--red)">—</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">IPs bloquées</div>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+          <span style="color:var(--muted)">Scénarios actifs</span>
+          <span id="cs-scenarios" style="color:var(--accent2)">57</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px">
+          <span style="color:var(--muted)">Dernière activité</span>
+          <span id="cs-lastact" style="color:var(--green)">today 1:35 AM</span>
+        </div>
+      </div>
+      <button id="cs-refresh-btn" onclick="refreshCrowdSec(this)" style="width:100%;margin-top:8px;padding:6px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:6px;color:var(--accent2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s">
+        ↻ Rafraîchir
+      </button>
     </div>
 
     <!-- Journal -->
@@ -880,6 +1073,10 @@ function connect() {
       addToolMsg(`⚙ ${msg.tool}(${JSON.stringify(msg.input||{}).slice(0,80)})`);
     } else if (msg.type === 'tool_result') {
       addToolMsg(`→ ${String(msg.result).slice(0,150)}`);
+    } else if (msg.type === 'voice_state') {
+      handleVoiceState(msg.state);
+    } else if (msg.type === 'voice_volume') {
+      updateVoiceVolume(msg.volume);
     }
   };
 }
@@ -906,7 +1103,81 @@ function addMessage(role, text) {
       <div class="msg-text">${content}</div>
     </div>`;
   messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  smartScroll();
+  saveChatHistory();
+}
+
+// Smart auto-scroll : ne scroll que si l'utilisateur était déjà en bas
+function smartScroll() {
+  const isAtBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 80;
+  if (isAtBottom) messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// Bouton "Copier" sur chaque bloc <pre><code> de markdown
+function injectCopyButtons() {
+  messagesEl.querySelectorAll('pre').forEach(pre => {
+    if (pre.querySelector('.copy-btn')) return;
+    pre.style.position = 'relative';
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '⧉';
+    btn.title = 'Copier';
+    btn.style.cssText = 'position:absolute;top:6px;right:6px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:#00d4ff;padding:2px 6px;border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit;z-index:5';
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const code = pre.querySelector('code')?.textContent || pre.textContent;
+      navigator.clipboard.writeText(code);
+      btn.textContent = '✓';
+      btn.style.color = 'var(--green)';
+      setTimeout(() => { btn.textContent = '⧉'; btn.style.color = '#00d4ff'; }, 1500);
+    };
+    pre.appendChild(btn);
+  });
+}
+
+// Observe les nouveaux messages pour injecter les boutons copy
+new MutationObserver(() => injectCopyButtons()).observe(
+  document.getElementById('messages'),
+  { childList: true, subtree: true }
+);
+
+// Sauvegarde auto du chat dans localStorage (limite : 50 derniers msg)
+function saveChatHistory() {
+  try {
+    const msgs = Array.from(messagesEl.querySelectorAll('.msg:not(.tool)')).slice(-50).map(m => ({
+      role: m.classList.contains('user') ? 'user' : 'ai',
+      html: m.querySelector('.msg-text')?.innerHTML || ''
+    }));
+    localStorage.setItem('aisatou_chat', JSON.stringify(msgs));
+  } catch(e) {}
+}
+
+function loadChatHistory() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('aisatou_chat') || '[]');
+    if (saved.length === 0) return;
+    saved.forEach(m => {
+      const div = document.createElement('div');
+      div.className = `msg ${m.role}`;
+      const avatar = m.role === 'user' ? 'O' : 'A';
+      const author = m.role === 'user' ? 'OMAR' : 'AISATOU';
+      div.innerHTML = `
+        <div class="msg-avatar">${avatar}</div>
+        <div class="msg-content">
+          <div class="msg-author">${author}</div>
+          <div class="msg-text">${m.html}</div>
+        </div>`;
+      messagesEl.appendChild(div);
+    });
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  } catch(e) {}
+}
+
+function clearChat() {
+  if (!confirm('Effacer la conversation actuelle ?')) return;
+  messagesEl.innerHTML = '';
+  localStorage.removeItem('aisatou_chat');
+  addMessage('ai', 'Nouvelle conversation. Système prêt — que veux-tu faire ?');
 }
 
 function addToolMsg(text) {
@@ -919,7 +1190,7 @@ function addToolMsg(text) {
       <div class="msg-text">${escHtml(text)}</div>
     </div>`;
   messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  smartScroll();
 }
 
 function showThinking() {
@@ -933,7 +1204,7 @@ function showThinking() {
       <div class="thinking"><span></span><span></span><span></span></div>
     </div>`;
   messagesEl.appendChild(thinkingEl);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  smartScroll();
 }
 
 function hideThinking() {
@@ -944,12 +1215,162 @@ function escHtml(t) {
   return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ── Voix ──────────────────────────────────────────────────────────────────
+let _voiceActive = false;
+
+function toggleVoice() {
+  if (!ws || ws.readyState !== 1) return;
+  ws.send(JSON.stringify({ type: 'voice_toggle' }));
+}
+
+function stopAudio() {
+  if (!ws || ws.readyState !== 1) return;
+  ws.send(JSON.stringify({ type: 'stop_audio' }));
+}
+
+function handleVoiceState(state) {
+  const btn   = document.getElementById('voice-btn');
+  const stop  = document.getElementById('stop-btn');
+  const orb   = document.getElementById('aisatou-orb');
+
+  // Synchronise l'orbe header avec l'état voix (Claude Design v2)
+  if (orb) {
+    orb.classList.remove('speaking', 'thinking');
+    if (state === 'speaking') orb.classList.add('speaking');
+    else if (state === 'thinking') orb.classList.add('thinking');
+  }
+
+  if (!btn) return;
+  // Effacer toutes les classes d'état
+  btn.classList.remove('voice-on', 'voice-speaking', 'voice-listening');
+
+  if (state === 'voice_on') {
+    _voiceActive = true;
+    btn.classList.add('voice-on');
+    btn.title = 'Voix active — cliquer pour désactiver';
+    stop.style.display = '';
+    toast('Voix', 'Mode voix activé — AISATOU va parler', 'ok');
+  } else if (state === 'voice_off') {
+    _voiceActive = false;
+    btn.title = 'Activer la voix AISATOU';
+    stop.style.display = 'none';
+    toast('Voix', 'Mode voix désactivé', 'ok');
+  } else if (state === 'speaking') {
+    btn.classList.add('voice-on', 'voice-speaking');
+  } else if (state === 'idle') {
+    if (_voiceActive) btn.classList.add('voice-on');
+  } else if (state === 'unavailable') {
+    toast('Voix', 'edge-tts ou pygame non installé', 'err');
+  }
+}
+
+function updateVoiceVolume(vol) {
+  // Anime l'orbe en fonction du volume TTS
+  const orb = document.getElementById('aisatou-orb') || document.querySelector('.orb-ring');
+  if (!orb) return;
+  const scale = 1 + vol * 0.25;
+  orb.style.transform = `scale(${scale})`;
+  orb.style.transition = 'transform 0.05s ease';
+}
+
+// ── Wake word navigateur (Web Speech API) ─────────────────────────────────
+let _sttActive   = false;
+let _recognition = null;
+const WAKE_WORDS = ['aisatou', 'aïsatou', 'aisatu', 'isatou', 'aissatou', 'hey aisatou'];
+
+function toggleBrowserSTT() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    toast('Micro', 'Web Speech API non supporté (utilise Chrome ou Edge)', 'err');
+    return;
+  }
+  _sttActive ? stopBrowserSTT() : startBrowserSTT();
+}
+
+function startBrowserSTT() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  _recognition = new SR();
+  _recognition.lang        = 'fr-FR';
+  _recognition.continuous  = true;
+  _recognition.interimResults = true;
+
+  _recognition.onstart = () => {
+    _sttActive = true;
+    const btn = document.getElementById('mic-btn');
+    btn.classList.add('stt-on');
+    btn.title = 'Micro actif — dis "Aisatou" pour activer';
+    toast('Micro', 'En écoute — dis "Aisatou" pour parler', 'ok');
+  };
+
+  _recognition.onresult = (e) => {
+    let final = '';
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript.toLowerCase().trim();
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    const text = (final || interim).trim();
+    if (!text) return;
+
+    // Détection wake word
+    const hasWake = WAKE_WORDS.some(w => text.includes(w));
+    if (hasWake) {
+      document.getElementById('mic-btn').classList.add('stt-listening');
+      // Extraire la commande après le wake word
+      let cmd = text;
+      for (const w of WAKE_WORDS) {
+        const idx = cmd.indexOf(w);
+        if (idx !== -1) { cmd = cmd.slice(idx + w.length).trim().replace(/^[,.\s]+/, ''); break; }
+      }
+      if (cmd && e.results[e.results.length-1].isFinal) {
+        document.getElementById('mic-btn').classList.remove('stt-listening');
+        if (cmd) {
+          addMessage('user', `🎙 ${cmd}`);
+          if (ws && ws.readyState === 1) {
+            ws.send(JSON.stringify({ type: 'voice_message', text: cmd,
+              model: document.getElementById('model-select').value }));
+            sendBtn.disabled = true;
+          }
+        } else {
+          // Wake word seul — écoute active
+          toast('Aisatou', 'Je vous écoute…', 'ok');
+        }
+      }
+    }
+  };
+
+  _recognition.onerror = (e) => {
+    if (e.error !== 'no-speech') {
+      console.warn('[STT]', e.error);
+      if (e.error === 'not-allowed') toast('Micro', 'Permission micro refusée', 'err');
+    }
+  };
+
+  _recognition.onend = () => {
+    // Redémarrage automatique si toujours actif
+    if (_sttActive) {
+      try { _recognition.start(); } catch(e) {}
+    }
+  };
+
+  try { _recognition.start(); } catch(e) { toast('Micro', `Erreur: ${e.message}`, 'err'); }
+}
+
+function stopBrowserSTT() {
+  _sttActive = false;
+  if (_recognition) { try { _recognition.stop(); } catch(e) {} _recognition = null; }
+  const btn = document.getElementById('mic-btn');
+  btn.classList.remove('stt-on', 'stt-listening');
+  btn.title = 'Wake word navigateur — dis "Aisatou"';
+  toast('Micro', 'Écoute désactivée', 'ok');
+}
+
 // ── Send ──────────────────────────────────────────────────────────────────
 function send() {
   const text = inputEl.value.trim();
   if (!text || !ws || ws.readyState !== 1) return;
   addMessage('user', text);
-  ws.send(JSON.stringify({ text, model: document.getElementById('model-select').value }));
+  ws.send(JSON.stringify({ type: 'message', text, model: document.getElementById('model-select').value }));
   inputEl.value = '';
   inputEl.style.height = 'auto';
   sendBtn.disabled = true;
@@ -1003,6 +1424,7 @@ async function runDeploy(btn) {
   // Envoyer via chat AISATOU
   if (ws && ws.readyState === 1) {
     ws.send(JSON.stringify({
+      type: 'message',
       text: 'Lance le deploy Cloudflare : powershell -ExecutionPolicy Bypass -File C:\\Users\\USER\\Scripts\\WULIX\\deploy_cloudflare.ps1',
       model: document.getElementById('model-select').value
     }));
@@ -1013,6 +1435,66 @@ async function runDeploy(btn) {
   btn.classList.add('done');
   setTimeout(() => btn.classList.remove('done'), 4000);
   addLog('Deploy envoyé', 'ok');
+}
+
+// ── Run All Agents ────────────────────────────────────────────────────────
+async function runAllAgents(btn) {
+  if (btn.classList.contains('running')) return;
+  const agents = ['ndeye','kofi','crew'];
+  btn.classList.add('running');
+  btn.querySelector('.qa-icon').textContent = '⏳';
+  addLog('Lancement de tous les agents...', 'run', 'NEXUS');
+  for (const a of agents) {
+    const fake = document.getElementById('qa-' + a) || document.createElement('button');
+    await runAgent(a, fake);
+    await new Promise(r => setTimeout(r, 800));
+  }
+  btn.classList.remove('running');
+  btn.classList.add('done');
+  btn.querySelector('.qa-icon').textContent = '✅';
+  setTimeout(() => { btn.classList.remove('done'); btn.querySelector('.qa-icon').textContent = '⚡'; }, 5000);
+  addLog('Tous les agents lancés', 'ok', 'NEXUS');
+}
+
+// ── CrowdSec widget ───────────────────────────────────────────────────────
+async function refreshCrowdSec(btn) {
+  // Feedback visuel sur le bouton si déclenché manuellement
+  if (btn) {
+    btn.textContent = '⟳ Chargement...';
+    btn.disabled = true;
+    btn.style.opacity = '.6';
+  }
+  try {
+    const r = await fetch('/agents/crowdsec', { headers: AUTH });
+    const d = await r.json();
+    if (d.error) { document.getElementById('cs-badge').textContent = 'ERREUR'; throw new Error(d.error); }
+    document.getElementById('cs-alerts').textContent    = d.alerts    ?? '0';
+    document.getElementById('cs-decisions').textContent = d.decisions ?? '0';
+    document.getElementById('cs-scenarios').textContent = d.scenarios ?? '57';
+    document.getElementById('cs-lastact').textContent   = d.last_activity || 'today';
+    const sb = document.getElementById('cs-sidebar');
+    if (sb) {
+      sb.textContent  = (d.alerts > 0 ? d.alerts + ' alertes' : 'NAS ✓');
+      sb.style.color  = d.alerts > 0 ? 'var(--orange)' : 'var(--green)';
+    }
+    const badge = document.getElementById('cs-badge');
+    badge.textContent      = d.alerts > 0 ? d.alerts + ' ALERTES' : 'ACTIF';
+    badge.style.background = d.alerts > 0 ? 'rgba(245,158,11,.15)' : 'rgba(0,220,130,.1)';
+    badge.style.color      = d.alerts > 0 ? 'var(--orange)' : 'var(--green)';
+    if (btn) {
+      btn.textContent = '✓ Mis à jour';
+      btn.style.color = 'var(--green)';
+      setTimeout(() => { btn.textContent = '↻ Rafraîchir'; btn.style.color = 'var(--accent2)'; btn.disabled = false; btn.style.opacity = '1'; }, 1200);
+      addLog('CrowdSec rafraîchi (' + (d.source || 'NAS') + ')', 'ok', 'CROWDSEC');
+    }
+  } catch(e) {
+    document.getElementById('cs-badge').textContent = 'NAS local';
+    if (btn) {
+      btn.textContent = '✗ Erreur';
+      btn.style.color = 'var(--red)';
+      setTimeout(() => { btn.textContent = '↻ Rafraîchir'; btn.style.color = 'var(--accent2)'; btn.disabled = false; btn.style.opacity = '1'; }, 1500);
+    }
+  }
 }
 
 // ── Dashboard refresh ─────────────────────────────────────────────────────
@@ -1090,6 +1572,11 @@ function addLog(msg, type='ok', agent='SYS') {
   // Ops feed (panel gauche)
   const feed = document.getElementById('ops-feed');
   if (feed) {
+    // Au 1er log réel, clear le placeholder "Initialisation en cours..."
+    if (!feed.dataset.cleared) {
+      feed.innerHTML = '';
+      feed.dataset.cleared = '1';
+    }
     const now = new Date().toLocaleTimeString('fr', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     const div = document.createElement('div');
     div.className = `ops-entry ${type}`;
@@ -1474,7 +1961,7 @@ function applyReco() {
   // Envoie dans le chat
   if (ws && ws.readyState === 1) {
     addMessage('user', `💡 Appliquer recommandations ${_currentRecoAgent}`);
-    ws.send(JSON.stringify({ text: prompt, model: document.getElementById('model-select').value }));
+    ws.send(JSON.stringify({ type: 'message', text: prompt, model: document.getElementById('model-select').value }));
     sendBtn.disabled = true;
     addLog(`Application reco ${_currentRecoAgent}...`, 'run', 'AISATOU');
     toast('Recommandations', `AISATOU traite les reco de ${_currentRecoAgent}`, 'ok');
@@ -1500,14 +1987,170 @@ refreshDashboard();
 refreshRevenue();
 loadAgentsSidebar();
 loadRecommendations();
+refreshCrowdSec();
 setInterval(refreshDashboard, 30000);
-setInterval(refreshRevenue, 120000);    // revenus toutes les 2 min
+setInterval(refreshRevenue, 120000);
+setInterval(refreshCrowdSec, 60000);    // CrowdSec toutes les 60s
 setInterval(loadRecommendations, 300000); // reco toutes les 5 min
 setInterval(checkBackend, 60000);
 setInterval(updateCountdowns, 1000);    // countdown chaque seconde
 addLog('NEXUS COMMAND initialisé', 'ok', 'SYS');
 addLog('14 agents en ligne — WULIX opérationnel', 'ok', 'SYS');
 setTimeout(() => addLog('En attente de commandes...', 'sys', 'NEXUS'), 800);
+
+// ── Restore chat history depuis localStorage (au démarrage) ──────────────
+loadChatHistory();
+
+// ── Raccourcis clavier globaux ───────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  // Ignore si on tape dans un input/textarea (sauf Esc)
+  const inForm = ['INPUT','TEXTAREA'].includes(document.activeElement?.tagName);
+
+  // Esc → focus l'input + clear text
+  if (e.key === 'Escape') {
+    if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+    return;
+  }
+  if (inForm) return;
+
+  // / → focus l'input
+  if (e.key === '/') {
+    e.preventDefault();
+    inputEl?.focus();
+  }
+  // Ctrl+N → nouvelle conversation
+  else if (e.key === 'n' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    clearChat();
+  }
+  // Ctrl+K → palette de commandes (focus input avec préfixe)
+  else if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    if (inputEl) { inputEl.value = '/'; inputEl.focus(); }
+  }
+  // ? → afficher l'aide raccourcis
+  else if (e.key === '?' && !e.ctrlKey) {
+    addMessage('ai', '**Raccourcis clavier :**\n- `/` → focus input\n- `Esc` → clear input\n- `Ctrl+N` → nouvelle conversation\n- `Ctrl+K` → palette commandes\n- `Ctrl+Shift+A` → ouvrir HUD (global)\n- `?` → cette aide');
+  }
+});
+
+// ── Bouton "Nouvelle conversation" injecté dans le header chat ──────────
+(function injectNewChatBtn() {
+  const chatHeader = document.querySelector('.chat-header') || document.querySelector('.right-panel-header');
+  if (!chatHeader || document.getElementById('new-chat-btn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'new-chat-btn';
+  btn.title = 'Nouvelle conversation (Ctrl+N)';
+  btn.style.cssText = 'background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:var(--purple,#a855f7);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;margin-left:8px';
+  btn.innerHTML = '✨ Nouvelle conv';
+  btn.onclick = clearChat;
+  chatHeader.appendChild(btn);
+})();
+
+// ── Compteur de tokens estimé (approximation : 4 chars = 1 token) ───────
+function estimateTokens() {
+  const allText = Array.from(messagesEl.querySelectorAll('.msg-text')).map(e => e.textContent).join(' ');
+  return Math.ceil(allText.length / 4);
+}
+
+setInterval(() => {
+  const tokens = estimateTokens();
+  const lbl = document.getElementById('token-counter');
+  if (lbl) lbl.textContent = tokens > 1000 ? `~${(tokens/1000).toFixed(1)}k tok` : `~${tokens} tok`;
+}, 5000);
+
+// ── Historique / Export ──────────────────────────────────────────────────
+async function exportHistory() {
+  try {
+    const r = await fetch('/history', {headers: AUTH});
+    const data = await r.json();
+    if (!data.history || data.history.length === 0) {
+      addMessage('ai','Aucune conversation sauvegardee pour le moment.'); return;
+    }
+    // Telecharge le fichier le plus recent
+    const latest = data.history[0];
+    const a = document.createElement('a');
+    a.href = '/history/' + latest.file + '?auth=' + btoa('aisatou:3eAeq9k!hk!H4SFK');
+    a.download = latest.file;
+    a.click();
+    addMessage('ai','Export: ' + latest.file + ' (' + latest.count + ' echanges)');
+  } catch(e) {
+    addMessage('ai','Erreur export: ' + e.message);
+  }
+}
+
+async function showHistory() {
+  try {
+    const r = await fetch('/history', {headers: AUTH});
+    const data = await r.json();
+    if (!data.history || data.history.length === 0) {
+      addMessage('ai','Aucune conversation sauvegardee.'); return;
+    }
+    let msg = '**Historique des conversations:**\n';
+    data.history.slice(0, 10).forEach(h => {
+      msg += `\n- \`${h.session}\` — ${h.count} echanges`;
+    });
+    addMessage('ai',msg);
+  } catch(e) { addMessage('ai','Erreur: ' + e.message); }
+}
+
+
+// Toggle l'état d'un item todo (coché / non-coché) + persistance localStorage
+function toggleTodo(item) {
+  const isDone = item.classList.toggle('done');
+  const check = item.querySelector('.tcheck');
+  const label = item.querySelector('.tlabel');
+  if (check) check.classList.toggle('checked', isDone);
+  if (label) {
+    label.style.textDecoration = isDone ? 'line-through' : '';
+    label.style.opacity = isDone ? '.5' : '';
+  }
+  // Persistance — sauvegarde l'état des todos par texte de label
+  try {
+    const states = JSON.parse(localStorage.getItem('aisatou_todos') || '{}');
+    states[label?.textContent || ''] = isDone;
+    localStorage.setItem('aisatou_todos', JSON.stringify(states));
+  } catch(e) {}
+  if (isDone) {
+    addLog((label?.textContent || 'Tâche') + ' — ✓', 'ok', 'TODO');
+    playNotif('done');
+  }
+}
+
+// Restaure les todos cochés depuis localStorage au chargement
+(function restoreTodos() {
+  try {
+    const states = JSON.parse(localStorage.getItem('aisatou_todos') || '{}');
+    document.querySelectorAll('.todo-item').forEach(item => {
+      const label = item.querySelector('.tlabel')?.textContent || '';
+      if (states[label] && !item.classList.contains('done')) {
+        item.classList.add('done');
+        const check = item.querySelector('.tcheck');
+        const lblEl = item.querySelector('.tlabel');
+        if (check) check.classList.add('checked');
+        if (lblEl) {
+          lblEl.style.textDecoration = 'line-through';
+          lblEl.style.opacity = '.5';
+        }
+      }
+    });
+  } catch(e) {}
+})();
+
+// Theme clair/sombre
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('aisatou_theme', isLight ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = isLight ? '☽' : '☀';
+}
+// Applique le theme sauvegarde au chargement
+(function() {
+  if (localStorage.getItem('aisatou_theme') === 'light') {
+    document.body.classList.add('light');
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = '☽';
+  }
+})();
 </script>
 </body>
 </html>

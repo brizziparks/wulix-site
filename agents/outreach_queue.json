@@ -58,5 +58,25 @@
     "message": "\"Hé [Nom du prospect], j'ai lu votre profil et je suis impressionné par l'impact que vous voulez avoir sur la santé en automatisant les processus de saisie de données médicales. Je pense que ma proposition pourrait être un atout pour votre entreprise, en particulier avec notre expertise en automatisation n8n/Python qui permettrait de traiter rapidement et sécurisément ces données sensibles. Pouvez-vous me dire si vous avez déjà envisagé l'automatisation de ce processus ?\"",
     "status": "ready",
     "created_at": "2026-04-19T10:09:11.491649"
+  },
+  {
+    "agent": "Closer",
+    "mode": "linkedin",
+    "prospect": {
+      "secteur": "Services",
+      "probleme": "Automatisation des tâches administratives",
+      "contexte": "{'nom_client': 'PME de services', 'secteur': 'Services', 'besoin': 'Automatisation des tâches administratives'}"
+    },
+    "message": "\"Bonjour, j'ai découvert votre profil sur LinkedIn et j'aime la façon dont vous développez vos services pour les PME de services. Je vois que vous cherchez à automatiser des tâches administratives, ce qui est un défi courant pour les entreprises comme la vôtre. Aisatou propose une solution personnalisée avec notre outil d'automatisation n8n/Python, qui peut simplifier vos workflows et augmenter votre productivité. Pouvez-vous vous imaginer comment améliorer votre gestion de tâches en automatisant des tâches répétitives ?\"",
+    "status": "ready",
+    "created_at": "2026-04-20T20:09:00.201275"
+  },
+  {
+    "agent": "Closer",
+    "mode": "fiverr",
+    "client_message": "linkedin",
+    "response": "Bonjour ! Merci de me avoir contacté sur Fiverr. Vous cherchez un assistant IA pour travailler sur LinkedIn ? C'est un champ passionnant !\n\nJe comprends que vous cherchez à optimiser vos interactions avec votre réseau, à améliorer vos publications et à développer vos relations. Mon expérience en matière d'automatisation avec n8n et Python m'a permis de créer des scripts personnalisés pour automatiser ces tâches.\n\nJe serais ravi de discuter plus en détail de vos besoins et de voir si mon assistant IA est à votre écoute. Un appel de 15 minutes nous permettrait de mieux comprendre votre projet et de voir comment je peux vous aider. Je suis disponible pour une conversation cette semaine ou la prochaine. Qu'en pensez-vous ?",
+    "status": "ready",
+    "created_at": "2026-04-20T21:12:03.815250"
   }
 ]

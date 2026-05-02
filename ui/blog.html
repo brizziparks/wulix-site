@@ -41,40 +41,81 @@
     ]
   }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wulix-tokens.css">
   <style>
+    :root{--cyan:#00d4ff;--purple:#a855f7;--gold:#e2b33a;--bg:#0a0015;--panel:rgba(15,0,40,0.8);--text:#e2e8f0;--dim:#7c88a8}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{background:#0a0015;color:#e0e0e0;font-family:'Inter',Arial,sans-serif;line-height:1.7}
-    header{background:#0d0020;border-bottom:2px solid #7c3aed;padding:20px 40px;display:flex;align-items:center;justify-content:space-between}
-    header a.logo{color:#00e5ff;text-decoration:none;font-size:24px;font-weight:bold;font-family:'Orbitron',sans-serif}
-    nav a{color:#aaa;text-decoration:none;margin-left:20px;font-size:14px}
-    nav a:hover{color:#00e5ff}
-    .hero{background:linear-gradient(135deg,#0d0020,#1a0030);border-bottom:1px solid #7c3aed;padding:60px 40px;text-align:center}
-    .hero h1{color:#00e5ff;font-size:2.2rem;font-family:'Orbitron',sans-serif;margin-bottom:12px}
-    .hero p{color:#aaa;font-size:16px}
-    .container{max-width:900px;margin:0 auto;padding:50px 20px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;margin-bottom:60px}
-    .card{background:#0d0020;border:1px solid #1a0030;border-radius:10px;padding:28px;transition:border-color .2s,transform .2s;cursor:pointer}
-    .card:hover{border-color:#7c3aed;transform:translateY(-3px)}
-    .badge{display:inline-block;background:#7c3aed;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:12px}
-    .card h2{color:#00e5ff;font-size:1rem;margin-bottom:10px;line-height:1.4}
-    .card p{color:#aaa;font-size:14px;line-height:1.6}
-    .meta{color:#555;font-size:12px;margin-top:14px}
-    .article-section{display:none;background:#0d0020;border:1px solid #7c3aed;border-radius:10px;padding:40px;margin-bottom:40px}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 10% 0%,rgba(0,212,255,.06) 0%,transparent 60%),radial-gradient(ellipse 60% 60% at 90% 100%,rgba(168,85,247,.08) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+    /* NAV */
+    header{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,0,21,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,212,255,.1)}
+    header a.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:4px;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+    nav{display:flex;gap:24px;align-items:center}
+    nav a{color:var(--dim);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+    nav a:hover,nav a[style*="color:#00e5ff"]{color:var(--cyan)!important}
+    nav a.nav-cta{padding:7px 18px;border-radius:8px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff!important;font-weight:600}
+
+    /* HERO */
+    .hero{padding:120px 32px 60px;text-align:center;border-bottom:1px solid rgba(0,212,255,.08);position:relative;z-index:1}
+    .hero h1{font-family:'Orbitron',monospace;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+    .hero p{color:var(--dim);font-size:16px;max-width:500px;margin:0 auto 24px}
+    .hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+    .hero-stat{font-size:13px;color:var(--dim)}<br>
+    .hero-stat strong{color:var(--cyan);font-family:'Orbitron',monospace}
+
+    /* CONTAINER */
+    .container{max-width:1100px;margin:0 auto;padding:60px 24px;position:relative;z-index:1}
+
+    /* FILTER BAR */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;align-items:center}
+    .filter-btn{padding:7px 18px;border-radius:20px;border:1px solid rgba(168,85,247,.25);background:transparent;color:var(--dim);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+    .filter-btn:hover,.filter-btn.active{background:rgba(168,85,247,.15);border-color:var(--purple);color:var(--purple)}
+    .filter-count{font-size:12px;color:var(--dim);margin-left:auto}
+
+    /* GRID */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-bottom:60px}
+    .card{background:var(--panel);border:1px solid rgba(168,85,247,.12);border-radius:16px;padding:28px;transition:border-color .3s,transform .3s;cursor:pointer;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple));opacity:0;transition:opacity .3s}
+    .card:hover{border-color:rgba(0,212,255,.35);transform:translateY(-4px)}
+    .card:hover::before{opacity:1}
+    .badge{display:inline-flex;align-items:center;gap:5px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:var(--purple);font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}
+    .card h2{color:var(--text);font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.5}
+    .card p{color:var(--dim);font-size:13px;line-height:1.7}
+    .meta{display:flex;align-items:center;gap:12px;color:var(--dim);font-size:12px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05)}
+    .meta-dot{width:3px;height:3px;border-radius:50%;background:var(--dim)}
+    .read-more{color:var(--cyan);font-size:12px;font-weight:600;margin-top:12px;display:inline-flex;align-items:center;gap:4px}
+
+    /* ARTICLE */
+    .article-section{display:none;background:var(--panel);border:1px solid rgba(0,212,255,.2);border-radius:20px;padding:48px;margin-bottom:40px;position:relative;z-index:1}
     .article-section.active{display:block}
-    .article-section h1{color:#00e5ff;font-size:1.6rem;margin-bottom:8px}
-    .article-section .meta{margin-bottom:24px;color:#666;font-size:13px}
-    .article-section p{margin-bottom:14px;font-size:15px}
-    .article-section h3{color:#fff;margin:20px 0 10px;font-size:1rem}
-    pre{background:#0a0015;border:1px solid #1a0030;border-radius:6px;padding:16px;overflow-x:auto;margin:14px 0}
-    code{color:#00e5ff;font-size:13px}
-    .cta{display:inline-block;margin-top:16px;padding:12px 28px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:8px;font-size:14px}
-    .cta:hover{background:#00e5ff;color:#0a0015}
-    .back{color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;display:inline-block}
-    .back:hover{color:#00e5ff}
-    footer{background:#0d0020;border-top:1px solid #1a0030;text-align:center;padding:30px;color:#555;font-size:13px}
-    footer a{color:#7c3aed}
-    @media(max-width:600px){.hero{padding:40px 20px}.container{padding:30px 12px}}
+    .article-section h1{font-family:'Orbitron',monospace;color:var(--cyan);font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:10px;line-height:1.3}
+    .article-section .meta{margin-bottom:28px;border-top:none;padding-top:0}
+    .article-section p{margin-bottom:16px;font-size:15px;line-height:1.8}
+    .article-section h3{color:var(--text);margin:28px 0 12px;font-size:16px;font-weight:700;border-left:3px solid var(--cyan);padding-left:12px}
+    pre{background:#050010;border:1px solid rgba(0,212,255,.15);border-radius:10px;padding:20px;overflow-x:auto;margin:18px 0}
+    code{color:var(--cyan);font-size:13px;font-family:'Courier New',monospace}
+    .cta{display:inline-block;margin-top:20px;padding:13px 28px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:700;transition:opacity .2s,transform .2s}
+    .cta:hover{opacity:.85;transform:translateY(-1px)}
+    .back{display:inline-flex;align-items:center;gap:6px;color:var(--purple);cursor:pointer;font-size:14px;font-weight:600;margin-bottom:28px;transition:color .2s}
+    .back:hover{color:var(--cyan)}
+
+    /* NEWSLETTER MINI */
+    .blog-newsletter{background:linear-gradient(135deg,rgba(0,212,255,.05),rgba(168,85,247,.08));border:1px solid rgba(0,212,255,.15);border-radius:20px;padding:40px;text-align:center;margin-bottom:48px}
+    .blog-newsletter h3{font-family:'Orbitron',monospace;font-size:18px;margin-bottom:8px;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .blog-newsletter p{color:var(--dim);font-size:14px;margin-bottom:20px}
+    .nl-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:420px;margin:0 auto}
+    .nl-input{flex:1;min-width:200px;padding:11px 16px;background:rgba(0,0,20,.6);border:1px solid rgba(0,212,255,.2);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
+    .nl-input:focus{border-color:rgba(0,212,255,.5)}
+    .nl-btn{padding:11px 22px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;font-family:inherit}
+
+    /* FOOTER */
+    footer{padding:32px;border-top:1px solid rgba(255,255,255,.05);text-align:center;color:var(--dim);font-size:13px;position:relative;z-index:1}
+    footer a{color:var(--cyan);text-decoration:none}
+
+    @media(max-width:600px){header{padding:14px 16px}nav{display:none}.hero{padding:90px 16px 40px}.container{padding:40px 16px}.article-section{padding:28px 20px}}
   </style>
 </head>
 <body>
@@ -82,33 +123,51 @@
   <a class="logo" href="/">WULIX</a>
   <nav>
     <a href="/">Accueil</a>
-    <a href="/blog.html" style="color:#00e5ff">Blog</a>
+    <a href="/blog.html">Blog</a>
     <a href="https://wulix.gumroad.com" target="_blank">Boutique</a>
-    <a href="mailto:contact@wulix.fr">Contact</a>
+    <a href="/#contact">Contact</a>
+    <a class="nav-cta" href="https://www.fiverr.com/richardsylla" target="_blank">Commander →</a>
   </nav>
 </header>
 
 <div class="hero">
-  <h1>Blog</h1>
-  <p>Tutoriels pratiques sur l'automatisation Python, n8n et no-code</p>
+  <h1>Blog Automatisation IA</h1>
+  <p>Tutoriels Python, n8n et no-code pour automatiser votre business et gagner du temps chaque semaine.</p>
+  <div class="hero-stats">
+    <span class="hero-stat"><strong id="articleCount">0</strong> articles publiés</span>
+    <span class="hero-stat">·</span>
+    <span class="hero-stat">Mis à jour chaque semaine par <strong>SAMBA</strong></span>
+    <span class="hero-stat">·</span>
+    <span class="hero-stat">⏱ ~4 min de lecture en moyenne</span>
+  </div>
 </div>
 
 <div class="container">
+  <!-- Filtre -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="filterArticles('all', this)">Tous</button>
+    <button class="filter-btn" onclick="filterArticles('python', this)">Python</button>
+    <button class="filter-btn" onclick="filterArticles('n8n', this)">n8n</button>
+    <button class="filter-btn" onclick="filterArticles('make', this)">Make.com</button>
+    <button class="filter-btn" onclick="filterArticles('ia', this)">Agent IA</button>
+    <span class="filter-count" id="filterCount"></span>
+  </div>
+
   <!-- Liste des articles -->
   <div id="liste" class="grid">
     
             <div class="card" onclick="showArticle('samba_20260419')">
                 <span class="badge">Automatisation</span>
                 <h2>Comment automatiser ses relances clients avec Python en 30 minutes</h2>
-                <p>Vous perdez du temps Ã  relancer manuellement vos clients ? Voici comment Python peut le faire pour vous en 30 minutes de...</p>
-                <div class="meta">19/04/2026 Â· 4 min de lecture</div>
+                <p>Vous perdez du temps à relancer manuellement vos clients ? Voici comment Python peut le faire pour vous en 30 minutes de...</p>
+                <div class="meta">19/04/2026 · 4 min de lecture</div>
             </div>
             
             <div class="card" onclick="showArticle('samba_20260419')">
                 <span class="badge">Automatisation</span>
                 <h2>n8n vs Make.com : lequel choisir pour automatiser votre business ?</h2>
-                <p>Deux outils d'automatisation no-code dominent le marchÃ©. Voici une comparaison honnÃªte pour choisir celui qui vous convi...</p>
-                <div class="meta">19/04/2026 Â· 4 min de lecture</div>
+                <p>Deux outils d'automatisation no-code dominent le marché. Voici une comparaison honnête pour choisir celui qui vous convi...</p>
+                <div class="meta">19/04/2026 · 4 min de lecture</div>
             </div>
             
             <div class="card" onclick="showArticle('samba_20260419')">
@@ -145,6 +204,118 @@
                 <p>Générer et envoyer vos factures manuellement chaque mois ? Un script Python connecté à Stripe peut le faire en 10 second...</p>
                 <div class="meta">20/04/2026 · 4 min de lecture</div>
             </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Publier automatiquement sur LinkedIn avec n8n : le guide complet</h2>
+                <p>Publier sur LinkedIn chaque semaine prend du temps. Avec n8n et l'API LinkedIn, vous programmez vos posts une fois et il...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Scraping web avec Python en 2026 : les meilleures pratiques</h2>
+                <p>Collecter des données web manuellement est chronophage. Python + requests + BeautifulSoup permettent d'automatiser cette...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Automatiser son onboarding client avec des emails Python</h2>
+                <p>Un bon onboarding client augmente la satisfaction et réduit les demandes de support. Voici comment l'automatiser entière...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>ChatGPT vs Claude vs Gemini : lequel pour automatiser votre business ?</h2>
+                <p>Trois IA dominent le marché en 2026. Laquelle choisir pour automatiser vos tâches business ? Comparaison honnête basée s...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Créer un tableau de bord business automatique avec Python</h2>
+                <p>Avoir une vision en temps réel de votre business sans ouvrir 5 onglets différents — c'est possible avec Python et quelqu...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Automatiser sa prospection LinkedIn avec n8n et Sales Navigator</h2>
+                <p>La prospection LinkedIn manuelle prend des heures pour peu de résultats. Voici comment créer un pipeline de prospection ...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Python pour freelances : 5 scripts qui font gagner 10h par semaine</h2>
+                <p>Vous n'avez pas besoin d'être développeur pour utiliser Python. Ces 5 scripts sont conçus pour les freelances qui veulen...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Automatiser sa facturation avec Python et Stripe</h2>
+                <p>Vous générez vos factures manuellement chaque mois ? Un script Python connecté à Stripe peut le faire en 10 secondes aut...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260424')">
+                <span class="badge">Automatisation</span>
+                <h2>Créer un chatbot WhatsApp avec n8n en 2026</h2>
+                <p>Répondre aux messages WhatsApp Business manuellement vous prend du temps. Avec n8n et l'API WhatsApp Business, automatis...</p>
+                <div class="meta">24/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260425')">
+                <span class="badge">Automatisation</span>
+                <h2>Remplacer Zapier par Make.com : économisez 80% sur vos automatisations</h2>
+                <p>Zapier peut coûter 50-100€/mois dès que vous avez quelques automatisations actives. Make.com offre la même puissance à 1...</p>
+                <div class="meta">25/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260425')">
+                <span class="badge">Automatisation</span>
+                <h2>Pipeline de prospection LinkedIn automatisé avec Make.com</h2>
+                <p>Trouver des clients sur LinkedIn prend des heures. Un pipeline semi-automatisé avec Make.com vous permet de contacter 20...</p>
+                <div class="meta">25/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260425')">
+                <span class="badge">Automatisation</span>
+                <h2>Générer des rapports Excel automatiquement avec Python</h2>
+                <p>Vous passez du temps chaque semaine à compiler des données dans Excel ? Python peut générer vos rapports automatiquement...</p>
+                <div class="meta">25/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260425')">
+                <span class="badge">Automatisation</span>
+                <h2>Automatiser sa veille Google Alerts avec n8n</h2>
+                <p>Google Alerts envoie des emails en vrac difficiles à trier. Avec n8n, transformez votre veille en un digest quotidien in...</p>
+                <div class="meta">25/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260426')">
+                <span class="badge">Automatisation</span>
+                <h2>Créer une API REST avec FastAPI en 1 heure</h2>
+                <p>Vous avez un script Python utile mais personne ne peut l'utiliser facilement ? FastAPI vous permet de créer une API REST...</p>
+                <div class="meta">26/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260426')">
+                <span class="badge">Automatisation</span>
+                <h2>Automatiser les posts Instagram avec Make.com</h2>
+                <p>Poster régulièrement sur Instagram est chronophage. Make.com peut automatiser la publication à partir d'un simple Google...</p>
+                <div class="meta">26/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260427')">
+                <span class="badge">Automatisation</span>
+                <h2>Connecter Notion à son site web automatiquement avec n8n</h2>
+                <p>Vous gérez votre contenu dans Notion mais votre site reste statique ? n8n peut synchroniser automatiquement vos pages No...</p>
+                <div class="meta">27/04/2026 · 4 min de lecture</div>
+            </div>
             <!-- SAMBA_INSERT_POINT -->
     <div class="card" onclick="showArticle('automatiser-relances-email-python')">
       <span class="badge">Python</span>
@@ -171,68 +342,68 @@
 
   
     <article data-id="samba_20260419" style="display:none;">
-        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">â† Retour au blog</button>
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
         <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Comment automatiser ses relances clients avec Python en 30 minutes</h1>
         <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
-            Par <strong>Omar Sylla</strong> Â· WULIX Agency Â· 19 April 2026
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 19 April 2026
         </div>
-        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous perdez du temps Ã  relancer manuellement vos clients ? Voici comment Python peut le faire pour vous en 30 minutes de setup.</p>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous perdez du temps à relancer manuellement vos clients ? Voici comment Python peut le faire pour vous en 30 minutes de setup.</p>
         
-            <h2>Le problÃ¨me : les relances manuelles coÃ»tent cher</h2>
-            <p>Chaque email de relance envoyÃ© manuellement reprÃ©sente 3 Ã  5 minutes de travail. MultipliÃ© par 20 clients actifs, c'est 1h30 par semaine minimum.</p>
+            <h2>Le problème : les relances manuelles coûtent cher</h2>
+            <p>Chaque email de relance envoyé manuellement représente 3 à 5 minutes de travail. Multiplié par 20 clients actifs, c'est 1h30 par semaine minimum.</p>
         
-            <h2>La solution Python en 3 Ã©tapes</h2>
-            <p>1. Lire votre liste clients depuis un CSV\n2. VÃ©rifier qui n'a pas payÃ© ou rÃ©pondu\n3. Envoyer l'email personnalisÃ© automatiquement</p>
+            <h2>La solution Python en 3 étapes</h2>
+            <p>1. Lire votre liste clients depuis un CSV\n2. Vérifier qui n'a pas payé ou répondu\n3. Envoyer l'email personnalisé automatiquement</p>
         
             <h2>Le code complet</h2>
-            <p>Notre script email_relancer.py du Pack Scripts Python fait exactement Ã§a. Configurez-le une fois, il tourne tout seul.</p>
+            <p>Notre script email_relancer.py du Pack Scripts Python fait exactement ça. Configurez-le une fois, il tourne tout seul.</p>
         
-            <h2>RÃ©sultat attendu</h2>
-            <p>Nos clients rÃ©duisent leur temps de relance de 90%. Un consultant a rÃ©cupÃ©rÃ© 6h par mois.</p>
+            <h2>Résultat attendu</h2>
+            <p>Nos clients réduisent leur temps de relance de 90%. Un consultant a récupéré 6h par mois.</p>
         
         <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
             <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
-            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous â†’</a></p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
         </div>
     </article>
     
     
     <article data-id="samba_20260419" style="display:none;">
-        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">â† Retour au blog</button>
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
         <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">n8n vs Make.com : lequel choisir pour automatiser votre business ?</h1>
         <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
-            Par <strong>Omar Sylla</strong> Â· WULIX Agency Â· 19 April 2026
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 19 April 2026
         </div>
-        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Deux outils d'automatisation no-code dominent le marchÃ©. Voici une comparaison honnÃªte pour choisir celui qui vous convient.</p>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Deux outils d'automatisation no-code dominent le marché. Voici une comparaison honnête pour choisir celui qui vous convient.</p>
         
             <h2>n8n : open-source et puissant</h2>
-            <p>n8n s'installe sur votre propre serveur. ZÃ©ro coÃ»t rÃ©current, donnÃ©es chez vous, personnalisation totale.</p>
+            <p>n8n s'installe sur votre propre serveur. Zéro coût récurrent, données chez vous, personnalisation totale.</p>
         
             <h2>Make.com : simple et rapide</h2>
-            <p>Make.com est cloud, plus intuitif pour les dÃ©butants. IdÃ©al pour dÃ©marrer sans serveur.</p>
+            <p>Make.com est cloud, plus intuitif pour les débutants. Idéal pour démarrer sans serveur.</p>
         
             <h2>Notre recommandation</h2>
-            <p>TPE avec budget limitÃ© et donnÃ©es sensibles â†’ n8n. IndÃ©pendant qui veut aller vite â†’ Make.com.</p>
+            <p>TPE avec budget limité et données sensibles → n8n. Indépendant qui veut aller vite → Make.com.</p>
         
-            <h2>Et WULIX dans tout Ã§a ?</h2>
-            <p>On maÃ®trise les deux. On vous aide Ã  choisir et configurer selon votre situation rÃ©elle.</p>
+            <h2>Et WULIX dans tout ça ?</h2>
+            <p>On maîtrise les deux. On vous aide à choisir et configurer selon votre situation réelle.</p>
         
         <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
             <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
-            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous â†’</a></p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
         </div>
         <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
             <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
             <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
-                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">â†’ Pack Scripts Python WULIX â€” 29â‚¬ (5 automatisations clÃ© en main)</a></li>
-                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">â†’ Pipeline LinkedIn AutomatisÃ© n8n â€” 19â‚¬</a></li>
-                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">â†’ Guide PDF "Automatise 5 tÃ¢ches en 1 weekend" â€” 9â‚¬</a></li>
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
             </ul>
-            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandÃ©s</p>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
             <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
-                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">â†’ n8n â€” Automatisation open-source (self-hosted gratuit)</a></li>
-                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">â†’ Make.com â€” 1000 opÃ©rations/mois gratuites</a></li>
-                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">â†’ Hostinger VPS â€” HÃ©berger n8n pour 4â‚¬/mois</a></li>
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
             </ul>
         </div>
     </article>
@@ -445,11 +616,670 @@
         </div>
     </article>
     
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Publier automatiquement sur LinkedIn avec n8n : le guide complet</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Publier sur LinkedIn chaque semaine prend du temps. Avec n8n et l'API LinkedIn, vous programmez vos posts une fois et ils partent tout seuls.</p>
+        
+            <h2>Pourquoi automatiser LinkedIn ?</h2>
+            <p>La régularité est la clé sur LinkedIn. Les comptes qui publient 3x/semaine ont 5x plus de visibilité. Mais rédiger et publier manuellement prend 1h+ par semaine.</p>
+        
+            <h2>Le workflow n8n en 4 noeuds</h2>
+            <p>1. Schedule Trigger (lundi 9h)\n2. Read Binary File (lit posts.txt)\n3. HTTP Request (API LinkedIn ugcPosts)\n4. Slack/email notification de confirmation</p>
+        
+            <h2>Les pré-requis</h2>
+            <p>Compte LinkedIn, token OAuth valide (90 jours), fichier de posts prêts, n8n self-hosted ou cloud. Setup complet : 45 minutes.</p>
+        
+            <h2>Notre pipeline prêt à l'emploi</h2>
+            <p>Le Pipeline LinkedIn Automatisé WULIX inclut le workflow n8n JSON + guide de configuration. 19€ sur wulix.gumroad.com/l/n8n-linkedin.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Scraping web avec Python en 2026 : les meilleures pratiques</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Collecter des données web manuellement est chronophage. Python + requests + BeautifulSoup permettent d'automatiser cette collecte en quelques lignes.</p>
+        
+            <h2>Pourquoi scraper en 2026 ?</h2>
+            <p>Veille tarifaire, collecte de leads, surveillance de concurrents, agrégation de données marché — le scraping est devenu indispensable pour les PME qui veulent des données fraîches sans abonnement coûteux.</p>
+        
+            <h2>Les outils recommandés</h2>
+            <p>requests + BeautifulSoup pour les sites statiques. Playwright pour les sites JavaScript. pandas pour traiter les données. schedule pour automatiser les runs.</p>
+        
+            <h2>Bonnes pratiques légales</h2>
+            <p>Respectez le fichier robots.txt, ajoutez des délais entre requêtes, ne scrapez pas de données personnelles sans consentement, vérifiez les CGU du site cible.</p>
+        
+            <h2>Notre script de veille</h2>
+            <p>Le Pack Scripts Python WULIX inclut web_scraper.py : surveillance de prix + alertes email configurables. Disponible sur wulix.gumroad.com.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Automatiser son onboarding client avec des emails Python</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Un bon onboarding client augmente la satisfaction et réduit les demandes de support. Voici comment l'automatiser entièrement avec Python.</p>
+        
+            <h2>Pourquoi l'onboarding est crucial</h2>
+            <p>70% des clients qui churent le font dans les 90 premiers jours. Un onboarding structuré et automatisé réduit ce chiffre de moitié selon les études SaaS.</p>
+        
+            <h2>La séquence en 5 emails</h2>
+            <p>J+0 : email de bienvenue + accès\nJ+3 : premiers pas + ressources\nJ+7 : check-in satisfaction\nJ+14 : upsell doux\nJ+30 : témoignage ou renouvellement</p>
+        
+            <h2>Le code Python</h2>
+            <p>smtplib + schedule + CSV clients. Le script lit votre liste, calcule les jours depuis l'inscription, et envoie l'email correspondant. 50 lignes de code maximum.</p>
+        
+            <h2>Résultat attendu</h2>
+            <p>Nos clients qui ont mis en place cette séquence ont réduit leurs demandes de support de 40% et augmenté leur taux de renouvellement de 25%.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">ChatGPT vs Claude vs Gemini : lequel pour automatiser votre business ?</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Trois IA dominent le marché en 2026. Laquelle choisir pour automatiser vos tâches business ? Comparaison honnête basée sur nos tests.</p>
+        
+            <h2>ChatGPT (GPT-4o) : le plus polyvalent</h2>
+            <p>Meilleur pour : rédaction, analyse, code. API bien documentée. Prix : 0,005$/1k tokens. Idéal pour les automatisations générales et le traitement de texte en volume.</p>
+        
+            <h2>Claude (Anthropic) : le plus précis</h2>
+            <p>Meilleur pour : analyse de documents longs, code complexe, instructions précises. Fenêtre de contexte 200k tokens. Idéal pour les tâches qui demandent nuance et rigueur.</p>
+        
+            <h2>Gemini (Google) : le plus intégré</h2>
+            <p>Meilleur pour : intégration Google Workspace, analyse d'images, recherche web en temps réel. Idéal si votre stack est déjà Google (Sheets, Drive, Gmail).</p>
+        
+            <h2>Notre recommandation WULIX</h2>
+            <p>Pour 90% des cas business : commencez avec l'API Gemini (gratuit jusqu'à 60 req/min) pour tester, puis migrez vers Claude ou GPT-4o selon vos besoins spécifiques.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Créer un tableau de bord business automatique avec Python</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Avoir une vision en temps réel de votre business sans ouvrir 5 onglets différents — c'est possible avec Python et quelques APIs.</p>
+        
+            <h2>Les données à centraliser</h2>
+            <p>Ventes Gumroad/Stripe, trafic site (Google Analytics), engagement LinkedIn, emails entrants, revenus vs objectifs. Tout ça dans un seul email quotidien ou dashboard web.</p>
+        
+            <h2>Le stack technique</h2>
+            <p>Python + requests pour collecter les APIs, pandas pour agréger, matplotlib pour les graphiques, fpdf2 pour le rapport PDF, smtplib pour l'envoi automatique chaque matin.</p>
+        
+            <h2>Setup en 1 weekend</h2>
+            <p>Jour 1 : connecter les APIs et collecter les données. Jour 2 : mettre en forme le rapport et planifier l'envoi automatique avec schedule ou Windows Task Scheduler.</p>
+        
+            <h2>Ce que nos clients en disent</h2>
+            <p>Un consultant indépendant reçoit maintenant son rapport business chaque matin à 8h. Il a arrêté de checker manuellement ses stats — ça lui économise 30 min par jour.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Automatiser sa prospection LinkedIn avec n8n et Sales Navigator</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">La prospection LinkedIn manuelle prend des heures pour peu de résultats. Voici comment créer un pipeline de prospection semi-automatique avec n8n.</p>
+        
+            <h2>Le problème de la prospection manuelle</h2>
+            <p>Chercher des prospects, visiter les profils, envoyer des messages personnalisés — en faisant ça manuellement, vous pouvez contacter 10-15 personnes par jour maximum.</p>
+        
+            <h2>Le pipeline n8n en 5 étapes</h2>
+            <p>1. Google Sheets avec liste de prospects\n2. n8n lit les prospects non contactés\n3. Génère un message personnalisé via API IA\n4. Simule une visite de profil\n5. Log le statut dans Sheets</p>
+        
+            <h2>Les limites à respecter</h2>
+            <p>LinkedIn détecte et bannit l'automatisation agressive. Notre approche : max 20 actions/jour, délais aléatoires, messages vraiment personnalisés. Semi-automatique, pas bot.</p>
+        
+            <h2>Notre offre</h2>
+            <p>On configure ce pipeline pour vous en 2h de mission. Résultat : 20 prospects contactés/jour, messages personnalisés, suivi automatique. Contactez-nous sur wulix.fr.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Python pour freelances : 5 scripts qui font gagner 10h par semaine</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous n'avez pas besoin d'être développeur pour utiliser Python. Ces 5 scripts sont conçus pour les freelances qui veulent récupérer leur temps.</p>
+        
+            <h2>Script 1 : Relances clients automatiques</h2>
+            <p>Lit votre CRM CSV, détecte les clients sans réponse depuis X jours, envoie un email personnalisé. Setup : 15 min. Gain : 1h/semaine.</p>
+        
+            <h2>Script 2 : Génération de devis PDF</h2>
+            <p>Vous remplissez un fichier Excel, le script génère un PDF professionnel et l'envoie par email. Plus jamais de mise en page Word. Gain : 30 min/devis.</p>
+        
+            <h2>Script 3 : Rapport hebdo automatique</h2>
+            <p>Collecte vos KPIs (ventes, heures, clients), génère un PDF, vous l'envoie le vendredi soir. Gain : 45 min/semaine.</p>
+        
+            <h2>Script 4 : Tri des emails entrants</h2>
+            <p>Classe automatiquement vos emails par catégorie (prospects, clients, factures, spam) et vous envoie un résumé quotidien. Gain : 20 min/jour.</p>
+        
+            <h2>Où les trouver</h2>
+            <p>Ces 5 scripts + documentation sont dans le Pack Scripts Python WULIX. 29€ sur wulix.gumroad.com/l/scripts-python — téléchargement immédiat.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Automatiser sa facturation avec Python et Stripe</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous générez vos factures manuellement chaque mois ? Un script Python connecté à Stripe peut le faire en 10 secondes automatiquement à chaque paiement.</p>
+        
+            <h2>Le problème des factures manuelles</h2>
+            <p>Chaque facture : 10-15 min de mise en page, envoi manuel, archivage. Sur 20 clients/mois, c'est 4-5h perdues. Et le risque d'erreur ou d'oubli.</p>
+        
+            <h2>Python + Stripe : la solution en 3 étapes</h2>
+            <p>1. Stripe envoie un webhook à chaque paiement. 2. Python reçoit l'événement et génère la facture PDF (fpdf2). 3. La facture est envoyée automatiquement par email au client.</p>
+        
+            <h2>Le code en 50 lignes</h2>
+            <p>Avec les libs stripe, fpdf2 et smtplib, le script tient en moins de 100 lignes. Configurez une fois, il tourne pour toujours. Compatible auto-entrepreneur (sans TVA) et société.</p>
+        
+            <h2>Aller plus loin</h2>
+            <p>Ce script fait partie du Pack Scripts Python WULIX (29€). Il inclut aussi : relances impayés, rapport mensuel automatique, archivage GDrive. Disponible sur wulix.gumroad.com/l/scripts-python.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260424" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Créer un chatbot WhatsApp avec n8n en 2026</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 24 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Répondre aux messages WhatsApp Business manuellement vous prend du temps. Avec n8n et l'API WhatsApp Business, automatisez 80% de vos réponses sans coder.</p>
+        
+            <h2>Pourquoi WhatsApp en 2026</h2>
+            <p>2,7 milliards d'utilisateurs, taux d'ouverture 98% contre 22% pour l'email. Pour les PME et freelances français, c'est devenu un canal client incontournable.</p>
+        
+            <h2>Le setup n8n en 4 étapes</h2>
+            <p>1. Créer un compte Meta Business et activer l'API WhatsApp. 2. Configurer le webhook dans n8n. 3. Brancher un modèle IA (Gemini/GPT) pour les réponses. 4. Tester avec des cas concrets.</p>
+        
+            <h2>Ce que vous pouvez automatiser</h2>
+            <p>Réponses aux FAQ, prise de RDV, envoi de devis PDF, confirmation de commande, relances de paiement. Le bot répond 24h/24, vous intervenez seulement sur les cas complexes.</p>
+        
+            <h2>Notre offre</h2>
+            <p>On configure ce chatbot WhatsApp pour vous en une journée. Vous fournissez vos FAQ, on livre un bot opérationnel. Contactez-nous sur wulix.fr ou Fiverr : fiverr.com/richardsylla.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260425" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Remplacer Zapier par Make.com : économisez 80% sur vos automatisations</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 25 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Zapier peut coûter 50-100€/mois dès que vous avez quelques automatisations actives. Make.com offre la même puissance à 10€/mois. Voici comment migrer sans stress.</p>
+        
+            <h2>Pourquoi Zapier devient vite cher</h2>
+            <p>Zapier facture par 'task' : chaque action exécutée dans un Zap compte. Avec 5 automatisations qui tournent quotidiennement, vous consommez 5000+ tasks/mois. Le plan 750 tasks/mois coûte déjà 20$/mois.</p>
+        
+            <h2>Make.com : la même chose pour moins</h2>
+            <p>Make.com facture par 'opération' mais de façon plus généreuse. Le plan gratuit : 1000 ops/mois. Le plan Core à 9€/mois : 10 000 ops. Gain moyen constaté chez nos clients : 60-80% sur la facture d'automatisation.</p>
+        
+            <h2>Migrer sans tout refaire</h2>
+            <p>Make.com a un outil d'import Zapier qui convertit vos Zaps automatiquement. 80% des workflows migrent en 1 clic. Les 20% restants nécessitent un reconfiguration manuelle (30-60 min maximum).</p>
+        
+            <h2>Notre aide à la migration</h2>
+            <p>On propose une migration Zapier → Make.com en moins d'une journée. Audit de vos Zaps actuels, migration, test, formation. Contactez contact@wulix.fr pour un devis.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260425" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Pipeline de prospection LinkedIn automatisé avec Make.com</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 25 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Trouver des clients sur LinkedIn prend des heures. Un pipeline semi-automatisé avec Make.com vous permet de contacter 20 prospects qualifiés par jour en 15 minutes de travail.</p>
+        
+            <h2>Le workflow en 5 étapes</h2>
+            <p>1. Google Sheets avec vos critères (secteur, taille, poste). 2. Make.com scrape LinkedIn Sales Navigator. 3. IA génère un message personnalisé pour chaque prospect. 4. Vous validez en 1 clic. 5. Make.com envoie et logue les réponses.</p>
+        
+            <h2>La personnalisation qui fait la différence</h2>
+            <p>Un message générique obtient 2-3% de réponse. Un message qui mentionne le dernier post LinkedIn du prospect, son secteur précis et son problème spécifique : 8-12%. L'IA rend ça scalable.</p>
+        
+            <h2>Les règles pour rester sous le radar</h2>
+            <p>Max 20 actions/jour. Délais aléatoires entre les actions (30-120 secondes). Pas de messages identiques. Profil LinkedIn Premium recommandé. Ces règles évitent la restriction de compte.</p>
+        
+            <h2>Résultat attendu</h2>
+            <p>Avec ce pipeline, nos clients obtiennent 2-4 rendez-vous qualifiés par semaine sans démarchage manuel. On configure ce workflow pour vous : voir wulix.fr/services.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260425" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Générer des rapports Excel automatiquement avec Python</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 25 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous passez du temps chaque semaine à compiler des données dans Excel ? Python peut générer vos rapports automatiquement avec mise en forme, graphiques et envoi par email.</p>
+        
+            <h2>Les libs Python pour Excel</h2>
+            <p>openpyxl pour créer/modifier des fichiers .xlsx. xlsxwriter pour les graphiques avancés. pandas pour la manipulation de données. xlrd pour lire les fichiers existants. Toutes gratuites et faciles à installer.</p>
+        
+            <h2>Exemple concret : rapport de ventes</h2>
+            <p>Chaque lundi matin, le script lit votre base clients (CSV ou Google Sheets), calcule les KPIs de la semaine, génère un Excel coloré avec graphiques et vous l'envoie par email. Zéro intervention manuelle.</p>
+        
+            <h2>Connecter vos sources de données</h2>
+            <p>Votre CRM via API. Google Sheets via gspread. Base de données SQL avec pandas.read_sql. Fichiers CSV dans un dossier. Le script agrège tout et génère le rapport unifié.</p>
+        
+            <h2>Ce qu'on livre</h2>
+            <p>Script Python opérationnel + documentation + planification automatique (Windows Task Scheduler ou cron Linux). Inclus dans le Pack Scripts Python sur wulix.gumroad.com/l/scripts-python.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260425" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Automatiser sa veille Google Alerts avec n8n</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 25 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Google Alerts envoie des emails en vrac difficiles à trier. Avec n8n, transformez votre veille en un digest quotidien intelligent, priorisé par IA.</p>
+        
+            <h2>Le problème des Google Alerts classiques</h2>
+            <p>20-30 emails par jour pour 5 alertes actives. Impossible de tout lire. Résultat : vous finissez par ignorer vos alertes et rater les informations importantes.</p>
+        
+            <h2>Le workflow n8n qui résout ça</h2>
+            <p>1. Google Alerts → RSS feed (option peu connue). 2. n8n lit le RSS chaque matin. 3. IA (Gemini) évalue la pertinence de chaque alerte (1-5). 4. Seules les alertes 4-5 sont gardées. 5. Digest email quotidien à 8h avec les 3-5 infos clés.</p>
+        
+            <h2>Aller plus loin : veille concurrentielle</h2>
+            <p>Suivre les nouveaux articles de vos concurrents, leurs offres d'emploi (signal de croissance), leurs mentions presse, leurs avis clients. Tout ça automatiquement dans un rapport hebdomadaire.</p>
+        
+            <h2>Notre configuration</h2>
+            <p>Ce workflow n8n est livré clé en main avec le Pack Workflows WULIX. Voir wulix.gumroad.com ou contactez contact@wulix.fr pour une configuration sur mesure.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260426" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Créer une API REST avec FastAPI en 1 heure</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 26 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous avez un script Python utile mais personne ne peut l'utiliser facilement ? FastAPI vous permet de créer une API REST propre et documentée en moins d'une heure.</p>
+        
+            <h2>Pourquoi FastAPI en 2026</h2>
+            <p>FastAPI est devenu le standard Python pour les APIs. Validation automatique des données, documentation Swagger générée automatiquement, async natif, typage Python. 3x plus rapide que Flask sur les benchmarks.</p>
+        
+            <h2>Votre première API en 20 lignes</h2>
+            <p>from fastapi import FastAPI\napp = FastAPI()\n@app.post('/automatiser')\ndef run_task(data: TaskInput):\n    result = votre_script(data)\n    return {'result': result}\nuvicorn app:app --reload</p>
+        
+            <h2>Les cas d'usage concrets</h2>
+            <p>Exposer votre script de génération PDF comme API. Créer un endpoint webhook pour n8n ou Make.com. Construire un mini-SaaS. Connecter votre script à une interface web ou un chatbot.</p>
+        
+            <h2>Déploiement en 5 minutes</h2>
+            <p>Railway.app ou Render.com permettent de déployer votre FastAPI gratuitement depuis GitHub. HTTPS automatique, domaine gratuit, scaling auto. Votre API est en ligne en moins de 10 minutes.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260426" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Automatiser les posts Instagram avec Make.com</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 26 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Poster régulièrement sur Instagram est chronophage. Make.com peut automatiser la publication à partir d'un simple Google Sheets — sans application tierce payante.</p>
+        
+            <h2>Ce qui est possible légalement</h2>
+            <p>L'API Instagram Business (via Meta) autorise la publication automatique de photos, carousels et Reels pour les comptes Business. Pas de compte personnel — uniquement Business ou Creator.</p>
+        
+            <h2>Le workflow Make.com pas à pas</h2>
+            <p>1. Préparez vos visuels et captions dans Google Sheets (colonne image URL, caption, hashtags, date). 2. Make.com lit le sheet chaque matin. 3. Si la date = aujourd'hui, il publie via l'API Instagram Graph. 4. Log dans Sheets.</p>
+        
+            <h2>Générer les captions avec l'IA</h2>
+            <p>Branchez un module OpenAI ou Gemini dans Make.com pour générer automatiquement les captions à partir d'un brief court. Vous fournissez le thème, l'IA écrit 3 variantes, vous choisissez.</p>
+        
+            <h2>Résultat concret</h2>
+            <p>Nos clients publient 5x/semaine sur Instagram en 30 min de travail par semaine (au lieu de 3-4h). Contactez-nous pour configurer ça pour vous : wulix.fr/services.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
+    
+    <article data-id="samba_20260427" style="display:none;">
+        <button onclick="showListe()" style="background:none;border:none;color:#7c3aed;cursor:pointer;font-size:14px;margin-bottom:24px;">← Retour au blog</button>
+        <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:16px;">Connecter Notion à son site web automatiquement avec n8n</h1>
+        <div style="color:#9ca3af;font-size:14px;margin-bottom:32px;">
+            Par <strong>Omar Sylla</strong> · WULIX Agency · 27 April 2026
+        </div>
+        <p style="font-size:18px;color:#d1d5db;margin-bottom:32px;font-style:italic;">Vous gérez votre contenu dans Notion mais votre site reste statique ? n8n peut synchroniser automatiquement vos pages Notion avec votre site web sans intervention manuelle.</p>
+        
+            <h2>Notion comme CMS headless</h2>
+            <p>Notion a une API officielle puissante. Vous créez et modifiez votre contenu dans Notion (articles, offres, portfolio), n8n détecte les modifications et met à jour votre site automatiquement.</p>
+        
+            <h2>Le workflow de synchronisation</h2>
+            <p>1. n8n vérifie toutes les heures les pages Notion modifiées. 2. Si modification détectée : extrait le contenu via l'API Notion. 3. Convertit en HTML ou JSON. 4. Met à jour votre site via son API ou un fichier JSON statique. 5. Déclenche un rebuild si nécessaire.</p>
+        
+            <h2>Pour quel type de site</h2>
+            <p>Sites statiques (Netlify, Cloudflare Pages) : n8n génère les fichiers et commit sur GitHub. Sites WordPress : utilise l'API REST WP. Sites custom FastAPI : endpoint webhook. La solution s'adapte à votre stack.</p>
+        
+            <h2>Notre réalisation</h2>
+            <p>WULIX utilise ce système pour son propre blog : l'agent SAMBA écrit les articles, ils sont automatiquement publiés sur wulix.fr via Cloudflare Pages. On peut reproduire ça pour votre site.</p>
+        
+        <div style="background:#1a1a2e;border-left:4px solid #7c3aed;padding:24px;border-radius:8px;margin-top:40px;">
+            <p style="margin:0;font-weight:600;">Besoin d'aide pour automatiser ?</p>
+            <p style="margin:8px 0 0;color:#9ca3af;">WULIX Agency configure tout pour vous. <a href="/" style="color:#7c3aed;">Contactez-nous →</a></p>
+        </div>
+        <div style="background:#0d0020;border:1px solid #1a0030;border-radius:8px;padding:24px;margin-top:24px;">
+            <p style="margin:0 0 12px;font-weight:600;color:#c4b5fd;">Nos ressources pour aller plus loin</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://wulix.gumroad.com/l/scripts-python" style="color:#00dcff;text-decoration:none;">→ Pack Scripts Python WULIX — 29€ (5 automatisations clé en main)</a></li>
+                <li><a href="https://wulix.gumroad.com/l/n8n-linkedin" style="color:#00dcff;text-decoration:none;">→ Pipeline LinkedIn Automatisé n8n — 19€</a></li>
+                <li><a href="https://wulix.gumroad.com" style="color:#00dcff;text-decoration:none;">→ Guide PDF "Automatise 5 tâches en 1 weekend" — 9€</a></li>
+            </ul>
+            <p style="margin:16px 0 8px;font-weight:600;color:#c4b5fd;">Outils recommandés</p>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                <li><a href="https://n8n.io/?utm_source=wulix" style="color:#94a3b8;text-decoration:none;">→ n8n — Automatisation open-source (self-hosted gratuit)</a></li>
+                <li><a href="https://www.make.com/en/register?pc=wulix" style="color:#94a3b8;text-decoration:none;">→ Make.com — 1000 opérations/mois gratuites</a></li>
+                <li><a href="https://www.hostinger.com/fr?REFERRALCODE=HDACONTAC7BT" style="color:#94a3b8;text-decoration:none;">→ Hostinger VPS — Héberger n8n pour 4€/mois</a></li>
+            </ul>
+        </div>
+    </article>
+    
     <!-- SAMBA_ARTICLES_POINT -->
   <!-- Articles individuels -->
 
   <div id="art-automatiser-relances-email-python" class="article-section">
-    <span class="back" onclick="showListe()">â† Retour au blog</span>
+    <span class="back" onclick="showListe()">← Retour au blog</span>
     <h1>Comment automatiser vos relances email avec Python en 30 minutes</h1>
     <div class="meta">15 avril 2026 &middot; 5 min de lecture &middot; <span class="badge">Python</span></div>
     
@@ -466,13 +1296,13 @@ with open('contacts.csv') as f:
             msg = MIMEText(f"Bonjour {row['prenom']},...")
             # envoyer via SMTP
 </code></pre>
-<p>Ce script fait partie du <strong>Pack Scripts Python WULIX (29â‚¬)</strong> avec 5 automatisations completes et documentees.</p>
-<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le pack â†’</a></p>
+<p>Ce script fait partie du <strong>Pack Scripts Python WULIX (29€)</strong> avec 5 automatisations completes et documentees.</p>
+<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le pack →</a></p>
 
   </div>
   
   <div id="art-n8n-pipeline-linkedin-automatique" class="article-section">
-    <span class="back" onclick="showListe()">â† Retour au blog</span>
+    <span class="back" onclick="showListe()">← Retour au blog</span>
     <h1>Publier automatiquement sur LinkedIn chaque semaine avec n8n</h1>
     <div class="meta">10 avril 2026 &middot; 7 min de lecture &middot; <span class="badge">n8n</span></div>
     
@@ -485,13 +1315,13 @@ with open('contacts.csv') as f:
 5. Il met a jour le statut dans Sheets</p>
 <h3>Pourquoi n8n ?</h3>
 <p>Gratuit en self-hosted, connecteurs natifs LinkedIn et Google Sheets, interface visuelle intuitive.</p>
-<p>Le <strong>Pipeline LinkedIn WULIX (19â‚¬)</strong> est un fichier JSON pret a importer dans n8n avec README d'installation.</p>
-<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le workflow â†’</a></p>
+<p>Le <strong>Pipeline LinkedIn WULIX (19€)</strong> est un fichier JSON pret a importer dans n8n avec README d'installation.</p>
+<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le workflow →</a></p>
 
   </div>
   
   <div id="art-5-taches-automatiser-sans-coder" class="article-section">
-    <span class="back" onclick="showListe()">â† Retour au blog</span>
+    <span class="back" onclick="showListe()">← Retour au blog</span>
     <h1>5 taches repetitives a automatiser ce weekend (sans coder)</h1>
     <div class="meta">5 avril 2026 &middot; 6 min de lecture &middot; <span class="badge">No-code</span></div>
     
@@ -506,29 +1336,120 @@ with open('contacts.csv') as f:
 <p>Zapier ou Make.com. Recevez une notification quand un indicateur depasse un seuil.</p>
 <h3>5. Tri de fichiers automatique</h3>
 <p>Un script Python de 20 lignes qui range vos telechargements automatiquement.</p>
-<p>Tout ca est detaille dans le <strong>Guide PDF WULIX (9â‚¬)</strong> avec captures d'ecran et exemples prets a copier.</p>
-<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le guide â†’</a></p>
+<p>Tout ca est detaille dans le <strong>Guide PDF WULIX (9€)</strong> avec captures d'ecran et exemples prets a copier.</p>
+<p><a href="https://wulix.gumroad.com" class="cta">Obtenir le guide →</a></p>
 
   </div>
+
   
+            <div class="card" onclick="showArticle('samba_20260426')">
+                <span class="badge">Automatisation</span>
+                <h2>Automatiser les posts Instagram avec Make.com</h2>
+                <p>Poster régulièrement sur Instagram est chronophage. Make.com peut automatiser la publication à partir d'un simple Google...</p>
+                <div class="meta">26/04/2026 · 4 min de lecture</div>
+            </div>
+            
+            <div class="card" onclick="showArticle('samba_20260427')">
+                <span class="badge">Automatisation</span>
+                <h2>Connecter Notion à son site web automatiquement avec n8n</h2>
+                <p>Vous gérez votre contenu dans Notion mais votre site reste statique ? n8n peut synchroniser automatiquement vos pages No...</p>
+                <div class="meta">27/04/2026 · 4 min de lecture</div>
+            </div>
+            <!-- SAMBA_INSERT_POINT -->
+
+  <!-- Newsletter mini -->
+  <div class="blog-newsletter">
+    <h3>1 tip automatisation par semaine</h3>
+    <p>Scripts Python, workflows n8n. Concret, testable le week-end. 0 spam.</p>
+    <form class="nl-form" action="https://formsubmit.co/contact@wulix.fr" method="POST" onsubmit="handleBlogNewsletter(event)">
+      <input type="hidden" name="_subject" value="[WULIX] Abonné blog newsletter">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="source" value="newsletter-blog">
+      <input class="nl-input" type="email" name="email" placeholder="votre@email.fr" required>
+      <button class="nl-btn" type="submit">S'abonner →</button>
+    </form>
+  </div>
+
 </div>
 
 <footer>
-  <p>&copy; 2026 WULIX &mdash; <a href="/">wulix.fr</a> &mdash; <a href="mailto:contact@wulix.fr">contact@wulix.fr</a></p>
-  <p style="margin-top:6px"><a href="/cgv.html">CGV</a> &mdash; <a href="/mentions-legales.html">Mentions legales</a></p>
+  <p>© 2026 <strong>WULIX</strong> — Agence d'automatisation IA · Paris · <a href="/">wulix.fr</a></p>
+  <p style="margin-top:8px;font-size:12px">
+    <a href="mailto:contact@wulix.fr">contact@wulix.fr</a> &nbsp;·&nbsp;
+    <a href="https://www.fiverr.com/richardsylla" target="_blank">Fiverr</a> &nbsp;·&nbsp;
+    <a href="https://wulix.gumroad.com" target="_blank">Gumroad</a> &nbsp;·&nbsp;
+    <a href="/cgv.html">CGV</a> &nbsp;·&nbsp;
+    <a href="/mentions-legales.html">Mentions légales</a>
+  </p>
 </footer>
 
 <script>
+// ── Compteur articles ──
+document.addEventListener('DOMContentLoaded', function() {
+  var cards = document.querySelectorAll('#liste .card');
+  var count = document.getElementById('articleCount');
+  if (count) count.textContent = cards.length;
+  var fc = document.getElementById('filterCount');
+  if (fc) fc.textContent = cards.length + ' articles';
+});
+
+// ── Filtre articles par mot-clé ──
+function filterArticles(keyword, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  var cards = document.querySelectorAll('#liste .card');
+  var visible = 0;
+  cards.forEach(function(card) {
+    var text = card.textContent.toLowerCase();
+    var show = keyword === 'all' || text.includes(keyword);
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  var fc = document.getElementById('filterCount');
+  if (fc) fc.textContent = visible + ' article' + (visible > 1 ? 's' : '');
+}
+
+// ── Navigation articles ──
 function showArticle(slug) {
   document.getElementById('liste').style.display = 'none';
-  document.querySelectorAll('.article-section').forEach(el => el.classList.remove('active'));
-  document.getElementById('art-' + slug).classList.add('active');
+  document.getElementById('filterBar') && (document.getElementById('filterBar').style.display = 'none');
+  // Support both data-id articles and id-based articles
+  var found = false;
+  document.querySelectorAll('.article-section, article').forEach(function(el) {
+    el.classList.remove('active');
+    if (el.style) el.style.display = 'none';
+    var elId = el.id || el.dataset.id;
+    if (elId && (elId === 'art-' + slug || elId === slug || el.id === 'art-' + slug)) {
+      el.classList.add('active');
+      el.style.display = 'block';
+      found = true;
+    }
+  });
+  if (!found) {
+    // Fallback: show first article section
+    var first = document.querySelector('.article-section, article[data-id]');
+    if (first) { first.classList.add('active'); first.style.display = 'block'; }
+  }
   window.scrollTo(0, 0);
 }
+
 function showListe() {
   document.getElementById('liste').style.display = 'grid';
-  document.querySelectorAll('.article-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('filterBar') && (document.getElementById('filterBar').style.display = 'flex');
+  document.querySelectorAll('.article-section, article').forEach(function(el) {
+    el.classList.remove('active');
+    el.style.display = 'none';
+  });
   window.scrollTo(0, 0);
+}
+
+// ── Newsletter mini ──
+function handleBlogNewsletter(e) {
+  e.preventDefault();
+  var form = e.target;
+  var data = new FormData(form);
+  fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } }).catch(function(){});
+  form.innerHTML = '<p style="color:var(--cyan);font-weight:700;text-align:center">✅ Abonné ! Ton premier tip arrive lundi.</p>';
 }
 </script>
 </body>

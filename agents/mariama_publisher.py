@@ -26,8 +26,12 @@ DELAI_ENTRE_POSTS = 300   # 5 minutes entre chaque post
 MODE_TEST         = False  # False = publication réelle
 VISIBILITE        = "PUBLIC"
 
-API_PROFILE_URL = "https://api.linkedin.com/v2/userinfo"
-API_POST_URL    = "https://api.linkedin.com/v2/ugcPosts"
+# ✅ Toujours poster sur la PAGE WULIX (jamais le profil perso Omar)
+USE_ORG_PAGE      = True   # True = page entreprise | False = profil perso
+
+API_PROFILE_URL  = "https://api.linkedin.com/v2/userinfo"
+API_POST_URL     = "https://api.linkedin.com/v2/ugcPosts"
+ORGANIZATION_URN = "urn:li:organization:112948321"  # Page WULIX
 
 # =============================================================================
 # FONCTIONS
@@ -50,14 +54,36 @@ def get_headers(token):
 
 
 def obtenir_urn(token):
-    """Récupère l'URN LinkedIn de l'utilisateur."""
+    """Retourne l'URN à utiliser pour poster.
+    USE_ORG_PAGE=True  → page WULIX (urn:li:organization:...)
+    USE_ORG_PAGE=False → profil perso (urn:li:person:...)
+    IMPORTANT : le token doit avoir le scope w_organization_social
+    pour poster sur la page entreprise. Lance --setup-token si 403.
+    """
+    if USE_ORG_PAGE:
+        # Vérification que le token est valide (userinfo léger)
+        try:
+            r = requests.get(API_PROFILE_URL, headers=get_headers(token), timeout=10)
+            r.raise_for_status()
+            data = r.json()
+            name = data.get("name", "?")
+            print(f"[INFO] Token valide — connecte en tant que : {name}")
+            print(f"[INFO] Publication ciblee : PAGE WULIX ({ORGANIZATION_URN})")
+        except Exception as e:
+            print(f"[WARN] Verification token : {e}")
+        return ORGANIZATION_URN
+
+    # Profil perso (ancien comportement — deconseille)
     try:
         r = requests.get(API_PROFILE_URL, headers=get_headers(token), timeout=10)
         r.raise_for_status()
         data = r.json()
-        urn = f"urn:li:person:{data.get('sub')}"
-        print(f"[INFO] Connecté : {data.get('name', '?')} ({urn})")
-        return urn
+        person_id = data.get("sub") or data.get("id")
+        if person_id:
+            person_urn = f"urn:li:person:{person_id}"
+            print(f"[WARN] Profil PERSO utilise : {data.get('name', '?')} ({person_urn})")
+            return person_urn
+        return ORGANIZATION_URN
     except Exception as e:
         print(f"[ERREUR] Connexion LinkedIn : {e}")
         return None
@@ -104,9 +130,9 @@ def lire_posts():
 def logger(message):
     """Écrit dans le fichier log."""
     ligne = f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] {message}\n"
-    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+    with open(LOG_FILE, 'a', encoding='utf-8', errors='replace') as f:
         f.write(ligne)
-    print(ligne.strip())
+    print(ligne.strip().encode('cp1252', errors='replace').decode('cp1252'))
 
 
 def publier_prochain_post():

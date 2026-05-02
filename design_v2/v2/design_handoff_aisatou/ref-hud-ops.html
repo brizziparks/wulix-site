@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #050510; padding: 20px 24px; font-family: 'Inter', sans-serif; }
+  .label { font-size: 10px; color: #555577; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  .divider { border: none; border-top: 1px solid rgba(0,229,255,0.07); margin: 12px 0; }
+
+  /* Ops feed */
+  .nx-title { font-size: 10px; letter-spacing: 2px; color: rgba(0,229,255,.6); text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .nx-title::before { content: '◈'; color: #00e5ff; font-size: 10px; }
+  .nx-title-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,229,255,.3), transparent); }
+  .ops-entry { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,.03); font-size: 11px; line-height: 1.4; }
+  .ops-time  { color: #444466; font-size: 10px; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; }
+  .ops-agent { color: #00e5ff; font-weight: bold; flex-shrink: 0; min-width: 60px; font-size: 10px; letter-spacing: .5px; font-family: 'JetBrains Mono', monospace; }
+  .ops-msg   { color: #7788bb; flex: 1; }
+  .ops-entry.ok .ops-msg  { color: #5aaf7a; }
+  .ops-entry.err .ops-msg { color: #af5a5a; }
+  .ops-entry.run .ops-msg { color: #af9a3a; }
+  .ops-entry.sys .ops-agent { color: #7c3aed; }
+  .ops-entry.sys .ops-msg  { color: #6a5aaf; }
+
+  /* Mission countdown */
+  .mission-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12px; }
+  .mission-icon { font-size: 14px; flex-shrink: 0; }
+  .mission-info { flex: 1; min-width: 0; }
+  .mission-name { color: #b0c0e0; font-size: 12px; }
+  .mission-sched { font-size: 10px; color: #555577; }
+  .mission-bar { width: 100%; height: 2px; background: #0a0a1a; border-radius: 1px; margin-top: 3px; }
+  .mission-progress { height: 2px; background: linear-gradient(90deg, #7c3aed, #00e5ff); border-radius: 1px; }
+  .mission-countdown { font-size: 11px; font-weight: bold; color: #00e5ff; font-family: 'JetBrains Mono', monospace; text-shadow: 0 0 8px rgba(0,229,255,.6); }
+  .mission-countdown.soon { color: #f59e0b; text-shadow: 0 0 8px rgba(245,158,11,.6); }
+
+  /* Scan line */
+  .scan-wrap { position: relative; overflow: hidden; height: 100px; background: #06060e; border-radius: 6px; border: 1px solid rgba(0,229,255,.07); margin-bottom: 10px; }
+  .scan-line { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(0,229,255,.15), rgba(124,58,237,.2), rgba(0,229,255,.15), transparent); animation: scanMove 3s linear infinite; }
+  @keyframes scanMove { 0%{top:0%} 100%{top:100%} }
+  .scan-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 10px; color: rgba(0,229,255,.4); letter-spacing: 2px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+  <div class="nx-title">FLUX OPS EN DIRECT <div class="nx-title-line"></div></div>
+  <div class="ops-entry ok"><span class="ops-time">08:32:14</span><span class="ops-agent">SAMBA</span><span class="ops-msg">Article SEO publié — wulix.fr/blog ✓</span></div>
+  <div class="ops-entry run"><span class="ops-time">08:35:07</span><span class="ops-agent">NDEYE</span><span class="ops-msg">Génération rapport daily en cours...</span></div>
+  <div class="ops-entry err"><span class="ops-time">08:36:41</span><span class="ops-agent">SEYDOU</span><span class="ops-msg">Erreur API LinkedIn — quota dépassé</span></div>
+  <div class="ops-entry sys"><span class="ops-time">08:40:00</span><span class="ops-agent">NEXUS</span><span class="ops-msg">14 agents en ligne — WULIX opérationnel</span></div>
+  <hr class="divider">
+  <div class="nx-title">MISSIONS PLANIFIÉES <div class="nx-title-line"></div></div>
+  <div class="mission-item">
+    <div class="mission-icon">📝</div>
+    <div class="mission-info">
+      <div class="mission-name">SAMBA — Article SEO</div>
+      <div class="mission-sched">Lundi 08:00</div>
+      <div class="mission-bar"><div class="mission-progress" style="width:72%;"></div></div>
+    </div>
+    <div class="mission-countdown">2j 14h30</div>
+  </div>
+  <div class="mission-item">
+    <div class="mission-icon">📊</div>
+    <div class="mission-info">
+      <div class="mission-name">NDEYE — Rapport daily</div>
+      <div class="mission-sched">Quotidien 08:30</div>
+      <div class="mission-bar"><div class="mission-progress" style="width:95%;"></div></div>
+    </div>
+    <div class="mission-countdown soon">00h12m08s</div>
+  </div>
+  <hr class="divider">
+  <div class="scan-wrap">
+    <div class="scan-line"></div>
+    <div class="scan-label">SCAN LINE EFFECT — HUD</div>
+  </div>
+</body>
+</html>

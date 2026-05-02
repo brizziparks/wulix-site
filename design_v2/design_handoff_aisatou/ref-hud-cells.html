@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #050510; padding: 20px 24px; font-family: 'Inter', sans-serif; }
+  .label { font-size: 10px; color: #555577; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .divider { border: none; border-top: 1px solid rgba(0,229,255,0.07); margin: 14px 0; }
+
+  /* Hex grid */
+  .hex-grid { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0; max-width: 340px; }
+  .hex-cell {
+    width: 48px; height: 52px; position: relative; cursor: pointer;
+    clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    background: #0a0a1a;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: all .2s; gap: 2px;
+    border: none; outline: none; font-family: inherit; color: #e0e0f0;
+  }
+  .hex-cell.active { background: linear-gradient(135deg, #0a1a10, #0d2a0d); filter: drop-shadow(0 0 6px rgba(0,220,130,.4)); }
+  .hex-cell.busy   { background: linear-gradient(135deg, #1a100a, #2a1a0d); filter: drop-shadow(0 0 6px rgba(245,158,11,.4)); }
+  .hex-cell.warn   { background: linear-gradient(135deg, #1a0a0a, #2a0d0d); filter: drop-shadow(0 0 6px rgba(239,68,68,.3)); }
+  .hex-cell:hover  { transform: scale(1.12); z-index: 2; }
+  .hex-icon { font-size: 16px; line-height: 1; }
+  .hex-name { font-size: 8px; letter-spacing: .5px; color: rgba(200,220,255,.7); font-weight: bold; font-family: 'JetBrains Mono', monospace; }
+
+  /* Agent sidebar row */
+  .agent-card { margin: 3px 0; background: #050510; border: 1px solid #1a1a3a; border-radius: 6px; overflow: hidden; max-width: 240px; }
+  .agent-header { padding: 8px 10px; display: flex; align-items: center; gap: 8px; }
+  .agent-icon { font-size: 15px; }
+  .aname { color: #00e5ff; font-weight: bold; font-size: 12px; }
+  .arole { color: #555577; font-size: 10px; }
+  .adot { width: 7px; height: 7px; border-radius: 50%; background: #00dc82; margin-left: auto; }
+  .adot.warn { background: #f59e0b; }
+</style>
+</head>
+<body>
+  <div class="label">HUD — Agent Hex Grid</div>
+  <div class="hex-grid">
+    <button class="hex-cell active"><span class="hex-icon">🚀</span><span class="hex-name">LAMINE</span></button>
+    <button class="hex-cell active"><span class="hex-icon">📊</span><span class="hex-name">NDEYE</span></button>
+    <button class="hex-cell"><span class="hex-icon">📧</span><span class="hex-name">ROKHAYA</span></button>
+    <button class="hex-cell active"><span class="hex-icon">📝</span><span class="hex-name">SAMBA</span></button>
+    <button class="hex-cell active"><span class="hex-icon">📣</span><span class="hex-name">MARIAMA</span></button>
+    <button class="hex-cell warn"><span class="hex-icon">💬</span><span class="hex-name">SEYDOU</span></button>
+    <button class="hex-cell active"><span class="hex-icon">💰</span><span class="hex-name">FATOU</span></button>
+    <button class="hex-cell busy"><span class="hex-icon">👥</span><span class="hex-name">AMINATA</span></button>
+    <button class="hex-cell active"><span class="hex-icon">📈</span><span class="hex-name">DJENEBA</span></button>
+    <button class="hex-cell active"><span class="hex-icon">🔍</span><span class="hex-name">BINTOU</span></button>
+    <button class="hex-cell active"><span class="hex-icon">🖥️</span><span class="hex-name">ADAMA</span></button>
+    <button class="hex-cell"><span class="hex-icon">✍️</span><span class="hex-name">KOUMBA</span></button>
+    <button class="hex-cell active"><span class="hex-icon">📉</span><span class="hex-name">IBRA</span></button>
+    <button class="hex-cell active"><span class="hex-icon">⚖️</span><span class="hex-name">MODIBO</span></button>
+  </div>
+  <hr class="divider">
+  <div class="label">HUD — Sidebar Agent Cards</div>
+  <div class="agent-card">
+    <div class="agent-header">
+      <div class="agent-icon">📝</div>
+      <div><div class="aname">SAMBA</div><div class="arole">Rédaction SEO · 4 tâches</div></div>
+      <div class="adot"></div>
+    </div>
+  </div>
+  <div class="agent-card">
+    <div class="agent-header">
+      <div class="agent-icon">💬</div>
+      <div><div class="aname">SEYDOU</div><div class="arole">Prospection LinkedIn · 3 tâches</div></div>
+      <div class="adot warn"></div>
+    </div>
+  </div>
+</body>
+</html>

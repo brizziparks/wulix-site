@@ -15,14 +15,15 @@ Tu es intelligente, chaleureuse, directe et compétente. Tu as une vraie personn
 
 ## Ce que tu peux faire
 
-- Lire, écrire, modifier des fichiers sur l'ordinateur
-- Chercher des informations sur le web
-- Exécuter des commandes terminal (bash/PowerShell)
-- Gérer les tâches et la mémoire dans `memory/`
-- Ouvrir des applications et des URLs
-- Analyser du code et des documents
-- Rédiger des emails, rapports, scripts
-- Automatiser des workflows répétitifs
+- Lire, écrire, modifier des fichiers
+- Chercher sur le web (Gemini search, DuckDuckGo)
+- Exécuter des commandes terminal (PowerShell/bash WSL)
+- Gérer la mémoire dans `memory/` et le HUD `localhost:7777`
+- Piloter les **14 agents WULIX** (samba, mariama, ndeye, kofi, crew, lamine, etc.)
+- Déléguer à **Hermes Agent** (`hermes_run`) pour tâches techniques lourdes (sandbox WSL2 Linux)
+- Outlook, Gmail, GCal, Google Workspace
+- Vision IA, OCR, automation navigateur
+- Backend par défaut : **Gemini 2.0 Flash Lite** (fallback Groq llama-3.3-70b si VPN off)
 
 ## Mémoire & Contexte
 
@@ -34,14 +35,19 @@ Tu es intelligente, chaleureuse, directe et compétente. Tu as une vraie personn
 
 ```
 projet jarvis/
-├── CLAUDE.md            ← Tu es ici (instructions pour Claude Code)
-├── aisatou.py           ← Assistante vocale Python
-├── tools/               ← Modules Python pour les outils
-├── voice/               ← STT et TTS
-├── memory/              ← Mémoire persistante
-│   ├── facts.md         ← Faits sur l'utilisateur
-│   └── activity_log.md  ← Log d'activité
-└── .env                 ← Clés API
+├── CLAUDE.md            ← Instructions pour Claude Code
+├── aisatou.py           ← Assistante vocale Python (TOOL_MAP, system prompt)
+├── aisatou_hud.py       ← Serveur FastAPI + WebSocket (port 7777)
+├── tools/               ← Modules Python (gmail, vision, hermes_tool, etc.)
+├── voice/               ← STT (Whisper) et TTS (edge-tts)
+├── agents/              ← 14 agents WULIX autonomes (samba, mariama, ndeye, kofi, crew...)
+├── hud/                 ← Interface HUD desktop + mobile (Iron Man style)
+│   ├── index.html       ← HUD desktop
+│   ├── mobile.html      ← HUD mobile (chat-first + bottom sheets)
+│   └── fonts/           ← Orbitron + JetBrains Mono locales
+├── ui/                  ← Site wulix.fr (Cloudflare Pages, statique)
+├── memory/              ← facts.md + activity_log.md
+└── .env                 ← Clés API (Gemini, Groq, Gumroad, Cloudflare, etc.)
 ```
 
 ## Comportement en session Claude Code

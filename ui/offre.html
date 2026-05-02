@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automatisez votre business — Devis gratuit en 24h | WULIX</title>
+  <meta name="description" content="Obtenez un devis gratuit pour automatiser vos tâches répétitives. Scripts Python, agents IA, workflows n8n. Réponse sous 24h.">
+  <link rel="canonical" href="https://wulix.fr/offre.html">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wulix-tokens.css">
+  <style>
+    :root{--cyan:#00d4ff;--purple:#a855f7;--gold:#e2b33a;--bg:#0a0015;--panel:rgba(15,0,40,0.85);--text:#e2e8f0;--dim:#7c88a8}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;min-height:100vh}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,212,255,.1) 0%,transparent 60%),radial-gradient(ellipse 60% 60% at 80% 100%,rgba(168,85,247,.12) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+    .wrapper{max-width:680px;margin:0 auto;padding:60px 24px 80px;position:relative;z-index:1}
+
+    /* LOGO */
+    .logo{font-family:'Orbitron',monospace;font-weight:900;font-size:20px;letter-spacing:4px;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;text-align:center;margin-bottom:48px;text-decoration:none}
+
+    /* HEADLINE */
+    .badge{display:inline-block;background:rgba(226,179,58,.15);border:1px solid rgba(226,179,58,.35);color:var(--gold);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:20px}
+    h1{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;line-height:1.2;margin-bottom:16px}
+    h1 span{background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .sub{font-size:17px;color:var(--dim);margin-bottom:40px;line-height:1.7}
+
+    /* PROOF */
+    .proof-bar{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:40px;padding:20px 24px;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.12);border-radius:14px}
+    .proof-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}
+    .proof-item strong{color:var(--text)}
+
+    /* WHAT YOU GET */
+    .section-title{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:16px}
+    .benefits{list-style:none;margin-bottom:36px}
+    .benefits li{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:15px}
+    .benefits li:last-child{border-bottom:none}
+    .benefits .check{color:var(--cyan);font-weight:700;font-size:16px;flex-shrink:0;margin-top:1px}
+    .benefits .label{color:var(--text);font-weight:600}
+    .benefits .desc{color:var(--dim);font-size:13px;margin-top:3px}
+
+    /* PRICING MINI */
+    .pricing-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:40px}
+    .price-box{background:var(--panel);border:1px solid rgba(168,85,247,.2);border-radius:14px;padding:20px 16px;text-align:center;transition:border-color .2s}
+    .price-box:hover{border-color:rgba(0,212,255,.4)}
+    .price-box.featured{border-color:rgba(0,212,255,.4);background:linear-gradient(160deg,rgba(0,212,255,.06),rgba(168,85,247,.08))}
+    .price-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+    .price-val{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .price-from{font-size:11px;color:var(--dim);margin-bottom:4px}
+    .price-desc{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.5}
+
+    /* FORM */
+    .form-card{background:var(--panel);border:1px solid rgba(0,212,255,.2);border-radius:20px;padding:36px 32px;margin-bottom:32px}
+    .form-title{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--cyan);margin-bottom:6px}
+    .form-subtitle{font-size:13px;color:var(--dim);margin-bottom:28px}
+    .fgroup{margin-bottom:18px}
+    .flabel{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+    .finput,.fselect,.ftextarea{width:100%;padding:13px 16px;background:rgba(0,0,20,.6);border:1px solid rgba(0,212,255,.2);border-radius:10px;color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s}
+    .finput:focus,.fselect:focus,.ftextarea:focus{border-color:rgba(0,212,255,.55)}
+    .ftextarea{resize:vertical;min-height:110px}
+    .fselect{cursor:pointer}
+    .fselect option{background:#0a0015}
+    .fsubmit{width:100%;padding:15px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-weight:700;font-size:16px;font-family:inherit;border:none;cursor:pointer;transition:opacity .2s,transform .2s;margin-top:4px}
+    .fsubmit:hover{opacity:.85;transform:translateY(-1px)}
+    .fsuccess{display:none;text-align:center;padding:24px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.3);border-radius:12px;color:var(--cyan);font-weight:600;line-height:1.7}
+
+    /* OR SEPARATOR */
+    .or-sep{text-align:center;color:var(--dim);font-size:13px;margin:20px 0;position:relative}
+    .or-sep::before,.or-sep::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:rgba(255,255,255,.07)}
+    .or-sep::before{left:0}.or-sep::after{right:0}
+
+    /* DIRECT ACTIONS */
+    .direct-actions{display:flex;flex-direction:column;gap:12px;margin-bottom:40px}
+    .direct-btn{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:14px;border:1px solid rgba(168,85,247,.2);background:rgba(168,85,247,.04);text-decoration:none;color:var(--text);transition:border-color .2s,background .2s}
+    .direct-btn:hover{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.06)}
+    .direct-icon{font-size:24px;flex-shrink:0}
+    .direct-text strong{display:block;font-size:15px;font-weight:700}
+    .direct-text span{font-size:12px;color:var(--dim)}
+    .direct-arrow{margin-left:auto;color:var(--cyan);font-size:18px}
+
+    /* GUARANTEE */
+    .guarantee{text-align:center;padding:24px;background:rgba(226,179,58,.06);border:1px solid rgba(226,179,58,.2);border-radius:16px;font-size:14px;color:var(--dim);line-height:1.7}
+    .guarantee strong{color:var(--gold);display:block;font-size:16px;margin-bottom:6px}
+
+    @media(max-width:500px){.pricing-mini{grid-template-columns:1fr}.proof-bar{flex-direction:column;gap:12px}.form-card{padding:24px 18px}}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <a class="logo" href="/">WULIX</a>
+
+  <div style="text-align:center;margin-bottom:32px">
+    <div class="badge">⚡ Réponse sous 24h</div>
+    <h1>Automatisez vos tâches<br><span>et gagnez 10h par semaine</span></h1>
+    <p class="sub">Scripts Python sur mesure, agents IA, workflows n8n.<br>Vous décrivez le problème — on livre la solution qui tourne.</p>
+  </div>
+
+  <!-- PROOF -->
+  <div class="proof-bar">
+    <div class="proof-item"><strong>48h</strong>&nbsp;délai moyen</div>
+    <div class="proof-item"><strong>100%</strong>&nbsp;code propriété client</div>
+    <div class="proof-item"><strong>5★</strong>&nbsp;note moyenne</div>
+    <div class="proof-item"><strong>0€</strong>&nbsp;d'abonnement SaaS requis</div>
+  </div>
+
+  <!-- WHAT YOU GET -->
+  <div class="section-title">Ce que vous obtenez</div>
+  <ul class="benefits">
+    <li>
+      <span class="check">✓</span>
+      <div><div class="label">Audit gratuit de vos tâches répétitives</div><div class="desc">On identifie ce qui peut être automatisé et l'impact réel en heures/semaine</div></div>
+    </li>
+    <li>
+      <span class="check">✓</span>
+      <div><div class="label">Proposition concrète sous 24h</div><div class="desc">Solution technique précise, délai et tarif fixés avant de commencer</div></div>
+    </li>
+    <li>
+      <span class="check">✓</span>
+      <div><div class="label">Code Python livré + documenté</div><div class="desc">Vous êtes propriétaire du code — pas de dépendance à un outil SaaS</div></div>
+    </li>
+    <li>
+      <span class="check">✓</span>
+      <div><div class="label">Installation + mise en route incluses</div><div class="desc">On s'assure que ça tourne sur votre machine avant de clore la mission</div></div>
+    </li>
+  </ul>
+
+  <!-- PRICING MINI -->
+  <div class="section-title">Tarifs</div>
+  <div class="pricing-mini" style="margin-bottom:40px">
+    <div class="price-box">
+      <div class="price-label">Starter</div>
+      <div class="price-from">à partir de</div>
+      <div class="price-val">50€</div>
+      <div class="price-desc">1 script / 1 workflow simple</div>
+    </div>
+    <div class="price-box featured">
+      <div class="price-label">Business</div>
+      <div class="price-from">à partir de</div>
+      <div class="price-val">150€</div>
+      <div class="price-desc">Pipeline complet 3-5 automatisations</div>
+    </div>
+    <div class="price-box">
+      <div class="price-label">Agency</div>
+      <div class="price-from">à partir de</div>
+      <div class="price-val">400€</div>
+      <div class="price-desc">Multi-agents + dashboard + déploiement</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+    <div class="form-title">Décrivez votre projet</div>
+    <div class="form-subtitle">Remplissez en 2 min — réponse personnalisée sous 24h, sans engagement.</div>
+    <form id="offreForm" action="https://formsubmit.co/contact@wulix.fr" method="POST" onsubmit="handleSubmit(event)">
+      <input type="hidden" name="_subject" value="[WULIX OFFRE] Nouvelle demande devis">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://wulix.fr/offre.html?merci=1">
+      <input type="hidden" name="source" value="page-offre">
+      <div class="fgroup">
+        <label class="flabel">Votre prénom *</label>
+        <input class="finput" type="text" name="name" placeholder="Thomas" required>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Email *</label>
+        <input class="finput" type="email" name="email" placeholder="vous@email.fr" required>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Quelle tâche voulez-vous automatiser ? *</label>
+        <textarea class="ftextarea" name="message" placeholder="Ex: Je passe 3h par semaine à envoyer des relances manuelles à mes clients. J'aimerais que ça parte automatiquement selon des conditions..." required></textarea>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Budget approximatif</label>
+        <select class="fselect finput" name="budget">
+          <option value="">-- Je ne sais pas encore --</option>
+          <option value="<100">Moins de 100€</option>
+          <option value="100-300">100€ – 300€</option>
+          <option value="300-500">300€ – 500€</option>
+          <option value=">500">Plus de 500€</option>
+        </select>
+      </div>
+      <button class="fsubmit" type="submit">Envoyer ma demande — gratuit et sans engagement →</button>
+    </form>
+    <div class="fsuccess" id="formSuccess">
+      ✅ Message reçu !<br>
+      <span style="font-weight:400;font-size:14px;color:var(--dim)">Je vous réponds personnellement sous 24h avec une proposition concrète.<br>Omar — WULIX</span>
+    </div>
+  </div>
+
+  <div class="or-sep">ou contacter directement</div>
+
+  <!-- DIRECT ACTIONS -->
+  <div class="direct-actions">
+    <a class="direct-btn" href="mailto:contact@wulix.fr?subject=Demande%20devis%20WULIX">
+      <span class="direct-icon">📧</span>
+      <div class="direct-text"><strong>Email direct</strong><span>contact@wulix.fr — réponse sous 24h</span></div>
+      <span class="direct-arrow">→</span>
+    </a>
+    <a class="direct-btn" href="https://www.fiverr.com/richardsylla" target="_blank">
+      <span class="direct-icon">🟢</span>
+      <div class="direct-text"><strong>Commander sur Fiverr</strong><span>Paiement sécurisé, livraison garantie</span></div>
+      <span class="direct-arrow">→</span>
+    </a>
+    <a class="direct-btn" href="https://wulix.gumroad.com" target="_blank">
+      <span class="direct-icon">📦</span>
+      <div class="direct-text"><strong>Produits à télécharger</strong><span>Scripts, guides, templates — dès 5€</span></div>
+      <span class="direct-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- GUARANTEE -->
+  <div class="guarantee">
+    <strong>🔒 Sans risque</strong>
+    Le devis est gratuit et sans engagement. Si on ne peut pas résoudre votre problème, on vous le dit honnêtement — pas de prise en charge inutile.
+  </div>
+
+</div>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  var form = document.getElementById('offreForm');
+  var data = new FormData(form);
+  fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+    .then(function() {})
+    .catch(function() {});
+  form.style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
+if (window.location.search.includes('merci=1')) {
+  document.getElementById('offreForm').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+  history.replaceState({}, '', '/offre.html');
+}
+</script>
+</body>
+</html>

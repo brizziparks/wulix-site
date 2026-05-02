@@ -919,5 +919,204 @@
       }
     },
     "created_at": "2026-04-19T10:09:04.347683"
+  },
+  {
+    "agent": "Scout",
+    "status": "success",
+    "mode": "opportunities",
+    "report": {
+      "clients_cibles": [
+        {
+          "nom_client": "PME de services",
+          "secteur": "Services",
+          "besoin": "Automatisation des tâches administratives"
+        },
+        {
+          "nom_client": "Startup de commerce",
+          "secteur": "Commerce",
+          "besoin": "Analyse de données pour optimisation de la stratégie"
+        },
+        {
+          "nom_client": "Indépendant d'informatique",
+          "secteur": "Informatique",
+          "besoin": "Création d'un assistant IA personnalisé"
+        },
+        {
+          "nom_client": "Entreprise de marketing",
+          "secteur": "Marketing",
+          "besoin": "Automatisation des campagnes publicitaires"
+        },
+        {
+          "nom_client": "Entreprise de gestion",
+          "secteur": "Gestion",
+          "besoin": "Création d'un dashboard HUD pour suivi de la production"
+        }
+      ],
+      "plateformes": [
+        {
+          "nom_plateforme": "Fiverr",
+          "stratégie": "Crea un profil professionnel, propose des services clairs et compétitifs, utilise des mots-clés pertinents pour améliorer la visibilité"
+        },
+        {
+          "nom_plateforme": "Malt",
+          "stratégie": "Utilise les outils de recherche avancée pour trouver des clients potentiels, propose des services spécifiques et clairs dans le profil"
+        },
+        {
+          "nom_plateforme": "LinkedIn",
+          "stratégie": "Partage des actualités professionnelles pour attirer l'attention des professionnels du secteur, utilise les groupes de discussion pour établir des relations"
+        }
+      ],
+      "idees_contenu": [
+        {
+          "titre": "10 façons d'utiliser l'intelligence artificielle en entreprise",
+          "description": "Crée un article détaillé sur les avantages et applications de l'IA dans différents secteurs pour attirer les PME et startups"
+        },
+        {
+          "titre": "Comment automatiser vos tâches administratives avec n8n/Python",
+          "description": "Crée un tutoriel détaillé sur la création d'un assistant IA personnalisé avec n8n/Python pour attirer les indépendants et PME"
+        }
+      ],
+      "action_prioritaire": {
+        "objectif": "Développer une stratégie de marketing pour attirer des clients potentiels sur Fiverr et LinkedIn",
+        "étapes": {
+          "étape1": "Création d'un profil professionnel et de services clairs sur Fiverr",
+          "étape2": "Utilisation des outils de recherche avancée pour trouver des clients potentiels sur Malt",
+          "étape3": "Partage des actualités professionnelles sur LinkedIn et participation à des groupes de discussion"
+        },
+        "deadlines": {
+          "étape1": "Création du profil professionnel",
+          "date": "Vendredi prochain",
+          "étape2": "Utilisation des outils de recherche avancée",
+          "étape3": "Partage des actualités et participation aux groupes"
+        }
+      }
+    },
+    "created_at": "2026-04-20T20:08:52.086589"
+  },
+  {
+    "agent": "Scout",
+    "status": "success",
+    "mode": "opportunities",
+    "report": {
+      "clients_cibles": [
+        {
+          "nom": "Petite PME de services",
+          "secteur": "Services financiers",
+          "besoin": "Automatisation des tâches administratives pour améliorer l'efficacité"
+        },
+        {
+          "nom": "Start-up de logistique",
+          "secteur": "Logistique et transport",
+          "besoin": "Analyse de données pour optimiser les itinéraires"
+        },
+        {
+          "nom": "Entreprise de marketing digital",
+          "secteur": "Marketing digital",
+          "besoin": "Génération de contenu automatique avec IA"
+        },
+        {
+          "nom": "Bureaucratie publique",
+          "secteur": "Administration publique",
+          "besoin": "Automatisation des formulaires en ligne pour réduire les erreurs"
+        },
+        {
+          "nom": "Entreprise de vente aux détails",
+          "secteur": "Vente aux détails",
+          "besoin": "Analyse de ventes avec IA pour identifier les tendances"
+        }
+      ],
+      "plateformes": [
+        {
+          "nom": "Fiverr",
+          "stratégie": "Créer un profil complet et attractif, proposer des services détaillés et des tarifs compétitifs. Utiliser les mots-clés pertinents pour attirer les clients potentiels."
+        },
+        {
+          "nom": "Malt",
+          "stratégie": "Participer à des concours de développement en Python/IA, proposer des services de consultation gratuite pour gagner la confiance des clients potentiels. Utiliser les réseaux sociaux pour promouvoir ses services."
+        },
+        {
+          "nom": "LinkedIn",
+          "stratégie": "Publier des articles intéressants sur le blog personnel, utiliser les groupes de discussion liés aux technologies Python/IA pour se faire connaître. Proposer des services de consulting gratuit pour établir la confiance avec les clients potentiels."
+        }
+      ],
+      "idees_contenu": [
+        {
+          "titre": "5 façons d'automatiser vos tâches administratives avec Python",
+          "description": "Explication détaillée de l'utilisation du langage Python pour automatiser les tâches administratives, avec des exemples concrets."
+        },
+        {
+          "titre": "Comment utiliser IA pour analyser vos données et prendre des décisions éclairées",
+          "description": "Présentation de la manière dont l'IA peut être utilisée pour analyser les données et identifier les tendances, avec des exemples concrets."
+        }
+      ],
+      "action_prioritaire": {
+        "nom": "Créer un profil complet sur Fiverr",
+        "description": "Développer un profil complète et attractif sur Fiverr, y compris une description détaillée des services proposés, ainsi qu'une liste de mots-clés pertinents pour attirer les clients potentiels."
+      }
+    },
+    "created_at": "2026-04-20T21:11:26.022521"
+  },
+  {
+    "agent": "Scout",
+    "status": "success",
+    "mode": "opportunities",
+    "report": {
+      "clients_cibles": [
+        {
+          "nom_client": "Entreprises de services",
+          "secteur": "Services",
+          "besoin": "Automatisation des tâches administratives"
+        },
+        {
+          "nom_client": "Startups technologiques",
+          "secteur": "Technologie",
+          "besoin": "Développement d'applications IA"
+        },
+        {
+          "nom_client": "Indépendants en marketing",
+          "secteur": "Marketing",
+          "besoin": "Création de campagnes automatiques"
+        },
+        {
+          "nom_client": "Entreprises de commerce électronique",
+          "secteur": "Commerce électronique",
+          "besoin": "Automatisation des processus de livraison"
+        },
+        {
+          "nom_client": "Petites entreprises de logiciels",
+          "secteur": "Logiciel",
+          "besoin": "Développement d'applications personnalisées"
+        }
+      ],
+      "plateformes": [
+        {
+          "nom_plateforme": "Fiverr",
+          "stratégie": "Créer un profil complet avec des descriptions de services précises, et utiliser les mots-clés pertinents pour attirer les clients ciblés"
+        },
+        {
+          "nom_plateforme": "Malt",
+          "stratégie": "Participer à des concours et des défis sur la plateforme, en proposant mes services et en montrant ma compétence en IA et Python"
+        },
+        {
+          "nom_plateforme": "LinkedIn",
+          "stratégie": "Créer un profil LinkedIn complet avec une description de mes services, et m'inscrire à des groupes relevant les secteurs ciblés"
+        }
+      ],
+      "idees_contenu": [
+        {
+          "titre": "10 façons d'utiliser l'IA pour automatiser vos tâches",
+          "description": "Créer un article détaillé sur les avantages et les applications de l'IA en France, avec des exemples concrets"
+        },
+        {
+          "titre": "Comment créer une application IA personnalisée pour votre entreprise",
+          "description": "Créer un guide étape par étape sur la création d'applications IA personnalisées, avec des liens vers les ressources nécessaires"
+        }
+      ],
+      "action_prioritaire": {
+        "nom_action": "Développer une carte de visite et un CV en ligne",
+        "description": "Créer un profil professionnel sur Fiverr et LinkedIn, avec des descriptions de services précises et des exemples concrets"
+      }
+    },
+    "created_at": "2026-04-20T21:11:52.098943"
   }
 ]

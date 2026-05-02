@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AISATOU Mobile</title>
+  <style>
+    /* ── Fonts locales (Claude Design v2) ── */
+    @font-face {
+      font-family: 'Orbitron';
+      src: url('/hud/fonts/Orbitron-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('/hud/fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900; font-style: normal; font-display: swap;
+    }
+    :root {
+      --bg: #050510; --panel: #0a0a1a; --panel2: #06060e;
+      --border: #1a1a3a;
+      --accent: #7c3aed; --cyan: #00e5ff;
+      --green: #00dc82; --orange: #f59e0b; --red: #ef4444; --gold: #e2b33a;
+      --text: #e0e0f0; --muted: #555577;
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      height: 100%; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow: hidden;
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 39px,
+        rgba(0,229,255,.012) 39px, rgba(0,229,255,.012) 40px
+      );
+    }
+
+    /* ── Header (56px) ── */
+    .header {
+      height: 56px; background: var(--panel);
+      border-bottom: 1px solid var(--accent);
+      padding: 0 14px; display: flex; align-items: center; gap: 10px;
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+    }
+    .orb {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; position: relative;
+      background: radial-gradient(circle, var(--cyan) 0%, var(--accent) 55%, transparent 100%);
+      box-shadow: 0 0 14px rgba(0,229,255,.5);
+      transition: transform .15s ease;
+    }
+    .orb::after {
+      content: ''; position: absolute; inset: 3px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.3) 0%, transparent 70%);
+    }
+    @keyframes orbPulse {
+      from { transform: scale(1); box-shadow: 0 0 14px rgba(0,229,255,.5); }
+      to   { transform: scale(1.2); box-shadow: 0 0 24px rgba(0,229,255,.9); }
+    }
+    .orb.speaking { animation: orbPulse .4s ease-in-out infinite alternate; }
+    .header-title {
+      font-family: var(--font-display); font-size: 16px; font-weight: 900;
+      color: var(--cyan); letter-spacing: 3px;
+    }
+    .header-title span { color: var(--accent); }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .model-pill {
+      background: rgba(0,229,255,.05); border: 1px solid rgba(0,229,255,.2);
+      color: var(--cyan); font-size: 10px; padding: 4px 8px; border-radius: 4px;
+      font-family: var(--font-mono); cursor: pointer; max-width: 100px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ws-pill { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot.on  { background: var(--green); box-shadow: 0 0 4px var(--green); animation: pulse 2s infinite; }
+    .dot.off { background: var(--red); }
+    @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+
+    /* ── Quick Actions chips (scrollable) ── */
+    .chips {
+      display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto;
+      background: var(--panel2); border-bottom: 1px solid var(--border);
+      flex-shrink: 0; scrollbar-width: none;
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0; padding: 7px 12px; border-radius: 16px;
+      background: rgba(0,229,255,.05); border: 1px solid rgba(0,229,255,.2);
+      color: var(--cyan); font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .chip:active { transform: scale(.96); }
+    .chip.running {
+      border-color: var(--orange); color: var(--orange);
+      animation: pulse 1s infinite;
+    }
+    .chip.done {
+      border-color: var(--green); color: var(--green);
+      background: rgba(0,220,130,.08);
+    }
+
+    /* ── Chat ── */
+    .chat-wrap {
+      flex: 1; overflow-y: auto; padding: 12px;
+      display: flex; flex-direction: column; gap: 10px;
+      padding-bottom: 80px;
+    }
+    .msg { display: flex; gap: 8px; max-width: 90%; animation: fadeIn .25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+    .msg.ai .msg-avatar { background: linear-gradient(135deg, var(--accent), #1a0533); color: var(--cyan); }
+    .msg.user .msg-avatar { background: linear-gradient(135deg, #1e3a5f, #0a1628); color: #90caf9; }
+    .msg-bubble {
+      padding: 10px 13px; border-radius: 14px; font-size: 14px; line-height: 1.5;
+      max-width: calc(100% - 40px);
+    }
+    .msg.ai .msg-bubble { background: var(--panel); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .msg.user .msg-bubble { background: linear-gradient(135deg, var(--accent), #4c1d95); color: #fff; border-bottom-right-radius: 4px; }
+    .msg.tool .msg-bubble { background: #0a1628; border: 1px solid #1e3a5f; color: #90caf9; font-size: 12px; font-family: var(--font-mono); }
+    .thinking { display: flex; gap: 4px; padding: 12px; align-items: center; }
+    .thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: bounce .6s ease-in-out infinite; }
+    .thinking span:nth-child(2) { animation-delay: .1s; }
+    .thinking span:nth-child(3) { animation-delay: .2s; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(-6px); opacity: 1; } }
+
+    /* ── Input bar ── */
+    .input-bar {
+      position: fixed; left: 0; right: 0; bottom: 56px;
+      background: var(--panel); border-top: 1px solid var(--border);
+      padding: 8px 10px; display: flex; gap: 6px; align-items: flex-end;
+      z-index: 9;
+    }
+    .cmd-prompt {
+      color: var(--cyan); font-family: var(--font-mono); font-size: 14px;
+      align-self: center; flex-shrink: 0; padding: 0 4px;
+    }
+    .input-bar textarea {
+      flex: 1; background: var(--panel2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 18px; padding: 9px 14px; font-size: 14px; resize: none;
+      min-height: 38px; max-height: 100px; outline: none; line-height: 1.4;
+      font-family: inherit;
+    }
+    .input-bar textarea:focus { border-color: var(--cyan); box-shadow: 0 0 8px rgba(0,229,255,.15); }
+    .btn-send, .btn-mic {
+      width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+      flex-shrink: 0; transition: all .15s;
+    }
+    .btn-send { background: linear-gradient(135deg, var(--accent), var(--cyan)); color: #fff; }
+    .btn-send:active { transform: scale(.92); }
+    .btn-mic { background: var(--panel2); border: 1px solid var(--border); color: var(--muted); }
+    .btn-mic.active { background: #ff6b35; color: #fff; border-color: #ff6b35; box-shadow: 0 0 10px rgba(255,107,53,.5); }
+    .btn-mic.listening { background: #ff1744; color: #fff; animation: pulseMic .4s infinite alternate; }
+    @keyframes pulseMic { from { box-shadow: 0 0 4px rgba(255,23,68,.4); } to { box-shadow: 0 0 16px rgba(255,23,68,.9); } }
+
+    /* ── Bottom nav (4 tabs) ── */
+    .bottom-nav {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      height: 56px; background: var(--panel); border-top: 1px solid var(--accent);
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+      z-index: 8;
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; cursor: pointer; background: transparent; border: none;
+      color: var(--muted); font-family: inherit; font-size: 9px; letter-spacing: 1px;
+      transition: color .15s;
+    }
+    .nav-btn .nav-icon { font-size: 18px; line-height: 1; }
+    .nav-btn:active { color: var(--cyan); }
+    .nav-btn.active { color: var(--cyan); }
+
+    /* ── Bottom sheets ── */
+    .sheet-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 50; opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .sheet-overlay.open { opacity: 1; pointer-events: all; }
+    .sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 51;
+      background: var(--panel); border-top: 1px solid var(--accent);
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+      transition: transform .35s cubic-bezier(.32,1,.36,1);
+      max-height: 80vh; display: flex; flex-direction: column;
+    }
+    .sheet.open { transform: translateY(0); }
+    .sheet-handle {
+      width: 40px; height: 4px; background: var(--muted); border-radius: 2px;
+      margin: 10px auto 8px; opacity: .5;
+    }
+    .sheet-header {
+      padding: 4px 16px 12px; display: flex; align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .sheet-title {
+      font-family: var(--font-display); font-size: 13px; font-weight: 900;
+      color: var(--cyan); letter-spacing: 2px;
+    }
+    .sheet-close {
+      margin-left: auto; background: transparent; border: none;
+      color: var(--muted); cursor: pointer; padding: 4px; font-size: 18px;
+    }
+    .sheet-body { flex: 1; overflow-y: auto; padding: 16px; }
+
+    /* Sheet Agents */
+    .hex-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 16px;
+    }
+    .hex-cell {
+      aspect-ratio: 1; clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+      background: var(--panel2); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; cursor: pointer;
+      transition: all .2s; border: none; color: var(--text); font-family: inherit;
+    }
+    .hex-cell:active { transform: scale(.92); }
+    .hex-cell.active { background: linear-gradient(135deg, #0a1a10, #0d2a0d); filter: drop-shadow(0 0 4px rgba(0,220,130,.4)); }
+    .hex-cell.busy   { background: linear-gradient(135deg, #1a100a, #2a1a0d); filter: drop-shadow(0 0 6px rgba(245,158,11,.5)); animation: pulse 1.5s infinite; }
+    .hex-icon { font-size: 14px; }
+    .hex-name { font-size: 7px; color: var(--muted); margin-top: 2px; font-family: var(--font-mono); }
+    .quick-run-list { display: flex; flex-direction: column; gap: 6px; }
+    .quick-run-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--panel2); border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .quick-run-info { flex: 1; }
+    .quick-run-name { font-size: 12px; color: var(--text); font-weight: 600; }
+    .quick-run-role { font-size: 10px; color: var(--muted); }
+    .btn-run {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(124,58,237,.15); border: 1px solid var(--accent);
+      color: var(--cyan); cursor: pointer; font-size: 12px;
+    }
+    .btn-run:active { transform: scale(.88); }
+    .btn-run.running {
+      background: rgba(245,158,11,.15); border-color: var(--orange); color: var(--orange);
+      animation: pulse 1s infinite;
+    }
+
+    /* Sheet CrowdSec */
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--panel2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px; text-align: center;
+    }
+    .stat-num { font-size: 28px; font-weight: 900; font-family: var(--font-mono); margin-bottom: 4px; }
+    .stat-num.orange { color: var(--orange); }
+    .stat-num.red    { color: var(--red); }
+    .stat-num.cyan   { color: var(--cyan); }
+    .stat-num.gold   { color: var(--gold); }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .info-row {
+      display: flex; justify-content: space-between; padding: 6px 0;
+      font-size: 12px; border-bottom: 1px solid var(--border);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: var(--muted); }
+    .info-row .value { color: var(--cyan); font-family: var(--font-mono); }
+    .btn-refresh {
+      width: 100%; margin-top: 12px; padding: 10px;
+      background: rgba(0,229,255,.06); border: 1px solid rgba(0,229,255,.2);
+      color: var(--cyan); border-radius: 6px; font-size: 12px; cursor: pointer;
+      font-family: inherit; transition: all .2s;
+    }
+    .btn-refresh:active { transform: scale(.98); }
+
+    /* Sheet Revenue */
+    .rev-amount {
+      text-align: center; font-family: var(--font-mono); font-size: 36px;
+      color: var(--cyan); margin: 8px 0 6px;
+    }
+    .rev-progress {
+      height: 6px; background: var(--panel2); border-radius: 3px; overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .rev-progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan), var(--gold));
+      background-size: 200% 100%;
+      animation: revShine 4s linear infinite;
+      transition: width .8s cubic-bezier(.22,1,.36,1); width: 0%;
+    }
+    @keyframes revShine { 0% { background-position: 0 0 } 100% { background-position: -200% 0 } }
+    .rev-target { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+    .rev-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .rev-stats .stat-card { padding: 10px 6px; }
+    .rev-stats .stat-num { font-size: 18px; }
+
+    /* Model dropdown */
+    .model-dropdown {
+      position: absolute; top: 60px; right: 14px;
+      background: var(--panel); border: 1px solid var(--accent);
+      border-radius: 8px; padding: 6px; z-index: 30;
+      min-width: 180px; max-height: 300px; overflow-y: auto;
+      transform: scaleY(0); transform-origin: top; transition: transform .2s;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    }
+    .model-dropdown.open { transform: scaleY(1); }
+    .model-option {
+      padding: 8px 10px; font-size: 11px; color: var(--muted);
+      cursor: pointer; border-radius: 4px; transition: all .15s;
+      font-family: var(--font-mono);
+    }
+    .model-option:active { transform: scale(.98); }
+    .model-option:hover { background: var(--panel2); color: var(--text); }
+    .model-option.active { background: rgba(0,229,255,.1); color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="orb" id="orb" title="AISATOU"></div>
+  <div class="header-title">AI<span>SATOU</span></div>
+  <div class="header-right">
+    <div class="model-pill" id="model-pill" onclick="toggleModelDropdown()">gemini-2.0-flash</div>
+    <div class="ws-pill"><span class="dot off" id="ws-dot"></span><span id="ws-label">…</span></div>
+  </div>
+  <div class="model-dropdown" id="model-dropdown"></div>
+</div>
+
+<!-- QUICK ACTIONS CHIPS -->
+<div class="chips" id="chips">
+  <button class="chip" onclick="quickChip(this, 'samba',  'publier_article')">📝 Publier article</button>
+  <button class="chip" onclick="quickChip(this, 'mariama','publish_post')">💼 Post LinkedIn</button>
+  <button class="chip" onclick="quickChip(this, 'ndeye',  'rapport_quotidien')">💰 Rapport ventes</button>
+  <button class="chip" onclick="quickChip(this, 'crew',   'scout_leads')">🎯 Leads Reddit</button>
+  <button class="chip" onclick="quickChip(this, 'kofi',   'veille_quotidienne')">🔍 Veille IA</button>
+</div>
+
+<!-- CHAT -->
+<div class="chat-wrap" id="messages">
+  <div class="msg ai">
+    <div class="msg-avatar">A</div>
+    <div class="msg-bubble">Bonjour Omar. Je suis prête. <strong>14 agents</strong> en ligne.</div>
+  </div>
+</div>
+
+<!-- INPUT BAR -->
+<div class="input-bar">
+  <span class="cmd-prompt">›</span>
+  <textarea id="input" placeholder="Message…" rows="1"></textarea>
+  <button class="btn-mic" id="mic-btn" onclick="toggleMic()" title="Wake word">🎙</button>
+  <button class="btn-send" onclick="send()" title="Envoyer">➤</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" data-tab="chat" onclick="switchTab(this, 'chat')">
+    <span class="nav-icon">💬</span><span>CHAT</span>
+  </button>
+  <button class="nav-btn" data-tab="agents" onclick="switchTab(this, 'agents')">
+    <span class="nav-icon">🤖</span><span>AGENTS</span>
+  </button>
+  <button class="nav-btn" data-tab="crowdsec" onclick="switchTab(this, 'crowdsec')">
+    <span class="nav-icon">🛡</span><span>SÉCU</span>
+  </button>
+  <button class="nav-btn" data-tab="revenue" onclick="switchTab(this, 'revenue')">
+    <span class="nav-icon">💰</span><span>REVENUS</span>
+  </button>
+</div>
+
+<!-- BOTTOM SHEETS -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+
+<!-- Sheet Agents -->
+<div class="sheet" id="sheet-agents">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">RÉSEAU AGENTS</div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="hex-grid" id="hex-grid-mobile"></div>
+    <div style="font-size:11px;color:var(--muted);margin:14px 0 8px;letter-spacing:1px">⚡ LANCEMENT RAPIDE</div>
+    <div class="quick-run-list" id="quick-run-list"></div>
+  </div>
+</div>
+
+<!-- Sheet CrowdSec -->
+<div class="sheet" id="sheet-crowdsec">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">🛡 CROWDSEC NAS</div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num orange" id="cs-alerts-m">—</div>
+        <div class="stat-label">Alertes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num red" id="cs-decisions-m">—</div>
+        <div class="stat-label">IPs bloquées</div>
+      </div>
+    </div>
+    <div class="info-row"><span class="label">Scénarios actifs</span><span class="value" id="cs-scenarios-m">57</span></div>
+    <div class="info-row"><span class="label">Dernière activité</span><span class="value" id="cs-lastact-m">—</span></div>
+    <div class="info-row"><span class="label">NAS</span><span class="value" id="cs-engine-m">nas-dh2300</span></div>
+    <div class="info-row"><span class="label">Source</span><span class="value" id="cs-source-m">—</span></div>
+    <button class="btn-refresh" id="cs-refresh-m" onclick="refreshCrowdSecMobile(this)">↻ Rafraîchir</button>
+  </div>
+</div>
+
+<!-- Sheet Revenue -->
+<div class="sheet" id="sheet-revenue">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">💰 REVENUS</div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div style="font-size:10px;color:var(--muted);text-align:center;letter-spacing:2px">AUJOURD'HUI</div>
+    <div class="rev-amount" id="rev-amount-m">— €</div>
+    <div class="rev-progress"><div class="rev-progress-fill" id="rev-fill-m"></div></div>
+    <div class="rev-target">Objectif mensuel : <strong id="rev-target-m">500€</strong></div>
+    <div class="rev-stats">
+      <div class="stat-card"><div class="stat-num cyan"  id="rev-sales-m">—</div><div class="stat-label">Ventes</div></div>
+      <div class="stat-card"><div class="stat-num gold"  id="rev-total-m">—</div><div class="stat-label">Total</div></div>
+      <div class="stat-card"><div class="stat-num green" id="rev-avg-m">—</div><div class="stat-label">Moyenne</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Auth ──────────────────────────────────────────────────────────────────
+const savedUser = localStorage.getItem('aisatou_user') || 'aisatou';
+const savedPass = localStorage.getItem('aisatou_pass') || '3eAeq9k!hk!H4SFK';
+const AUTH_HEADERS = { 'Authorization': 'Basic ' + btoa(`${savedUser}:${savedPass}`) };
+const AUTH = { headers: AUTH_HEADERS };
+
+// ── Elements ──────────────────────────────────────────────────────────────
+const messagesEl = document.getElementById('messages');
+const inputEl    = document.getElementById('input');
+const orbEl      = document.getElementById('orb');
+
+let currentModel = 'gemini-2.0-flash-lite';
+
+// ── WebSocket ─────────────────────────────────────────────────────────────
+const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+const WS_URL = `${proto}://${location.host}/ws`;
+let ws;
+
+function connect() {
+  ws = new WebSocket(WS_URL);
+  ws.onopen  = () => setStatus(true);
+  ws.onclose = () => { setStatus(false); setTimeout(connect, 3000); };
+  ws.onerror = () => ws.close();
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'thinking')         { showThinking(); }
+    else if (msg.type === 'response')    { hideThinking(); addMsg('ai', msg.text); }
+    else if (msg.type === 'tool_call')   { addMsg('tool', `⚙ ${msg.tool}`); }
+    else if (msg.type === 'voice_state') { handleVoiceState(msg.state); }
+    else if (msg.type === 'voice_volume'){ updateOrb(msg.volume); }
+  };
+}
+connect();
+
+function setStatus(ok) {
+  document.getElementById('ws-dot').className = 'dot ' + (ok ? 'on' : 'off');
+  document.getElementById('ws-label').textContent = ok ? '' : 'recon…';
+}
+
+// ── Messages ──────────────────────────────────────────────────────────────
+function addMsg(role, text) {
+  hideThinking();
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  const av = role === 'user' ? 'O' : 'A';
+  d.innerHTML = `<div class="msg-avatar">${av}</div><div class="msg-bubble">${escHtml(text)}</div>`;
+  messagesEl.appendChild(d);
+  smartScroll();
+}
+function escHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function smartScroll() {
+  const isAtBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 80;
+  if (isAtBottom) messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+let _thinkEl = null;
+function showThinking() {
+  if (_thinkEl) return;
+  _thinkEl = document.createElement('div');
+  _thinkEl.className = 'msg ai';
+  _thinkEl.innerHTML = '<div class="msg-avatar">A</div><div class="thinking"><span></span><span></span><span></span></div>';
+  messagesEl.appendChild(_thinkEl);
+  smartScroll();
+}
+function hideThinking() {
+  if (_thinkEl) { _thinkEl.remove(); _thinkEl = null; }
+}
+
+// ── Send ──────────────────────────────────────────────────────────────────
+function send() {
+  const text = inputEl.value.trim();
+  if (!text || !ws || ws.readyState !== 1) return;
+  addMsg('user', text);
+  ws.send(JSON.stringify({ type: 'message', text, model: currentModel }));
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+}
+
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + 'px';
+});
+
+// ── Voix / Orbe ───────────────────────────────────────────────────────────
+function handleVoiceState(state) {
+  orbEl.classList.remove('speaking');
+  if (state === 'speaking') orbEl.classList.add('speaking');
+}
+function updateOrb(vol) {
+  const scale = 1 + vol * 0.4;
+  orbEl.style.transform = `scale(${scale})`;
+  setTimeout(() => { orbEl.style.transform = ''; }, 80);
+}
+
+// ── Quick action chips ────────────────────────────────────────────────────
+async function quickChip(btn, agentId, taskId) {
+  if (btn.classList.contains('running')) return;
+  btn.classList.add('running');
+  try {
+    const r = await fetch(`/agents/run_task/${agentId}/${taskId}`, { method:'POST', headers: AUTH_HEADERS });
+    if (r.ok) {
+      addMsg('tool', `▶ ${agentId}.${taskId} lancé`);
+      setTimeout(() => {
+        btn.classList.remove('running');
+        btn.classList.add('done');
+        setTimeout(() => btn.classList.remove('done'), 2500);
+      }, 1500);
+    } else {
+      const t = await r.text();
+      addMsg('tool', `⚠ ${r.status}: ${t.slice(0,80)}`);
+      btn.classList.remove('running');
+    }
+  } catch(e) {
+    addMsg('tool', `⚠ ${e.message}`);
+    btn.classList.remove('running');
+  }
+}
+
+// ── Bottom nav / sheets ───────────────────────────────────────────────────
+function switchTab(btn, tab) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'chat') { closeSheet(); return; }
+  openSheet(tab);
+}
+function openSheet(name) {
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+  const sheet = document.getElementById('sheet-' + name);
+  if (sheet) sheet.classList.add('open');
+  if (name === 'crowdsec') refreshCrowdSecMobile();
+  if (name === 'revenue')  refreshRevenueMobile();
+  if (name === 'agents')   refreshAgentsMobile();
+}
+function closeSheet() {
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+  document.querySelector('.nav-btn[data-tab="chat"]').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.dataset.tab !== 'chat') b.classList.remove('active');
+  });
+}
+
+// ── Sheet : CrowdSec ──────────────────────────────────────────────────────
+async function refreshCrowdSecMobile(btn) {
+  if (btn) {
+    btn.textContent = '⟳ Chargement…';
+    btn.disabled = true;
+  }
+  try {
+    const r = await fetch('/agents/crowdsec', { headers: AUTH_HEADERS });
+    const d = await r.json();
+    document.getElementById('cs-alerts-m').textContent     = d.alerts ?? '0';
+    document.getElementById('cs-decisions-m').textContent  = d.decisions ?? '0';
+    document.getElementById('cs-scenarios-m').textContent  = d.scenarios ?? '57';
+    document.getElementById('cs-lastact-m').textContent    = d.last_activity || 'today';
+    document.getElementById('cs-engine-m').textContent     = d.engine || 'nas-dh2300';
+    document.getElementById('cs-source-m').textContent     = d.source || 'live';
+    if (btn) {
+      btn.textContent = '✓ Mis à jour';
+      setTimeout(() => { btn.textContent = '↻ Rafraîchir'; btn.disabled = false; }, 1200);
+    }
+  } catch(e) {
+    if (btn) {
+      btn.textContent = '✗ Erreur';
+      setTimeout(() => { btn.textContent = '↻ Rafraîchir'; btn.disabled = false; }, 1500);
+    }
+  }
+}
+
+// ── Sheet : Revenue ───────────────────────────────────────────────────────
+async function refreshRevenueMobile() {
+  try {
+    const r = await fetch('/agents/revenue', { headers: AUTH_HEADERS });
+    const d = await r.json();
+    document.getElementById('rev-amount-m').textContent = (d.today_revenue ?? 0).toFixed(2) + ' €';
+    document.getElementById('rev-sales-m').textContent  = d.today_sales ?? '0';
+    document.getElementById('rev-total-m').textContent  = (d.month_revenue ?? 0).toFixed(0) + '€';
+    document.getElementById('rev-avg-m').textContent    = (d.avg_sale ?? 0).toFixed(0) + '€';
+    const target = d.month_target || 500;
+    const pct = Math.min(100, ((d.month_revenue ?? 0) / target) * 100);
+    document.getElementById('rev-fill-m').style.width = pct + '%';
+    document.getElementById('rev-target-m').textContent = target + '€';
+  } catch(e) {}
+}
+
+// ── Sheet : Agents ────────────────────────────────────────────────────────
+let agentsConfigMobile = {};
+const AGENT_GROUPS_MOBILE = ['samba','mariama','ndeye','kofi','crew','lamine','rokhaya','seydou','fatou','aminata','djeneba','bintou','adama','koumba','ibrahima','modibo'];
+
+async function refreshAgentsMobile() {
+  try {
+    const r = await fetch('/agents/tasks', { headers: AUTH_HEADERS });
+    agentsConfigMobile = await r.json();
+    renderAgentsMobile();
+  } catch(e) {}
+}
+function renderAgentsMobile() {
+  const grid = document.getElementById('hex-grid-mobile');
+  const list = document.getElementById('quick-run-list');
+  grid.innerHTML = '';
+  list.innerHTML = '';
+  AGENT_GROUPS_MOBILE.forEach(id => {
+    const cfg = agentsConfigMobile[id];
+    if (!cfg) return;
+    // Hex cell
+    const hex = document.createElement('button');
+    hex.className = 'hex-cell active';
+    hex.dataset.agent = id;
+    hex.innerHTML = `<div class="hex-icon">${cfg.icon || '🤖'}</div><div class="hex-name">${id.toUpperCase().slice(0,5)}</div>`;
+    hex.onclick = () => addMsg('tool', `${cfg.label || id} : ${cfg.role || ''} · ${(cfg.tasks||[]).length} tâches`);
+    grid.appendChild(hex);
+    // Quick run row (1ère tâche auto)
+    const firstTask = (cfg.tasks || []).find(t => t.auto) || (cfg.tasks || [])[0];
+    if (firstTask) {
+      const row = document.createElement('div');
+      row.className = 'quick-run-item';
+      row.innerHTML = `
+        <div class="quick-run-info">
+          <div class="quick-run-name">${cfg.icon || '🤖'} ${cfg.label || id}</div>
+          <div class="quick-run-role">${firstTask.name}</div>
+        </div>
+        <button class="btn-run" onclick="runTaskMobile(this, '${id}', '${firstTask.id}')">▶</button>
+      `;
+      list.appendChild(row);
+    }
+  });
+}
+async function runTaskMobile(btn, agentId, taskId) {
+  if (btn.classList.contains('running')) return;
+  btn.classList.add('running');
+  btn.textContent = '⟳';
+  // Marque le hex comme busy
+  const hex = document.querySelector(`.hex-cell[data-agent="${agentId}"]`);
+  if (hex) hex.classList.add('busy');
+  try {
+    const r = await fetch(`/agents/run_task/${agentId}/${taskId}`, { method:'POST', headers: AUTH_HEADERS });
+    if (r.ok) {
+      setTimeout(() => {
+        btn.classList.remove('running');
+        btn.textContent = '✓';
+        if (hex) hex.classList.remove('busy');
+        setTimeout(() => { btn.textContent = '▶'; }, 2000);
+      }, 1500);
+    } else {
+      btn.textContent = '✗';
+      btn.classList.remove('running');
+      if (hex) hex.classList.remove('busy');
+    }
+  } catch(e) {
+    btn.textContent = '✗';
+    btn.classList.remove('running');
+    if (hex) hex.classList.remove('busy');
+  }
+}
+
+// ── Model dropdown ────────────────────────────────────────────────────────
+async function loadModelsMobile() {
+  try {
+    const r = await fetch('/models', { headers: AUTH_HEADERS });
+    const data = await r.json();
+    const dd = document.getElementById('model-dropdown');
+    dd.innerHTML = '';
+    (data.models || []).forEach(m => {
+      const opt = document.createElement('div');
+      opt.className = 'model-option' + (m === currentModel ? ' active' : '');
+      opt.textContent = m;
+      opt.onclick = () => selectModelMobile(m);
+      dd.appendChild(opt);
+    });
+  } catch(e) {}
+}
+function toggleModelDropdown() {
+  document.getElementById('model-dropdown').classList.toggle('open');
+}
+function selectModelMobile(m) {
+  currentModel = m;
+  document.getElementById('model-pill').textContent = m.replace('-versatile','').replace('gemini-','g-').slice(0, 14);
+  document.querySelectorAll('.model-option').forEach(o => o.classList.toggle('active', o.textContent === m));
+  document.getElementById('model-dropdown').classList.remove('open');
+}
+// Fermer dropdown au clic extérieur
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#model-pill') && !e.target.closest('#model-dropdown')) {
+    document.getElementById('model-dropdown').classList.remove('open');
+  }
+});
+loadModelsMobile();
+
+// ── Wake word (Web Speech API) ────────────────────────────────────────────
+let _sttActive = false, _rec = null;
+const WAKE_WORDS = ['aisatou','aïsatou','aisatu','isatou','aissatou'];
+
+function toggleMic() { _sttActive ? stopMic() : startMic(); }
+function startMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert('Web Speech non supporté — utilise Chrome/Edge'); return; }
+  _rec = new SR();
+  _rec.lang = 'fr-FR';
+  _rec.continuous = true;
+  _rec.interimResults = true;
+  _rec.onstart = () => { _sttActive = true; document.getElementById('mic-btn').classList.add('active'); };
+  _rec.onresult = (e) => {
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript.toLowerCase();
+    }
+    if (!final) return;
+    const hasWake = WAKE_WORDS.some(w => final.includes(w));
+    if (hasWake) {
+      document.getElementById('mic-btn').classList.add('listening');
+      let cmd = final;
+      for (const w of WAKE_WORDS) {
+        const idx = cmd.indexOf(w);
+        if (idx !== -1) { cmd = cmd.slice(idx + w.length).trim().replace(/^[,.\s]+/,''); break; }
+      }
+      document.getElementById('mic-btn').classList.remove('listening');
+      if (cmd) {
+        addMsg('user', `🎙 ${cmd}`);
+        if (ws && ws.readyState === 1)
+          ws.send(JSON.stringify({ type: 'voice_message', text: cmd, model: currentModel }));
+      }
+    }
+  };
+  _rec.onend = () => { if (_sttActive) try { _rec.start(); } catch(e) {} };
+  _rec.start();
+}
+function stopMic() {
+  _sttActive = false;
+  if (_rec) { try { _rec.stop(); } catch(e) {} _rec = null; }
+  const btn = document.getElementById('mic-btn');
+  btn.classList.remove('active','listening');
+}
+</script>
+</body>
+</html>

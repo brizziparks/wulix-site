@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -12,7 +12,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
-  <style>
+  <link rel="stylesheet" href="/wulix-tokens.css"><style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --purple: #7c3aed;
@@ -81,6 +81,8 @@
     .pack-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
     .pack-card .pack-price { font-size: 22px; font-weight: 800; color: var(--purple); margin-bottom: 10px; }
     .pack-card p { color: var(--muted); font-size: 13px; flex-grow: 1; margin-bottom: 16px; }
+    .pack-card .qr-wrap { text-align: center; margin-bottom: 12px; }
+    .pack-card .qr-wrap img { width: 100px; height: 100px; border-radius: 8px; border: 2px solid #2a2a2a; }
     .btn-sm { display: inline-block; background: var(--purple); color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; text-align: center; }
     .btn-sm:hover { background: var(--purple-dark); text-decoration: none; }
 
@@ -208,28 +210,58 @@
         <h3>🐍 Pack Scripts Python</h3>
         <div class="pack-price">29€</div>
         <p>5 scripts Python prêts à l'emploi : scraper, relances email, PDF, LinkedIn, veille. Livrés avec README.</p>
-        <a href="https://richardsylla.gumroad.com" class="btn-sm">Télécharger →</a>
+        <div class="qr-wrap"><img src="/assets/qr_pack_scripts_python.png" alt="QR Code Pack Scripts Python"></div>
+        <a href="https://wulix.gumroad.com/l/scripts-python" class="btn-sm">Télécharger →</a>
       </div>
       <div class="pack-card">
         <h3>🔄 Pipeline LinkedIn n8n</h3>
         <div class="pack-price">19€</div>
         <p>Workflow n8n complet pour automatiser vos posts LinkedIn depuis Google Sheets. Import JSON + guide.</p>
-        <a href="https://richardsylla.gumroad.com" class="btn-sm">Télécharger →</a>
+        <div class="qr-wrap"><img src="/assets/qr_pipeline_linkedin_n8n.png" alt="QR Code Pipeline LinkedIn"></div>
+        <a href="https://wulix.gumroad.com/l/n8n-linkedin" class="btn-sm">Télécharger →</a>
       </div>
       <div class="pack-card">
         <h3>📘 Guide Automatisation</h3>
         <div class="pack-price">9€</div>
         <p>Guide PDF : 5 automatisations no-code à mettre en place en 1h. Pour débutants complets.</p>
-        <a href="https://richardsylla.gumroad.com" class="btn-sm">Télécharger →</a>
+        <div class="qr-wrap"><img src="/assets/qr_guide_5_taches.png" alt="QR Code Guide Automatisation"></div>
+        <a href="https://wulix.gumroad.com/l/guide-automatisation" class="btn-sm">Télécharger →</a>
+      </div>
+      <div class="pack-card">
+        <h3>⚡ Pack 50 Prompts IA</h3>
+        <div class="pack-price">5€</div>
+        <p>50 prompts testés et validés : rédaction, automatisation, analyse, business, productivité. Compatible ChatGPT, Claude, Gemini.</p>
+        <div class="qr-wrap"><img src="/assets/qr_pack_50_prompts_ia.png" alt="QR Code Pack Prompts IA"></div>
+        <a href="https://wulix.gumroad.com/l/iozlxv" class="btn-sm">Télécharger →</a>
+      </div>
+      <div class="pack-card" style="border-color: #f97316; border-width: 2px;">
+        <div style="font-size:11px; font-weight:700; color:#f97316; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;">🆕 Nouveau</div>
+        <h3>🔧 Pack 3 Templates n8n</h3>
+        <div class="pack-price">25€</div>
+        <p>3 workflows n8n prêts à importer : email auto-répondeur IA, notificateur de ventes Gumroad, scanner de leads Reddit avec Gemini.</p>
+        <a href="https://wulix.gumroad.com/l/n8n-templates" class="btn-sm">Télécharger →</a>
       </div>
     </div>
   </div>
 </div>
 
+<section class="section" style="padding-top:20px;">
+  <h2 class="section-title">Disponible sur <span>les plateformes freelance</span></h2>
+  <p class="section-sub">Vous préférez passer par une plateforme sécurisée ? Retrouvez-moi sur Malt et Fiverr.</p>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="https://www.malt.fr/profile/omarsylla" target="_blank" class="btn" style="display:inline-flex;align-items:center;gap:8px;width:auto;padding:14px 28px;">
+      🧡 Voir mon profil Malt <small style="opacity:0.8;">350€/jour</small>
+    </a>
+    <a href="https://www.fiverr.com/richardsylla" target="_blank" class="btn btn-outline" style="display:inline-flex;align-items:center;gap:8px;width:auto;padding:14px 28px;">
+      💚 Voir mes Gigs Fiverr <small style="opacity:0.8;">dès 50€</small>
+    </a>
+  </div>
+</section>
+
 <section class="cta-section">
   <h2>Prêt à récupérer du temps ?</h2>
   <p>Décrivez-moi votre tâche la plus chronophage. Je vous réponds en 48h avec une solution concrète.</p>
-  <a href="/#contact" class="btn" style="display:inline-block;width:auto;">📩 Démarrer maintenant</a>
+  <a href="mailto:contact@wulix.fr" class="btn" style="display:inline-block;width:auto;">📩 Écrire à contact@wulix.fr</a>
 </section>
 
 <footer>

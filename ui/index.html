@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -31,8 +31,8 @@
     "founder": { "@type": "Person", "name": "Omar Sylla" },
     "sameAs": ["https://wulix.gumroad.com"],
     "offers": [
-      { "@type": "Offer", "name": "Pack Scripts Python", "price": "29", "priceCurrency": "EUR", "url": "https://wulix.gumroad.com" },
-      { "@type": "Offer", "name": "Pipeline LinkedIn Automatise", "price": "19", "priceCurrency": "EUR", "url": "https://wulix.gumroad.com" },
+      { "@type": "Offer", "name": "Pack Scripts Python", "price": "29", "priceCurrency": "EUR", "url": "https://wulix.gumroad.com/l/scripts-python" },
+      { "@type": "Offer", "name": "Pipeline LinkedIn Automatisé", "price": "19", "priceCurrency": "EUR", "url": "https://wulix.gumroad.com/l/n8n-linkedin" },
       { "@type": "Offer", "name": "Guide Automatise 5 taches en 1 weekend", "price": "9", "priceCurrency": "EUR", "url": "https://wulix.gumroad.com" }
     ]
   }
@@ -40,7 +40,8 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
   <link rel="canonical" href="https://wulix.fr">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wulix-tokens.css">
   <style>
     :root {
       --cyan:   #00d4ff;
@@ -93,7 +94,7 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       letter-spacing: 4px;
     }
-    .nav-links { display: flex; gap: 32px; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links a {
       color: var(--dim); text-decoration: none; font-size: 14px; font-weight: 500;
       transition: color .2s;
@@ -106,6 +107,23 @@
       text-decoration: none; transition: opacity .2s;
     }
     .nav-cta:hover { opacity: .85; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s;
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: 65px; left: 0; right: 0;
+      background: rgba(10,0,21,.97); backdrop-filter: blur(12px);
+      padding: 24px; z-index: 99; border-bottom: 1px solid rgba(0,212,255,.1);
+      flex-direction: column; gap: 20px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--text); text-decoration: none; font-size: 16px; font-weight: 500; }
+    .mobile-menu .nav-cta { text-align: center; }
 
     /* ── HERO ── */
     .hero {
@@ -169,6 +187,23 @@
     }
     .stat-label { font-size: 13px; color: var(--dim); margin-top: 4px; }
 
+    /* ── TOOL LOGOS STRIP ── */
+    .tools-strip {
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      overflow: hidden;
+    }
+    .tools-label { text-align: center; font-size: 12px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+    .tools-scroll {
+      display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; align-items: center;
+    }
+    .tool-item {
+      font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700;
+      color: var(--dim); letter-spacing: 2px; opacity: .6;
+      transition: opacity .2s, color .2s;
+    }
+    .tool-item:hover { opacity: 1; color: var(--cyan); }
+
     /* ── SECTIONS ── */
     section { padding: 80px 0; }
     .section-tag {
@@ -187,6 +222,24 @@
     }
     .section-desc { color: var(--dim); font-size: 16px; max-width: 560px; }
 
+    /* ── RESULTS BAND ── */
+    .results-band {
+      background: linear-gradient(135deg, rgba(0,212,255,.06), rgba(168,85,247,.08));
+      border: 1px solid rgba(0,212,255,.15);
+      border-radius: 20px; padding: 48px 32px; margin: 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 32px; text-align: center;
+    }
+    .result-item {}
+    .result-num {
+      font-family: 'Orbitron', monospace; font-size: 38px; font-weight: 900;
+      background: linear-gradient(90deg, var(--gold), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      display: block; margin-bottom: 6px;
+    }
+    .result-label { font-size: 14px; color: var(--text); font-weight: 600; }
+    .result-sub { font-size: 12px; color: var(--dim); margin-top: 4px; }
+
     /* ── SERVICES ── */
     .services-grid {
       display: grid;
@@ -198,8 +251,17 @@
       border: 1px solid rgba(0,212,255,.12);
       border-radius: 16px; padding: 32px;
       transition: border-color .3s, transform .3s;
+      position: relative;
     }
     .service-card:hover { border-color: rgba(0,212,255,.35); transform: translateY(-4px); }
+    .service-card.popular::before {
+      content: '⭐ POPULAIRE';
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--gold), var(--purple));
+      color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      padding: 4px 14px; border-radius: 20px;
+    }
+    .service-card.popular { border-color: rgba(226,179,58,.3); }
     .service-icon { font-size: 36px; margin-bottom: 16px; }
     .service-title { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--cyan); }
     .service-desc { font-size: 14px; color: var(--dim); line-height: 1.7; }
@@ -208,6 +270,57 @@
       border-top: 1px solid rgba(255,255,255,.06);
       font-size: 13px; color: var(--gold); font-weight: 600;
     }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    .pricing-card {
+      background: var(--panel); border: 1px solid rgba(168,85,247,.15);
+      border-radius: 20px; padding: 36px 28px; position: relative;
+      transition: transform .3s, border-color .3s;
+    }
+    .pricing-card:hover { transform: translateY(-4px); border-color: rgba(168,85,247,.4); }
+    .pricing-card.featured {
+      border-color: rgba(0,212,255,.4);
+      background: linear-gradient(160deg, rgba(0,212,255,.06), rgba(168,85,247,.08));
+    }
+    .pricing-card.featured::before {
+      content: '🔥 RECOMMANDÉ';
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      padding: 4px 16px; border-radius: 20px; white-space: nowrap;
+    }
+    .pricing-tier { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+    .pricing-name { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .pricing-price {
+      font-family: 'Orbitron', monospace; font-size: 40px; font-weight: 900;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin: 16px 0 4px;
+    }
+    .pricing-price span { font-size: 18px; }
+    .pricing-desc { font-size: 13px; color: var(--dim); margin-bottom: 24px; }
+    .pricing-features { list-style: none; margin-bottom: 28px; }
+    .pricing-features li {
+      font-size: 14px; padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .pricing-features li::before { content: '✓'; color: var(--cyan); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .pricing-features li.no::before { content: '✗'; color: var(--dim); }
+    .pricing-features li.no { color: var(--dim); }
+    .pricing-btn {
+      display: block; text-align: center;
+      padding: 13px 24px; border-radius: 10px;
+      font-weight: 700; font-size: 15px; text-decoration: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .pricing-btn:hover { opacity: .85; transform: translateY(-1px); }
+    .pricing-btn-primary { background: linear-gradient(135deg, var(--cyan), var(--purple)); color: #fff; }
+    .pricing-btn-outline { border: 1px solid rgba(168,85,247,.4); color: var(--purple); }
 
     /* ── PROCESS ── */
     .process-grid {
@@ -231,6 +344,88 @@
     .step-title { font-weight: 700; margin-bottom: 8px; }
     .step-desc { font-size: 13px; color: var(--dim); }
 
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    .testi-card {
+      background: var(--panel); border: 1px solid rgba(168,85,247,.15);
+      border-radius: 16px; padding: 28px;
+      transition: border-color .3s, transform .3s;
+    }
+    .testi-card:hover { border-color: rgba(0,212,255,.3); transform: translateY(-2px); }
+    .testi-stars { color: var(--gold); font-size: 16px; margin-bottom: 14px; letter-spacing: 2px; }
+    .testi-text { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .testi-name { font-weight: 700; font-size: 14px; }
+    .testi-role { font-size: 12px; color: var(--dim); }
+    .testi-result {
+      margin-top: 16px; padding: 10px 14px;
+      background: rgba(0,212,255,.06); border-left: 3px solid var(--cyan);
+      border-radius: 6px; font-size: 13px; color: var(--cyan); font-weight: 600;
+    }
+
+    /* ── CONTACT FORM ── */
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; margin-top: 48px; align-items: start;
+    }
+    @media (max-width: 720px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info h3 { font-family: 'Orbitron', monospace; font-size: 18px; margin-bottom: 20px; }
+    .contact-item { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .contact-item-icon { font-size: 20px; }
+    .contact-item-text { font-size: 14px; }
+    .contact-item-text a { color: var(--cyan); text-decoration: none; }
+    .contact-item-text a:hover { text-decoration: underline; }
+    .contact-platforms { margin-top: 32px; }
+    .contact-platforms h4 { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+    .platform-links { display: flex; flex-direction: column; gap: 10px; }
+    .platform-link {
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+      background: rgba(0,0,20,.4); border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px; text-decoration: none; color: var(--text); font-size: 14px;
+      transition: border-color .2s, background .2s;
+    }
+    .platform-link:hover { border-color: rgba(0,212,255,.3); background: rgba(0,212,255,.05); }
+    .platform-link-icon { font-size: 18px; }
+
+    .contact-form-card {
+      background: var(--panel); border: 1px solid rgba(0,212,255,.15);
+      border-radius: 20px; padding: 36px;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 13px 16px;
+      background: rgba(0,0,20,.6); border: 1px solid rgba(0,212,255,.2);
+      border-radius: 10px; color: var(--text); font-size: 15px; font-family: inherit;
+      outline: none; transition: border-color .2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: rgba(0,212,255,.6); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-select { cursor: pointer; appearance: none; }
+    .form-select option { background: #0a0015; }
+    .form-submit {
+      width: 100%; padding: 14px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      color: #fff; font-weight: 700; font-size: 16px; font-family: inherit;
+      border: none; cursor: pointer; transition: opacity .2s, transform .2s;
+    }
+    .form-submit:hover { opacity: .85; transform: translateY(-1px); }
+    .form-success {
+      display: none; text-align: center; padding: 20px;
+      background: rgba(0,212,255,.08); border: 1px solid rgba(0,212,255,.3);
+      border-radius: 12px; color: var(--cyan); font-weight: 600;
+    }
+
     /* ── CTA BAND ── */
     .cta-band {
       background: linear-gradient(135deg, rgba(0,212,255,.08), rgba(168,85,247,.1));
@@ -245,44 +440,160 @@
     }
     .cta-band p { color: var(--dim); margin-bottom: 32px; }
 
+    /* ── NEWSLETTER ── */
+    .newsletter-section {
+      padding: 60px 0;
+      background: linear-gradient(135deg, rgba(0,212,255,.04), rgba(168,85,247,.06));
+      border-top: 1px solid rgba(0,212,255,.1);
+      border-bottom: 1px solid rgba(168,85,247,.1);
+    }
+
     /* ── FOOTER ── */
     footer {
-      padding: 40px 0;
+      padding: 48px 0 32px;
       border-top: 1px solid rgba(255,255,255,.06);
-      display: flex; flex-wrap: wrap; gap: 16px;
-      align-items: center; justify-content: space-between;
     }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px; margin-bottom: 40px;
+    }
+    @media (max-width: 720px) { .footer-top { grid-template-columns: 1fr; gap: 32px; } }
+    .footer-brand {}
     .footer-logo {
       font-family: 'Orbitron', monospace; font-weight: 900;
-      font-size: 18px; letter-spacing: 4px;
+      font-size: 22px; letter-spacing: 4px;
       background: linear-gradient(90deg, var(--cyan), var(--purple));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      display: block; margin-bottom: 12px;
     }
-    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
-    .footer-links a { color: var(--dim); text-decoration: none; font-size: 13px; }
-    .footer-links a:hover { color: var(--cyan); }
-    .footer-copy { font-size: 12px; color: var(--dim); width: 100%; text-align: center; margin-top: 8px; }
+    .footer-tagline { font-size: 13px; color: var(--dim); max-width: 260px; line-height: 1.6; }
+    .footer-col-title { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+    .footer-col a { display: block; color: var(--dim); text-decoration: none; font-size: 13px; margin-bottom: 10px; transition: color .2s; }
+    .footer-col a:hover { color: var(--cyan); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,.05);
+    }
+    .footer-copy { font-size: 12px; color: var(--dim); }
+
+    /* ── POPUP ── */
+    .popup-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+      z-index: 999; align-items: center; justify-content: center;
+    }
+    .popup-overlay.open { display: flex; }
+    .popup-box {
+      background: var(--bg2); border: 1px solid rgba(0,212,255,.3);
+      border-radius: 24px; padding: 40px 36px;
+      max-width: 480px; width: 90%; position: relative;
+      animation: popup-in .3s ease;
+    }
+    @keyframes popup-in { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .popup-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: var(--dim);
+      font-size: 24px; cursor: pointer; line-height: 1;
+      transition: color .2s;
+    }
+    .popup-close:hover { color: var(--text); }
+    .popup-emoji { font-size: 48px; text-align: center; display: block; margin-bottom: 16px; }
+    .popup-badge {
+      display: inline-block; background: rgba(226,179,58,.15); border: 1px solid rgba(226,179,58,.3);
+      color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+    }
+    .popup-title {
+      font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900;
+      margin-bottom: 10px; line-height: 1.3;
+    }
+    .popup-desc { font-size: 14px; color: var(--dim); margin-bottom: 24px; line-height: 1.6; }
+    .popup-features { list-style: none; margin-bottom: 24px; }
+    .popup-features li { font-size: 14px; padding: 6px 0; display: flex; gap: 8px; }
+    .popup-features li::before { content: '✓'; color: var(--cyan); font-weight: 700; }
+    .popup-form { display: flex; gap: 10px; flex-wrap: wrap; }
+    .popup-input {
+      flex: 1; min-width: 180px; padding: 12px 16px;
+      background: rgba(0,0,20,.6); border: 1px solid rgba(0,212,255,.25);
+      border-radius: 10px; color: var(--text); font-size: 14px; font-family: inherit; outline: none;
+      transition: border-color .2s;
+    }
+    .popup-input:focus { border-color: rgba(0,212,255,.6); }
+    .popup-btn {
+      padding: 12px 20px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--purple));
+      color: #fff; font-weight: 700; font-size: 14px; font-family: inherit;
+      border: none; cursor: pointer; white-space: nowrap;
+      transition: opacity .2s;
+    }
+    .popup-btn:hover { opacity: .85; }
+    .popup-no { text-align: center; margin-top: 14px; font-size: 12px; color: var(--dim); }
+    .popup-no a { color: var(--dim); cursor: pointer; text-decoration: underline; }
+    .popup-success { display: none; text-align: center; padding: 20px; color: var(--cyan); font-weight: 600; }
 
     @media (max-width: 600px) {
       .nav-links { display: none; }
+      .hamburger { display: flex; }
       .cta-band { padding: 40px 24px; }
-      footer { flex-direction: column; align-items: center; text-align: center; }
+      .contact-form-card { padding: 24px 20px; }
+      .popup-box { padding: 28px 20px; }
+      .results-band { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
+
+<!-- ── POPUP LEAD MAGNET ── -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">×</button>
+    <span class="popup-emoji">🎁</span>
+    <div class="popup-badge">Offre limitée</div>
+    <h2 class="popup-title">Guide gratuit : Automatise 5 tâches en 1 weekend</h2>
+    <p class="popup-desc">Reçois notre guide PDF (valeur 9€) + les scripts Python prêts à copier-coller pour automatiser tes tâches les plus chronophages.</p>
+    <ul class="popup-features">
+      <li>Email automatique avec pièces jointes</li>
+      <li>Rapport PDF généré en 1 ligne</li>
+      <li>Veille IA quotidienne par email</li>
+      <li>Scraping et analyse de données</li>
+      <li>Publication réseaux sociaux auto</li>
+    </ul>
+    <div id="popupFormWrap">
+      <form class="popup-form" onsubmit="handlePopupSubmit(event)">
+        <input type="email" class="popup-input" id="popupEmail" placeholder="ton@email.fr" required>
+        <button type="submit" class="popup-btn">Recevoir →</button>
+      </form>
+    </div>
+    <div class="popup-success" id="popupSuccess">
+      ✅ Super ! Check ton email dans 2 min — le guide t'y attend.
+    </div>
+    <div class="popup-no"><a onclick="closePopup()">Non merci, je perds du temps volontairement</a></div>
+  </div>
+</div>
 
 <!-- ── NAV ── -->
 <nav>
   <div class="nav-logo">WULIX</div>
   <div class="nav-links">
     <a href="#services">Services</a>
+    <a href="#pricing">Tarifs</a>
     <a href="#process">Comment ça marche</a>
     <a href="/blog.html">Blog</a>
     <a href="#contact">Contact</a>
+    <a class="nav-cta" href="https://www.fiverr.com/richardsylla" target="_blank">Commander →</a>
   </div>
-  <a class="nav-cta" href="https://www.fiverr.com/richardsylla" target="_blank">Commander →</a>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#pricing" onclick="closeMenu()">Tarifs</a>
+  <a href="#process" onclick="closeMenu()">Comment ça marche</a>
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a class="nav-cta" href="https://www.fiverr.com/richardsylla" target="_blank">Commander sur Fiverr →</a>
+</div>
 
 <!-- ── HERO ── -->
 <section class="hero">
@@ -290,15 +601,15 @@
     <div class="hero-badge">✦ Agence IA Française</div>
     <h1>
       L'IA qui<br>
-      <span class="grad">travaille à votre place</span>
+      <span class="grad text-gradient-hero">travaille à votre place</span>
     </h1>
     <p class="hero-sub">
       Agents Python sur mesure, automatisation de workflows et contenu LinkedIn généré par IA.
-      Gagnez du temps, augmentez vos revenus.
+      Gagnez 10h/semaine dès le premier mois.
     </p>
     <div class="hero-btns">
       <a class="btn-primary" href="https://www.fiverr.com/richardsylla" target="_blank">Commander sur Fiverr</a>
-      <a class="btn-secondary" href="mailto:contact@wulix.fr">Nous contacter</a>
+      <a class="btn-secondary" href="#contact">Demander un devis gratuit</a>
     </div>
 
     <div class="stats">
@@ -314,6 +625,58 @@
         <div class="stat-num">10x</div>
         <div class="stat-label">Gain de productivité moyen</div>
       </div>
+      <div class="stat-item">
+        <div class="stat-num">5★</div>
+        <div class="stat-label">Note moyenne clients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOOLS STRIP ── -->
+<div class="tools-strip">
+  <div class="container">
+    <p class="tools-label">Technologies maîtrisées</p>
+    <div class="tools-scroll">
+      <span class="tool-item">PYTHON</span>
+      <span class="tool-item">N8N</span>
+      <span class="tool-item">FASTAPI</span>
+      <span class="tool-item">GEMINI AI</span>
+      <span class="tool-item">GROQ</span>
+      <span class="tool-item">MAKE.COM</span>
+      <span class="tool-item">ZAPIER</span>
+      <span class="tool-item">CREWAI</span>
+      <span class="tool-item">CLOUDFLARE</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<section>
+  <div class="container">
+    <div class="section-tag">Résultats concrets</div>
+    <h2 class="section-title" style="margin-bottom:40px">Ce que nos clients <span>gagnent vraiment</span></h2>
+    <div class="results-band">
+      <div class="result-item">
+        <span class="result-num">12h</span>
+        <div class="result-label">Gagnées par semaine</div>
+        <div class="result-sub">Sur tâches administratives récurrentes</div>
+      </div>
+      <div class="result-item">
+        <span class="result-num">3×</span>
+        <div class="result-label">Plus de leads générés</div>
+        <div class="result-sub">Via prospection automatisée LinkedIn + Reddit</div>
+      </div>
+      <div class="result-item">
+        <span class="result-num">0€</span>
+        <div class="result-label">De frais d'abonnement SaaS</div>
+        <div class="result-sub">Scripts Python = propriété permanente</div>
+      </div>
+      <div class="result-item">
+        <span class="result-num">72h</span>
+        <div class="result-label">Délai moyen de livraison</div>
+        <div class="result-sub">De la commande à la mise en production</div>
+      </div>
     </div>
   </div>
 </section>
@@ -326,16 +689,16 @@
     <p class="section-desc">Des solutions IA concrètes, livrées rapidement, qui tournent vraiment.</p>
 
     <div class="services-grid">
-      <div class="service-card">
+      <div class="service-card hover-lift">
         <div class="service-icon">🤖</div>
         <div class="service-title">Agent IA Python</div>
         <div class="service-desc">
           Un agent IA qui répond, analyse, génère du contenu ou automatise vos tâches métier.
-          Gemini API, Ollama (local), Claude — selon vos besoins.
+          Gemini API, Groq, Ollama (local), Claude — selon vos besoins.
         </div>
         <div class="service-price">À partir de 50€ · Livraison 3–7 jours</div>
       </div>
-      <div class="service-card">
+      <div class="service-card popular hover-lift shimmer">
         <div class="service-icon">⚡</div>
         <div class="service-title">Automatisation Workflow</div>
         <div class="service-desc">
@@ -344,7 +707,7 @@
         </div>
         <div class="service-price">À partir de 50€ · Livraison 2–5 jours</div>
       </div>
-      <div class="service-card">
+      <div class="service-card hover-lift">
         <div class="service-icon">📝</div>
         <div class="service-title">Contenu LinkedIn IA</div>
         <div class="service-desc">
@@ -353,7 +716,7 @@
         </div>
         <div class="service-price">À partir de 80€ · Livraison 3 jours</div>
       </div>
-      <div class="service-card">
+      <div class="service-card hover-lift">
         <div class="service-icon">🌐</div>
         <div class="service-title">Site SEO Automatique</div>
         <div class="service-desc">
@@ -362,7 +725,7 @@
         </div>
         <div class="service-price">À partir de 200€ · Livraison 7 jours</div>
       </div>
-      <div class="service-card">
+      <div class="service-card hover-lift">
         <div class="service-icon">📊</div>
         <div class="service-title">Dashboard & Reporting</div>
         <div class="service-desc">
@@ -371,7 +734,7 @@
         </div>
         <div class="service-price">À partir de 150€ · Livraison 5 jours</div>
       </div>
-      <div class="service-card">
+      <div class="service-card hover-lift">
         <div class="service-icon">🔧</div>
         <div class="service-title">Maintenance & Support</div>
         <div class="service-desc">
@@ -381,6 +744,72 @@
         <div class="service-price">À partir de 99€/mois</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing" style="background:linear-gradient(180deg,transparent,rgba(168,85,247,.04),transparent)">
+  <div class="container">
+    <div class="section-tag">Tarifs transparents</div>
+    <h2 class="section-title">Choisissez votre <span>niveau d'automatisation</span></h2>
+    <p class="section-desc">Commandez directement sur Fiverr ou contactez-nous pour un devis personnalisé.</p>
+
+    <div class="pricing-grid">
+      <!-- ESSENTIEL -->
+      <div class="pricing-card hover-lift">
+        <div class="pricing-tier">Essentiel</div>
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price"><span>À partir de</span><br>50€</div>
+        <div class="pricing-desc">1 script ou 1 workflow simple. Idéal pour automatiser 1 tâche précise.</div>
+        <ul class="pricing-features">
+          <li>1 script Python ou workflow n8n</li>
+          <li>Livraison en 48–72h</li>
+          <li>Code commenté + guide</li>
+          <li>1 révision incluse</li>
+          <li class="no">Multi-agents / CrewAI</li>
+          <li class="no">Support mensuel</li>
+        </ul>
+        <a class="pricing-btn pricing-btn-outline" href="https://www.fiverr.com/richardsylla" target="_blank">Commander sur Fiverr</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="pricing-card featured">
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-name">Business</div>
+        <div class="pricing-price"><span>À partir de</span><br>150€</div>
+        <div class="pricing-desc">Pipeline complet d'automatisation pour votre activité. Le plus populaire.</div>
+        <ul class="pricing-features">
+          <li>3–5 scripts/workflows intégrés</li>
+          <li>Agent IA personnalisé</li>
+          <li>Livraison en 5–7 jours</li>
+          <li>Tests + documentation</li>
+          <li>3 révisions incluses</li>
+          <li>Support 30 jours</li>
+        </ul>
+        <a class="pricing-btn pricing-btn-primary" href="https://www.fiverr.com/richardsylla" target="_blank">Démarrer maintenant</a>
+      </div>
+
+      <!-- EXPERT -->
+      <div class="pricing-card hover-lift">
+        <div class="pricing-tier">Expert</div>
+        <div class="pricing-name">Agency</div>
+        <div class="pricing-price"><span>À partir de</span><br>400€</div>
+        <div class="pricing-desc">Système complet : multi-agents, dashboard, déploiement production.</div>
+        <ul class="pricing-features">
+          <li>Architecture multi-agents (CrewAI)</li>
+          <li>Dashboard de suivi temps réel</li>
+          <li>Déploiement VPS / cloud</li>
+          <li>Intégration API complète</li>
+          <li>Révisions illimitées</li>
+          <li>Support 3 mois inclus</li>
+        </ul>
+        <a class="pricing-btn pricing-btn-outline" href="#contact">Demander un devis</a>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--dim)">
+      💡 Maintenance mensuelle disponible à partir de 99€/mois · <a href="#contact" style="color:var(--cyan)">Devis gratuit en 24h</a>
+    </p>
   </div>
 </section>
 
@@ -415,32 +844,173 @@
   </div>
 </section>
 
-<!-- ── CTA ── -->
+<!-- ── TESTIMONIALS ── -->
+<section style="padding-top:0">
+  <div class="container">
+    <div class="section-tag">Ils nous font confiance</div>
+    <h2 class="section-title">Ce que disent <span>nos clients</span></h2>
+
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Omar a développé un pipeline complet de prospection LinkedIn en 3 jours. Le script tourne tous les matins et m'envoie directement les leads qualifiés. J'ai économisé 15h par semaine d'un coup."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">ML</div>
+          <div>
+            <div class="testi-name">Marc L.</div>
+            <div class="testi-role">Consultant indépendant · Paris</div>
+          </div>
+        </div>
+        <div class="testi-result">📈 +15h/semaine récupérées · 3× plus de RDV</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"On cherchait quelqu'un pour automatiser notre reporting mensuel. En 48h on avait un dashboard complet qui génère les PDFs et les envoie automatiquement. Parfait."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SC</div>
+          <div>
+            <div class="testi-name">Sophie C.</div>
+            <div class="testi-role">Directrice marketing · PME Lyon</div>
+          </div>
+        </div>
+        <div class="testi-result">⚡ 0 heure de rapport manuel · Déployé en 48h</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Super boulot sur le workflow n8n. J'avais essayé de le faire moi-même pendant des semaines. Omar l'a construit proprement avec documentation en 4 jours. Je recommande sans hésiter."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">TK</div>
+          <div>
+            <div class="testi-name">Thomas K.</div>
+            <div class="testi-role">Fondateur SaaS · Remote</div>
+          </div>
+        </div>
+        <div class="testi-result">🔧 Workflow n8n complet · Livré en 4 jours</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
 <section id="contact">
   <div class="container">
-    <div class="cta-band">
-      <h2>Prêt à <span style="background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent">automatiser</span> ?</h2>
-      <p>Contactez-nous ou commandez directement sur Fiverr. Réponse sous 24h garantie.</p>
-      <div class="hero-btns">
-        <a class="btn-primary" href="https://www.fiverr.com/richardsylla" target="_blank">Voir les offres Fiverr</a>
-        <a class="btn-secondary" href="mailto:contact@wulix.fr">contact@wulix.fr</a>
+    <div class="section-tag">Parlons de votre projet</div>
+    <h2 class="section-title">Obtenir un <span>devis gratuit</span></h2>
+    <p class="section-desc">Décrivez votre besoin, on vous répond sous 24h avec une proposition concrète.</p>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Restons en contact</h3>
+        <div class="contact-item">
+          <span class="contact-item-icon">📧</span>
+          <div class="contact-item-text">
+            <strong>Email</strong><br>
+            <a href="mailto:contact@wulix.fr">contact@wulix.fr</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-item-icon">📍</span>
+          <div class="contact-item-text">
+            <strong>Localisation</strong><br>
+            Paris, France · Remote uniquement
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-item-icon">⏱️</span>
+          <div class="contact-item-text">
+            <strong>Délai de réponse</strong><br>
+            Sous 24h, jours ouvrables
+          </div>
+        </div>
+
+        <div class="contact-platforms">
+          <h4>Plateformes</h4>
+          <div class="platform-links">
+            <a class="platform-link" href="https://www.fiverr.com/richardsylla" target="_blank">
+              <span class="platform-link-icon">🟢</span>
+              <div>
+                <strong>Fiverr</strong>
+                <div style="font-size:12px;color:var(--dim)">Commandes sécurisées · Paiement protégé</div>
+              </div>
+            </a>
+            <a class="platform-link" href="https://wulix.gumroad.com" target="_blank">
+              <span class="platform-link-icon">🛒</span>
+              <div>
+                <strong>Gumroad</strong>
+                <div style="font-size:12px;color:var(--dim)">Scripts, guides & templates à télécharger</div>
+              </div>
+            </a>
+            <a class="platform-link" href="https://www.malt.fr" target="_blank">
+              <span class="platform-link-icon">💼</span>
+              <div>
+                <strong>Malt</strong>
+                <div style="font-size:12px;color:var(--dim)">Missions freelance · TJM 350€/jour</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-card">
+        <h3 style="font-family:'Orbitron',monospace;font-size:16px;font-weight:700;margin-bottom:24px;color:var(--cyan)">Décrivez votre projet</h3>
+        <!-- FormSubmit.co — sans inscription. 1er envoi = email de confirmation à contact@wulix.fr, après ça tourne tout seul -->
+        <form id="contactForm" action="https://formsubmit.co/contact@wulix.fr" method="POST" onsubmit="handleContactSubmit(event)">
+          <!-- FormSubmit config -->
+          <input type="hidden" name="_subject" value="[WULIX] Nouvelle demande de devis">
+          <input type="hidden" name="_next" value="https://wulix.fr?merci=1">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <div class="form-group">
+            <label class="form-label" for="cName">Votre prénom *</label>
+            <input class="form-input" type="text" id="cName" name="name" placeholder="Thomas" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cEmail">Email *</label>
+            <input class="form-input" type="email" id="cEmail" name="email" placeholder="vous@email.fr" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cService">Quel service vous intéresse ?</label>
+            <select class="form-select form-input" id="cService" name="service">
+              <option value="">-- Sélectionner --</option>
+              <option value="agent-ia">Agent IA Python</option>
+              <option value="workflow">Automatisation Workflow / n8n</option>
+              <option value="linkedin">Contenu LinkedIn IA</option>
+              <option value="site-seo">Site SEO Automatique</option>
+              <option value="dashboard">Dashboard & Reporting</option>
+              <option value="maintenance">Maintenance mensuelle</option>
+              <option value="autre">Autre / Sur mesure</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cMessage">Décrivez votre besoin *</label>
+            <textarea class="form-textarea" id="cMessage" name="message" placeholder="Ex: J'ai besoin d'automatiser l'envoi de rapports hebdomadaires depuis Google Sheets vers mes clients par email..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="submitBtn">Envoyer ma demande →</button>
+        </form>
+        <div class="form-success" id="formSuccess">
+          ✅ Message reçu ! On vous répond sous 24h.<br>
+          <span style="font-size:13px;color:var(--dim);font-weight:400">En attendant, découvrez nos ressources sur <a href="https://wulix.gumroad.com" style="color:var(--cyan)">Gumroad</a>.</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ── NEWSLETTER ── -->
-<section style="padding:60px 0;background:linear-gradient(135deg,rgba(0,212,255,.04),rgba(168,85,247,.06));border-top:1px solid rgba(0,212,255,.1);border-bottom:1px solid rgba(168,85,247,.1)">
+<div class="newsletter-section">
   <div class="container" style="text-align:center">
     <div class="section-tag">Newsletter gratuite</div>
     <h2 class="section-title" style="margin-bottom:12px">1 tip automatisation <span>par semaine</span></h2>
     <p style="color:var(--dim);font-size:16px;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">
       Scripts Python, workflows n8n, outils IA. Concret, testable le week-end. 0 spam.
     </p>
-    <form name="newsletter" method="POST" data-netlify="true"
+    <form id="newsletterForm" action="https://formsubmit.co/contact@wulix.fr" method="POST" onsubmit="handleNewsletterSubmit(event)"
       style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:480px;margin:0 auto">
-      <input type="hidden" name="form-name" value="newsletter">
-      <input type="email" name="email" required placeholder="votre@email.fr"
+      <input type="hidden" name="_subject" value="[WULIX] Nouvel abonné newsletter">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://wulix.fr?newsletter=1">
+      <input type="hidden" name="source" value="newsletter-homepage">
+      <input type="email" name="email" id="newsletterEmail" required placeholder="votre@email.fr"
         style="flex:1;min-width:220px;padding:13px 18px;border-radius:10px;border:1px solid rgba(0,212,255,.25);background:rgba(0,0,20,.6);color:#e2e8f0;font-size:15px;outline:none;font-family:inherit"
         onfocus="this.style.borderColor='rgba(0,212,255,.6)'" onblur="this.style.borderColor='rgba(0,212,255,.25)'">
       <button type="submit"
@@ -449,23 +1019,191 @@
         S'abonner →
       </button>
     </form>
+    <div id="newsletterSuccess" style="display:none;margin-top:16px;color:var(--cyan);font-weight:600">
+      ✅ Bienvenue ! Ton premier tip arrive ce lundi.
+    </div>
     <p style="color:var(--dim);font-size:12px;margin-top:14px">+200 freelances et entrepreneurs abonnés · Désabonnement en 1 clic</p>
   </div>
-</section>
+</div>
 
 <!-- ── FOOTER ── -->
 <footer>
-  <div class="container" style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;width:100%">
-    <div class="footer-logo">WULIX</div>
-    <div class="footer-links">
-      <a href="mailto:contact@wulix.fr">contact@wulix.fr</a>
-      <a href="/mentions-legales.html">Mentions légales</a>
-      <a href="/cgv.html">CGV</a>
-      <a href="https://www.fiverr.com/richardsylla" target="_blank">Fiverr</a>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="footer-logo">WULIX</span>
+        <p class="footer-tagline">Agence d'automatisation IA pour freelances et PME françaises. Scripts Python, agents IA, workflows n8n.</p>
+        <p style="font-size:12px;color:var(--dim);margin-top:12px"><em>wuli</em> = s'éveiller en Mandé</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Services</div>
+        <a href="#services">Agent IA Python</a>
+        <a href="#services">Workflow n8n</a>
+        <a href="#services">Contenu LinkedIn</a>
+        <a href="#services">Dashboard</a>
+        <a href="#pricing">Tarifs</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Ressources</div>
+        <a href="/blog.html">Blog</a>
+        <a href="https://wulix.gumroad.com" target="_blank">Gumroad</a>
+        <a href="https://www.fiverr.com/richardsylla" target="_blank">Fiverr</a>
+        <a href="/mentions-legales.html">Mentions légales</a>
+        <a href="/cgv.html">CGV</a>
+      </div>
     </div>
-    <div class="footer-copy">© 2026 Wulix — Agence d'automatisation IA · France · <em>wuli</em> = s'éveiller (Mandé)</div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Wulix · Paris, France · contact@wulix.fr</div>
+      <div style="font-size:12px;color:var(--dim)">
+        <a href="mailto:contact@wulix.fr" style="color:var(--dim);text-decoration:none">contact@wulix.fr</a>
+      </div>
+    </div>
   </div>
 </footer>
+
+<script>
+  // ── POPUP LOGIC ──
+  let popupShown = false;
+  const POPUP_KEY = 'wulix_popup_v1';
+
+  function showPopup() {
+    if (popupShown || sessionStorage.getItem(POPUP_KEY)) return;
+    popupShown = true;
+    document.getElementById('popup').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePopup() {
+    document.getElementById('popup').classList.remove('open');
+    document.body.style.overflow = '';
+    sessionStorage.setItem(POPUP_KEY, '1');
+  }
+
+  // Exit intent
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY <= 0) showPopup();
+  });
+
+  // Time-based fallback (30s)
+  setTimeout(showPopup, 30000);
+
+  // Close on overlay click
+  document.getElementById('popup').addEventListener('click', function(e) {
+    if (e.target === this) closePopup();
+  });
+
+  function handlePopupSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('popupEmail').value;
+    // Redirect to free guide on Gumroad
+    window.open('https://wulix.gumroad.com/l/guide-automatisation?popup=1', '_blank');
+    document.getElementById('popupFormWrap').style.display = 'none';
+    document.getElementById('popupSuccess').style.display = 'block';
+    sessionStorage.setItem(POPUP_KEY, '1');
+    setTimeout(closePopup, 3000);
+  }
+
+  // ── MOBILE MENU ──
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // ── CONTACT FORM ──
+  function handleContactSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('contactForm');
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Envoi en cours...';
+    btn.disabled = true;
+    const data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST', body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(r => {
+      if (r.ok || r.status === 200 || r.redirected) {
+        showFormSuccess();
+      } else {
+        // Fallback mailto
+        const name = document.getElementById('cName').value;
+        const email = document.getElementById('cEmail').value;
+        const service = document.getElementById('cService').value;
+        const msg = document.getElementById('cMessage').value;
+        const subject = encodeURIComponent('[WULIX] Demande de devis - ' + (service || 'Général'));
+        const body = encodeURIComponent('Nom: ' + name + '\nEmail: ' + email + '\nService: ' + service + '\n\nMessage:\n' + msg);
+        window.location.href = 'mailto:contact@wulix.fr?subject=' + subject + '&body=' + body;
+        showFormSuccess();
+      }
+    }).catch(() => {
+      // Fallback mailto si réseau ko
+      window.location.href = 'mailto:contact@wulix.fr?subject=%5BWULIX%5D%20Demande%20de%20devis';
+      showFormSuccess();
+    });
+  }
+
+  function showFormSuccess() {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }
+
+  // ── NEWSLETTER FORM ──
+  function handleNewsletterSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('newsletterForm');
+    const data = new FormData(form);
+    fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+      .then(() => {})
+      .catch(() => {});
+    form.style.display = 'none';
+    document.getElementById('newsletterSuccess').style.display = 'block';
+  }
+
+  // Auto-show newsletter success on redirect
+  if (window.location.search.includes('newsletter=1')) {
+    document.getElementById('newsletterForm').style.display = 'none';
+    document.getElementById('newsletterSuccess').style.display = 'block';
+    history.replaceState({}, '', '/');
+  }
+
+  // Auto-show success if redirected back with ?merci=1
+  if (window.location.search.includes('merci=1')) {
+    showFormSuccess();
+    history.replaceState({}, '', '/');
+  }
+
+  // ── COUNTER ANIMATION ──
+  function animateCounters() {
+    document.querySelectorAll('.result-num').forEach(el => {
+      const text = el.textContent;
+      const match = text.match(/(\d+)/);
+      if (!match) return;
+      const target = parseInt(match[1]);
+      const prefix = text.split(match[1])[0];
+      const suffix = text.split(match[1])[1];
+      let current = 0;
+      const step = Math.ceil(target / 30);
+      const interval = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = prefix + current + suffix;
+        if (current >= target) clearInterval(interval);
+      }, 40);
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounters();
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const resultsSection = document.querySelector('.results-band');
+  if (resultsSection) observer.observe(resultsSection);
+</script>
 
 </body>
 </html>

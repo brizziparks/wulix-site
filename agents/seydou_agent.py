@@ -6,11 +6,14 @@ import os
 import json
 import datetime
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).parent
 CONTENT_DIR = BASE_DIR / "content"
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
+CONTENT_DIR.mkdir(exist_ok=True)
+load_dotenv(BASE_DIR.parent / ".env")
 
 def log(msg):
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -114,8 +117,9 @@ def run(action="post"):
             dry_run = os.getenv("SEYDOU_DRY_RUN", "true").lower() == "true"
             if dry_run:
                 log("[DRY RUN] Tweet non publié. Mettre SEYDOU_DRY_RUN=false pour activer.")
-                print("\n--- TWEET PRÉVU ---")
-                print(tweet["text"])
+                safe_text = tweet["text"].encode("cp1252", errors="replace").decode("cp1252")
+                print("\n--- TWEET PREVU ---")
+                print(safe_text)
                 print("-------------------\n")
             else:
                 success = post_to_twitter(tweet["text"])
