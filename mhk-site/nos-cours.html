@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nos Cours — MHK Asso</title>
-  <meta name="description" content="Cours de Hip-hop, House, Waacking et Popping à Bagneux. Tous niveaux, tous âges." />
+  <meta name="description" content="Cours de Hip-hop, House et Waacking à Bagneux. Tous niveaux, tous âges." />
   <link rel="stylesheet" href="css/style.css" />
   <style>
     /* FILTERS */
@@ -28,10 +28,17 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .filter-btn:hover, .filter-btn.active {
+    .filter-btn.active {
       border-color: var(--cyan);
       color: var(--cyan);
       background: rgba(41,171,226,0.08);
+    }
+    @media (hover: hover) {
+      .filter-btn:hover {
+        border-color: var(--cyan);
+        color: var(--cyan);
+        background: rgba(41,171,226,0.08);
+      }
     }
 
     /* COURS CARDS */
@@ -356,7 +363,7 @@
   <div class="page-hero">
     <div class="badge">Saison 2025–2026</div>
     <h1>NOS COURS</h1>
-    <p>Hip-hop, House, Waacking, Popping — des profs passionnés, tous niveaux acceptés. Trouve ton rythme chez MHK.</p>
+    <p>Hip-hop, House, Waacking — des profs passionnés, tous niveaux acceptés. Trouve ton rythme chez MHK.</p>
   </div>
 
   <!-- COURS -->
@@ -387,7 +394,6 @@
         <button class="filter-btn" data-filter="hip-hop">Hip-hop</button>
         <button class="filter-btn" data-filter="house">House</button>
         <button class="filter-btn" data-filter="waacking">Waacking</button>
-        <button class="filter-btn" data-filter="popping">Popping</button>
         <button class="filter-btn" data-filter="enfants">Enfants</button>
         <button class="filter-btn" data-filter="workshop">Workshop</button>
       </div>
@@ -442,28 +448,6 @@
           </div>
         </div>
 
-        <!-- POPPING -->
-        <div class="cours-card" data-style="popping">
-          <div class="cours-header">
-            <h3>Popping</h3>
-            <div class="cours-levels">
-              <span class="tag tag-cyan">Débutant</span>
-              <span class="tag tag-cyan">Intermédiaire</span>
-            </div>
-          </div>
-          <div class="cours-body">
-            <p>Contractions musculaires, illusions optiques, robot, tutting, animation — Missile t'initie à cet art du contrôle corporel.</p>
-            <div class="cours-infos">
-              <div class="cours-info-row"><span class="ico">📅</span> Vendredi · 20h00 – 21h30</div>
-              <div class="cours-info-row"><span class="ico">👤</span> <a href="nos-profs.html#prof-missile" style="color:var(--cyan); text-decoration:none;">Missile</a></div>
-              <div class="cours-info-row"><span class="ico">👥</span> Adultes · Tous niveaux</div>
-            </div>
-          </div>
-          <div class="cours-footer" style="justify-content:flex-end;">
-            <a href="inscription.html" class="btn btn-primary" style="padding:10px 20px; font-size:0.8rem;">S'inscrire</a>
-          </div>
-        </div>
-
         <!-- WAACKING WORKSHOP -->
         <div class="cours-card workshop" data-style="workshop waacking">
           <div class="cours-header">
@@ -493,7 +477,7 @@
       </div>
 
       <!-- COURS ENFANTS -->
-      <div style="margin-top:72px;">
+      <div id="section-enfants" style="margin-top:72px;">
         <div class="badge" style="margin-bottom:12px;">Enfants &amp; Ados</div>
         <h2 class="section-title" style="font-size:2rem; margin-bottom:8px;">Cours <span class="gradient-text">Jeunesse</span></h2>
         <div class="divider"></div>
@@ -611,7 +595,6 @@
               <tr><td>Mardi</td><td>20h30 – 22h00</td><td><span class="style-pill">House Dance</span></td><td>Tous niveaux</td><td>SP Sunny</td></tr>
               <tr><td>Mercredi</td><td>20h00 – 21h30</td><td><span class="style-pill">Hip-hop</span></td><td>Débutant / Inter.</td><td>Nessoo</td></tr>
               <tr><td>Jeudi</td><td>20h00 – 21h30</td><td><span class="style-pill">Hip-hop</span></td><td>Avancé</td><td>Spider</td></tr>
-              <tr><td>Vendredi</td><td>20h00 – 21h30</td><td><span class="style-pill">Popping</span></td><td>Tous niveaux</td><td>Missile</td></tr>
             </tbody>
           </table>
         </div>
@@ -661,24 +644,24 @@
           <a href="contact.html" class="btn btn-outline" style="width:100%; justify-content:center;">Réserver un essai</a>
         </div>
         <div class="tarif-card featured">
-          <div class="tarif-featured-badge">Le plus populaire</div>
-          <h3>Annuel</h3>
-          <div class="tarif-price">150€ <small>/ an</small></div>
-          <p class="tarif-desc">Accès à 1 cours par semaine sur toute la saison.</p>
+          <div class="tarif-featured-badge">Enfants</div>
+          <h3>Cours Enfants</h3>
+          <div class="tarif-price">230€ <small>/ an</small></div>
+          <p class="tarif-desc">Cours Hip-hop pour les 3–15 ans sur toute la saison.</p>
           <ul class="tarif-features">
-            <li>1 cours / semaine</li>
+            <li>Cours selon tranche d'âge</li>
             <li>Accès événements membres</li>
             <li>Licence fédérale incluse</li>
-            <li>Pass Sport accepté</li>
+            <li>Pass Sport · CAF acceptés</li>
           </ul>
           <a href="inscription.html" class="btn btn-gradient" style="width:100%; justify-content:center;">S'inscrire</a>
         </div>
         <div class="tarif-card">
-          <h3>Multi-cours</h3>
-          <div class="tarif-price">220€ <small>/ an</small></div>
-          <p class="tarif-desc">Accès à 2 cours ou plus par semaine. Idéal pour progresser vite.</p>
+          <h3>Cours Adultes</h3>
+          <div class="tarif-price">280€ <small>/ an</small></div>
+          <p class="tarif-desc">Hip-hop, House, Waacking — 14 ans et plus, tous niveaux.</p>
           <ul class="tarif-features">
-            <li>2 cours / semaine</li>
+            <li>Accès aux cours adultes</li>
             <li>Accès tous événements</li>
             <li>Licence fédérale incluse</li>
             <li>CAF & pass sport acceptés</li>
@@ -719,7 +702,6 @@
         <ul>
           <li><a href="nos-cours.html">Hip-hop</a></li>
           <li><a href="nos-cours.html">House · Waacking</a></li>
-          <li><a href="nos-cours.html">Popping</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -756,13 +738,12 @@
         });
 
         // Enfants section
-        const enfantsSection = document.getElementById('enfantsGrid');
-        if (enfantsSection) {
-          const enfantsParent = enfantsSection.closest('div[style*="margin-top:72px"]') || enfantsSection.parentElement.parentElement;
+        const enfantsParent = document.getElementById('section-enfants');
+        if (enfantsParent) {
           if (filter === 'all' || filter === 'enfants') {
-            if (enfantsParent) enfantsParent.style.display = '';
+            enfantsParent.style.display = '';
           } else {
-            if (enfantsParent) enfantsParent.style.display = 'none';
+            enfantsParent.style.display = 'none';
           }
         }
       });
