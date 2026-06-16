@@ -187,7 +187,7 @@
 /* STYLES GRID */
 .styles-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-top: 56px;
 }
@@ -231,8 +231,6 @@
   font-size: 0.85rem;
   line-height: 1.6;
 }
-/* 7 cards = 4+3, last row centered */
-.styles-grid .style-card:nth-child(5) { grid-column: 1; }
 
 /* ABOUT TEASER */
 .about-teaser { background: var(--bg-2); }
@@ -405,8 +403,6 @@
 
 /* RESPONSIVE */
 @media (max-width: 1024px) {
-  .styles-grid { grid-template-columns: repeat(3, 1fr); }
-  .styles-grid .style-card:nth-child(5) { grid-column: auto; }
   .hero-card-stack { width: 260px; height: 320px; }
 }
 @media (max-width: 768px) {
