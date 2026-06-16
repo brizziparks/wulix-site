@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page introuvable — MHK Asso</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png" />
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .notfound-section {
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+    }
+    .notfound-content { text-align: center; max-width: 520px; }
+    .notfound-code {
+      font-family: var(--font-display);
+      font-size: 7rem;
+      font-weight: 900;
+      line-height: 1;
+      background: var(--gradient-h);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .notfound-content h1 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .notfound-content p {
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .notfound-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo"><img src="assets/images/logo-mhk.avif" alt="MHK — Mille Horizons Conek'Team"></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="a-propos.html">À propos</a></li>
+      <li><a href="nos-cours.html">Nos cours</a></li>
+      <li><a href="nos-profs.html">Nos profs</a></li>
+      <li><a href="evenements.html">Événements</a></li>
+      <li><a href="galerie.html">Galerie</a></li>
+      <li><a href="b-in-the-game.html">B IN THE GAME</a></li><li><a href="contact.html">Contact</a></li>
+      <li><a href="inscription.html" class="nav-cta">S'inscrire</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <section class="notfound-section">
+    <div class="notfound-content">
+      <div class="notfound-code">404</div>
+      <h1>Cette page a quitté la piste</h1>
+      <p>La page que tu cherches n'existe pas ou a été déplacée. Retourne à l'accueil ou découvre nos cours de danse à Bagneux.</p>
+      <div class="notfound-actions">
+        <a href="index.html" class="btn btn-gradient">Retour à l'accueil</a>
+        <a href="nos-cours.html" class="btn btn-outline">Voir les cours</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>MHK</h3>
+        <p>Mille Horizons Conek'Team — Association de danse à Bagneux, Hauts-de-Seine.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/mhk_asso/" target="_blank">Instagram</a>
+          <a href="https://www.facebook.com/MHK.asso" target="_blank">Facebook</a>
+          <a href="https://www.youtube.com/@Binthegame" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="nos-cours.html">Nos cours</a></li>
+          <li><a href="nos-profs.html">Nos profs</a></li>
+          <li><a href="evenements.html">Événements</a></li>
+          <li><a href="galerie.html">Galerie</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item"> infos.mhk.asso@gmail.com</div>
+        <div class="footer-contact-item"> 06 41 23 21 79</div>
+        <div class="footer-contact-item"> Bagneux, Hauts-de-Seine (92)</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 MHK Asso — Tous droits réservés</span>
+      <span>Fait avec ❤️ à Bagneux</span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
