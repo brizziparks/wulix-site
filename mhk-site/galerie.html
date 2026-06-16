@@ -320,8 +320,30 @@
     </div>
   </footer>
 
+  <!-- LIGHTBOX -->
+  <div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(7,9,15,0.94); z-index:999; align-items:center; justify-content:center; cursor:zoom-out;">
+    <img id="lightboxImg" src="" alt="" style="max-width:90vw; max-height:90vh; object-fit:contain; border-radius:8px;" />
+    <button id="lightboxClose" aria-label="Fermer" style="position:absolute; top:24px; right:32px; background:none; border:none; color:var(--white); font-size:2rem; cursor:pointer; line-height:1;">×</button>
+  </div>
+
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
+  <script>
+    // Lightbox galerie
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    document.querySelectorAll('.galerie-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.style.display = 'flex';
+      });
+    });
+    function closeLightbox() { lightbox.style.display = 'none'; lightboxImg.src = ''; }
+    lightbox.addEventListener('click', closeLightbox);
+    document.getElementById('lightboxClose').addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+  </script>
 </body>
 </html>
 
