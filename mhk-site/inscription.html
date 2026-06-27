@@ -183,119 +183,30 @@
   </nav>
 
   <div class="page-hero">
-    <div class="badge">Saison 2025–2026</div>
+    <div class="badge">Saison 2026–2027</div>
     <h1>INSCRIPTION</h1>
-    <p>Rejoins MHK ! Remplis le formulaire ci-dessous et on te recontacte rapidement pour finaliser ton inscription.</p>
+    <p>Rejoins MHK ! Complète le formulaire d'adhésion ci-dessous. L'inscription est confirmée uniquement après le paiement.</p>
   </div>
 
   <section class="inscription-section">
     <div class="container">
       <div class="inscription-grid">
 
-        <!-- FORM -->
-        <div class="form-card">
-          <h2 class="form-title">Formulaire d'inscription</h2>
-          <p class="form-subtitle">Saison 2025–2026 · Tous les champs * sont obligatoires</p>
-
-          <form id="inscriptionForm" action="https://formspree.io/f/xkoaegjj" method="POST">
-            <!-- Identité -->
-            <div class="badge" style="margin-bottom:20px;">Identité</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Prénom *</label>
-                <input type="text" name="prenom" placeholder="Ton prénom" required />
-              </div>
-              <div class="form-group">
-                <label>Nom *</label>
-                <input type="text" name="nom" placeholder="Ton nom" required />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Date de naissance *</label>
-                <input type="date" name="naissance" required />
-              </div>
-              <div class="form-group">
-                <label>Téléphone *</label>
-                <input type="tel" name="tel" placeholder="06 XX XX XX XX" required />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Email *</label>
-              <input type="email" name="email" placeholder="ton@email.com" required />
-            </div>
-            <div class="form-group">
-              <label>Adresse</label>
-              <input type="text" name="adresse" placeholder="Ton adresse" />
-            </div>
-
-            <!-- Cours -->
-            <div class="badge" style="margin:28px 0 20px;">Cours souhaité</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Style de danse *</label>
-                <select name="style" required>
-                  <option value="">Choisir un style</option>
-                  <option>Hip-hop</option>
-                  <option>House</option>
-                  <option>Waacking</option>
-                  <option>Multi-cours (2+)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Niveau *</label>
-                <select name="niveau" required>
-                  <option value="">Ton niveau</option>
-                  <option>Débutant (jamais dansé)</option>
-                  <option>Intermédiaire</option>
-                  <option>Avancé</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Formule *</label>
-              <select name="formule" required>
-                <option value="">Choisir une formule</option>
-                <option>Découverte — Cours d'essai gratuit</option>
-                <option>Enfants — Cours jeunesse (230€/an)</option>
-                <option>Adultes — 1 cours/semaine (280€/an)</option>
-              </select>
-            </div>
-
-            <!-- Infos complémentaires -->
-            <div class="badge" style="margin:28px 0 20px;">Informations complémentaires</div>
-            <div class="form-group">
-              <label>Comment nous avez-vous connu ?</label>
-              <select name="source">
-                <option value="">Sélectionner</option>
-                <option>Bouche à oreille</option>
-                <option>Instagram</option>
-                <option>Facebook</option>
-                <option>Google</option>
-                <option>Flyer</option>
-                <option>Autre</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Message / Questions</label>
-              <textarea name="message" placeholder="Des questions ? Des informations à nous donner ?"></textarea>
-            </div>
-
-            <!-- Consentements -->
-            <div class="form-group">
-              <div class="form-check">
-                <input type="checkbox" id="rgpd" name="rgpd" required />
-                <label for="rgpd">J'accepte que mes données soient utilisées par MHK pour le traitement de mon inscription. *</label>
-              </div>
-              <div class="form-check">
-                <input type="checkbox" id="photo" name="photo" />
-                <label for="photo">J'autorise MHK à utiliser mes photos/vidéos sur ses réseaux sociaux.</label>
-              </div>
-            </div>
-
-            <button type="submit" class="form-submit">Envoyer ma demande d'inscription</button>
-            <p class="form-note">Tes données restent confidentielles et ne sont jamais partagées.</p>
-          </form>
+        <!-- HELLOASSO WIDGET -->
+        <div class="form-card" style="padding:32px 28px;">
+          <h2 class="form-title">Adhésion 2026–2027</h2>
+          <p class="form-subtitle" style="margin-bottom:24px;">L'inscription est confirmée uniquement après le paiement en ligne. Cours d'essai gratuit disponible sur demande via <a href="contact.html" style="color:var(--cyan);">notre formulaire de contact</a>.</p>
+          <iframe id="haWidget" allowtransparency="true" scrolling="auto"
+            src="https://www.helloasso.com/associations/association-mille-horizons/adhesions/adhesion-mhk-asso-2026-2027/widget"
+            style="width:100%; height:750px; border:none; border-radius:12px;"
+            onload="window.addEventListener('message', function(e) {
+              const dataHeight = e.data.height;
+              const haWidgetElement = document.getElementById('haWidget');
+              if (dataHeight > parseFloat(haWidgetElement.height || 0)) {
+                haWidgetElement.height = dataHeight + 'px';
+              }
+            })"></iframe>
+          <p class="form-note" style="margin-top:16px;">Paiement sécurisé via HelloAsso · CB, chèques vacances, pass sport acceptés</p>
         </div>
 
         <!-- SIDEBAR -->
@@ -304,27 +215,27 @@
             <h4>Comment ça marche</h4>
             <div class="sidebar-step">
               <div class="step-num">1</div>
-              <div><strong>Tu remplis le formulaire</strong><p>Indique tes infos et le cours qui t'intéresse.</p></div>
+              <div><strong>Cours d'essai gratuit</strong><p>Contacte-nous pour venir tester un cours avant de t'engager.</p></div>
             </div>
             <div class="sidebar-step">
               <div class="step-num">2</div>
-              <div><strong>On te recontacte</strong><p>L'équipe MHK te rappelle sous 48h pour confirmer.</p></div>
+              <div><strong>Tu remplis le formulaire</strong><p>Choisis ta formule et renseigne tes informations.</p></div>
             </div>
             <div class="sidebar-step">
               <div class="step-num">3</div>
-              <div><strong>Cours d'essai offert</strong><p>Viens tester gratuitement avant de t'engager.</p></div>
+              <div><strong>Paiement en ligne</strong><p>Règle directement via HelloAsso — CB, chèques vacances, pass sport.</p></div>
             </div>
             <div class="sidebar-step">
               <div class="step-num">4</div>
-              <div><strong>Règlement & adhésion</strong><p>Paiement sur place. CB, espèces, chèques vacances, pass sport acceptés.</p></div>
+              <div><strong>Inscription confirmée ✓</strong><p>Tu reçois une confirmation par email. Bienvenue chez MHK !</p></div>
             </div>
           </div>
 
           <div class="sidebar-card">
-            <h4>Tarifs 2025–2026</h4>
+            <h4>Tarifs 2026–2027</h4>
             <div class="price-item"><span>Cours d'essai</span><strong style="color:var(--teal);">Gratuit</strong></div>
             <div class="price-item"><span>Enfants (3–15 ans)</span><strong>230€ / an</strong></div>
-            <div class="price-item"><span>Adultes (14 ans +)</span><strong>280€ / an</strong></div>
+            <div class="price-item"><span>Adultes (16 ans +)</span><strong>280€ / an</strong></div>
             <p style="color:var(--gray);font-size:0.78rem;margin-top:12px;">Pass Sport · CAF · Chèques Vacances acceptés</p>
           </div>
 
