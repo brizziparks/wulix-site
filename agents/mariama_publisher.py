@@ -23,7 +23,7 @@ POSTS_FILE   = Path(__file__).parent / "content" / "posts.txt"
 LOG_FILE     = Path(__file__).parent / "content" / "mariama_log.txt"
 
 DELAI_ENTRE_POSTS = 300   # 5 minutes entre chaque post
-MODE_TEST         = False  # False = publication réelle
+MODE_TEST         = True   # BLOQUÉ — token sans w_organization_social, ne pas poster
 VISIBILITE        = "PUBLIC"
 
 # ✅ Toujours poster sur la PAGE WULIX (jamais le profil perso Omar)
@@ -48,7 +48,7 @@ def lire_token():
 def get_headers(token):
     return {
         "Authorization": f"Bearer {token}",
-        "Content-Type" : "application/json",
+        "Content-Type" : "application/json; charset=utf-8",
         "X-Restli-Protocol-Version": "2.0.0",
     }
 
@@ -106,7 +106,7 @@ def publier_post(token, urn, texte):
     }
     try:
         r = requests.post(API_POST_URL, headers=get_headers(token),
-                          data=json.dumps(payload), timeout=15)
+                          data=json.dumps(payload, ensure_ascii=False).encode('utf-8'), timeout=15)
         r.raise_for_status()
         post_id = r.headers.get('x-restli-id', 'N/A')
         return True, post_id

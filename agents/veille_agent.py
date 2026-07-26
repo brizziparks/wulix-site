@@ -83,7 +83,10 @@ def collect_news_ddg() -> list[dict]:
         "python AI agent news",
     ]
     try:
-        from duckduckgo_search import DDGS
+        try:
+            from ddgs import DDGS
+        except ImportError:
+            from duckduckgo_search import DDGS
         with DDGS() as ddgs:
             for query in queries:
                 for r in ddgs.news(query, max_results=4):
