@@ -72,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }, observerOpts);
 
   document.querySelectorAll(
-    '.style-card, .cours-card, .prof-card, .event-item, .value-card, .tarif-card, .info-card, .prof-full-card, .event-full-card, .bitg-cat'
+    '.style-card, .cours-card, .prof-card, .event-item, .value-card, .tarif-card, .info-card, .prof-full-card, .event-full-card, .bitg-cat, ' +
+    '.text-center, .section-head, .about-text, .about-visual, .cta-inner, .events-header, .sidebar-card, .form-card, .bitg-cat-card, .bitg-hero-text'
   ).forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(24px)';
