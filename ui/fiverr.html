@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commander sur Fiverr — WULIX Automatisation IA</title>
+  <meta name="description" content="Commandez vos automatisations IA sur Fiverr. Agent IA Python, workflow n8n sur mesure. Livraison 5-10 jours, satisfaction garantie.">
+  <meta property="og:title" content="Fiverr WULIX — Automatisation IA sur mesure">
+  <meta property="og:image" content="https://wulix.fr/og-image.jpg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wulix-tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 0%, rgba(0,212,255,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 85% 100%, rgba(168,85,247,.10) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,0,21,0.88); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,212,255,.08); }
+    .nav-logo { font-family: var(--font-display); font-weight: 900; font-size: 20px; background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 4px; text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: var(--dim); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { padding: 8px 20px; border-radius: var(--radius-md); background: var(--grad-cta); color: #fff !important; font-weight: 600; font-size: 14px; text-decoration: none; }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    /* HERO */
+    .hero { padding: 112px 0 56px; text-align: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: var(--radius-pill);
+      background: rgba(0,212,255,.08); border: 1px solid rgba(0,212,255,.2);
+      color: var(--cyan); font-size: 12px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 14px; }
+    .hero h1 span { background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 17px; color: var(--dim); max-width: 500px; margin: 0 auto 40px; line-height: 1.65; }
+
+    /* TRUST BAR */
+    .trust-bar {
+      display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+      padding: 24px; border-radius: var(--radius-lg);
+      background: var(--bg-panel); border: 1px solid var(--border-subtle);
+      margin-bottom: 64px;
+    }
+    .trust-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--dim); }
+    .trust-item svg { color: var(--cyan); flex-shrink: 0; }
+    .trust-item strong { color: var(--text); }
+
+    /* GIG CARDS */
+    .gigs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 64px; }
+    @media (max-width: 500px) { .gigs-grid { grid-template-columns: 1fr; } }
+
+    .gig-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+    }
+    .gig-card:hover { border-color: var(--border-cyan-mid); box-shadow: var(--glow-cyan-subtle); transform: translateY(-4px); }
+
+    .gig-cover {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .gig-cover-python {
+      background: linear-gradient(135deg, rgba(53,114,165,.3) 0%, rgba(0,212,255,.1) 100%);
+    }
+    .gig-cover-n8n {
+      background: linear-gradient(135deg, rgba(234,75,113,.25) 0%, rgba(168,85,247,.15) 100%);
+    }
+    .gig-cover-icon {
+      font-size: 64px; opacity: .9;
+      position: relative; z-index: 1;
+    }
+    .gig-cover-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,212,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .gig-cover-label {
+      position: absolute; top: 14px; left: 14px;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      color: var(--cyan); background: rgba(0,212,255,.1);
+      border: 1px solid rgba(0,212,255,.2); padding: 4px 10px;
+      border-radius: var(--radius-pill); letter-spacing: .08em; text-transform: uppercase;
+    }
+
+    .gig-body { padding: 28px 24px; flex: 1; display: flex; flex-direction: column; }
+    .gig-title { font-size: 18px; font-weight: 700; line-height: 1.35; margin-bottom: 12px; }
+    .gig-desc { font-size: 14px; color: var(--dim); line-height: 1.65; margin-bottom: 20px; flex: 1; }
+
+    .gig-packages { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+    .gig-pkg {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,.02);
+    }
+    .gig-pkg-name { font-size: 13px; font-weight: 600; color: var(--dim); }
+    .gig-pkg-desc { font-size: 12px; color: var(--dim); opacity: .7; margin-top: 1px; }
+    .gig-pkg-price { font-family: var(--font-mono); font-size: 15px; font-weight: 900; color: var(--cyan); white-space: nowrap; }
+    .gig-pkg.featured { border-color: var(--border-purple-mid); background: rgba(168,85,247,.04); }
+    .gig-pkg.featured .gig-pkg-name { color: var(--purple); }
+
+    .gig-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px; border-radius: var(--radius-md);
+      background: var(--grad-cta); color: #fff;
+      font-weight: 700; font-size: 15px; text-decoration: none;
+      transition: opacity .2s, transform .2s, box-shadow .2s;
+      box-shadow: var(--glow-cyan-subtle);
+    }
+    .gig-cta:hover { opacity: .9; transform: translateY(-1px); box-shadow: var(--glow-cyan-strong); }
+
+    /* SECTION SEP */
+    .sep { border: none; border-top: 1px solid var(--border-subtle); margin: 0; }
+
+    /* BOTTOM CTA */
+    .bottom-cta { text-align: center; padding: 72px 0; }
+    .bottom-cta p { font-size: 16px; color: var(--dim); margin-bottom: 24px; }
+    .btn-outline { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: var(--radius-md); border: 1px solid var(--border-cyan-mid); color: var(--cyan); font-weight: 600; font-size: 15px; text-decoration: none; transition: background .2s; }
+    .btn-outline:hover { background: rgba(0,212,255,.06); }
+
+    footer { border-top: 1px solid var(--border-subtle); padding: 28px 24px; position: relative; z-index: 1; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--dim); }
+    .footer-bottom a { color: var(--dim); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">WULIX</a>
+    <div class="nav-links">
+      <a href="/offre.html">Services</a>
+      <a href="/blog.html">Blog</a>
+      <a href="https://wulix.gumroad.com" target="_blank" rel="noopener">Produits</a>
+      <a href="/contact.html" class="nav-cta">Devis gratuit</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="var(--cyan)"><circle cx="5" cy="5" r="5"/></svg>
+        Disponible sur Fiverr
+      </div>
+      <h1>Commander une<br><span>automatisation IA</span></h1>
+      <p>Paiement sécurisé via Fiverr. Livraison en 5–10 jours. Remboursement garanti si non satisfait.</p>
+
+      <div class="trust-bar">
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span><strong>Paiement sécurisé</strong> Fiverr</span>
+        </div>
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Livraison <strong>5–10 jours</strong></span>
+        </div>
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Satisfaction <strong>garantie</strong></span>
+        </div>
+        <div class="trust-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Support <strong>direct</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="gigs-grid">
+
+      <!-- GIG 1 : AI Automation Agent -->
+      <a href="https://www.fiverr.com/richardsylla" target="_blank" rel="noopener" class="gig-card">
+        <div class="gig-cover gig-cover-python">
+          <div class="gig-cover-grid"></div>
+          <div class="gig-cover-icon">🐍</div>
+          <span class="gig-cover-label">Python · IA</span>
+        </div>
+        <div class="gig-body">
+          <h2 class="gig-title">Agent IA Python sur mesure<br>pour automatiser votre business</h2>
+          <p class="gig-desc">Je développe un agent Python autonome connecté à Gemini, Claude ou GPT-4. Veille, prospection, support client, emails, rapports — il tourne 24/7 sans intervention manuelle.</p>
+          <div class="gig-packages">
+            <div class="gig-pkg">
+              <div>
+                <div class="gig-pkg-name">Basic</div>
+                <div class="gig-pkg-desc">1 tâche automatisée · livraison 5j</div>
+              </div>
+              <span class="gig-pkg-price">50€</span>
+            </div>
+            <div class="gig-pkg featured">
+              <div>
+                <div class="gig-pkg-name">Standard ★</div>
+                <div class="gig-pkg-desc">3 tâches + dashboard · livraison 7j</div>
+              </div>
+              <span class="gig-pkg-price">150€</span>
+            </div>
+            <div class="gig-pkg">
+              <div>
+                <div class="gig-pkg-name">Premium</div>
+                <div class="gig-pkg-desc">Agent complet + API + maintenance</div>
+              </div>
+              <span class="gig-pkg-price">400€</span>
+            </div>
+          </div>
+          <span class="gig-cta">
+            Voir l'offre sur Fiverr
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- GIG 2 : n8n Workflow -->
+      <a href="https://www.fiverr.com/richardsylla" target="_blank" rel="noopener" class="gig-card">
+        <div class="gig-cover gig-cover-n8n">
+          <div class="gig-cover-grid"></div>
+          <div class="gig-cover-icon">⚡</div>
+          <span class="gig-cover-label">n8n · No-code</span>
+        </div>
+        <div class="gig-body">
+          <h2 class="gig-title">Workflow n8n pour connecter<br>tous vos outils automatiquement</h2>
+          <p class="gig-desc">Je crée des pipelines n8n qui connectent Gmail, Notion, Airtable, LinkedIn, Slack, Shopify et 400+ outils. Zéro code, maintenance incluse, importation JSON prête à l'emploi.</p>
+          <div class="gig-packages">
+            <div class="gig-pkg">
+              <div>
+                <div class="gig-pkg-name">Basic</div>
+                <div class="gig-pkg-desc">1 workflow simple · livraison 3j</div>
+              </div>
+              <span class="gig-pkg-price">50€</span>
+            </div>
+            <div class="gig-pkg featured">
+              <div>
+                <div class="gig-pkg-name">Standard ★</div>
+                <div class="gig-pkg-desc">3 workflows liés · logique avancée</div>
+              </div>
+              <span class="gig-pkg-price">150€</span>
+            </div>
+            <div class="gig-pkg">
+              <div>
+                <div class="gig-pkg-name">Premium</div>
+                <div class="gig-pkg-desc">Pipeline complet + IA + support 30j</div>
+              </div>
+              <span class="gig-pkg-price">400€</span>
+            </div>
+          </div>
+          <span class="gig-cta">
+            Voir l'offre sur Fiverr
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <div class="bottom-cta">
+    <div class="container">
+      <p>Vous préférez un devis direct sans passer par Fiverr ?</p>
+      <a href="/contact.html" class="btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Formulaire de devis gratuit
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 WULIX — Omar Sylla, auto-entrepreneur</span>
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <a href="/">Accueil</a>
+          <a href="/offre.html">Services</a>
+          <a href="/cgv.html">CGV</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

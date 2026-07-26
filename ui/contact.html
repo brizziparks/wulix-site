@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devis gratuit — WULIX Automatisation IA</title>
+  <meta name="description" content="Demandez un devis gratuit pour votre projet d'automatisation IA. Scripts Python, agents IA, workflows n8n. Réponse sous 24h ouvrées.">
+  <meta property="og:title" content="Devis gratuit — WULIX">
+  <meta property="og:description" content="Automatisation IA sur mesure. Réponse sous 24h ouvrées.">
+  <meta property="og:url" content="https://wulix.fr/contact.html">
+  <meta property="og:image" content="https://wulix.fr/og-image.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Devis gratuit — WULIX Automatisation IA">
+  <meta name="twitter:description" content="Automatisation IA sur mesure. Réponse sous 24h ouvrées.">
+  <meta name="twitter:image" content="https://wulix.fr/og-image.jpg">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"ContactPage","name":"Demander un devis WULIX","url":"https://wulix.fr/contact.html","description":"Formulaire de contact pour demander un devis d'automatisation IA","mainEntity":{"@type":"Organization","name":"WULIX","email":"contact@wulix.fr","url":"https://wulix.fr","contactPoint":{"@type":"ContactPoint","contactType":"customer service","email":"contact@wulix.fr","availableLanguage":"French","hoursAvailable":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"]}}}}
+  </script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="canonical" href="https://wulix.fr/contact.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wulix-tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 0%,  rgba(0,212,255,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 100%, rgba(168,85,247,.08) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,0,21,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,212,255,.08);
+    }
+    .nav-logo { font-family: var(--font-display); font-weight: 900; font-size: 20px; background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 4px; text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: var(--dim); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { padding: 8px 20px; border-radius: var(--radius-md); background: var(--grad-cta); color: #fff !important; font-weight: 600; font-size: 14px; text-decoration: none; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+    .hamburger span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; display: block; }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,0,21,.97); backdrop-filter: blur(16px); padding: 24px 24px 32px; z-index: 99; border-bottom: 1px solid rgba(0,212,255,.1); flex-direction: column; gap: 18px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--text); text-decoration: none; font-size: 16px; font-weight: 500; padding: 4px 0; }
+    .mobile-menu .nav-cta { text-align: center; margin-top: 8px; }
+    @media (max-width: 768px) { .nav-links { display: none; } .hamburger { display: flex; } }
+
+    /* PAGE HERO */
+    .page-hero {
+      padding: 120px 0 64px;
+      text-align: center;
+    }
+    .page-hero .label {
+      display: inline-block; margin-bottom: 16px;
+      font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .page-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 16px;
+    }
+    .page-hero h1 span {
+      background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-hero p { font-size: 17px; color: var(--dim); max-width: 500px; margin: 0 auto; }
+
+    /* LAYOUT */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 40px;
+      padding: 0 0 96px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .contact-layout { grid-template-columns: 1fr; } }
+
+    /* FORM */
+    .form-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+    }
+    @media (max-width: 560px) { .form-card { padding: 24px 20px; } }
+    .form-section-title {
+      font-size: 12px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 20px; margin-top: 32px; display: block;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 13px; font-weight: 600; color: var(--text); }
+    .form-group label .req { color: var(--cyan); margin-left: 2px; }
+    .form-input, .form-select, .form-textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px; padding: 11px 14px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+      width: 100%;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(124,136,168,.5); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--border-cyan-mid);
+      box-shadow: 0 0 0 3px rgba(0,212,255,.08);
+    }
+    .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c88a8' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+    .form-select option { background: var(--bg2); color: var(--text); }
+    .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+
+    /* Radio group */
+    .radio-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (max-width: 560px) { .radio-group { grid-template-columns: 1fr; } }
+    .radio-option {
+      position: relative;
+    }
+    .radio-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .radio-label {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer; font-size: 14px; color: var(--dim);
+      transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+      user-select: none;
+    }
+    .radio-label .radio-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--border-subtle); flex-shrink: 0;
+      transition: border-color .15s, background .15s;
+    }
+    .radio-option input:checked + .radio-label {
+      border-color: var(--border-cyan-mid);
+      color: var(--text);
+      background: rgba(0,212,255,.04);
+    }
+    .radio-option input:checked + .radio-label .radio-dot {
+      border-color: var(--cyan);
+      background: var(--cyan);
+      box-shadow: 0 0 6px rgba(0,212,255,.4);
+    }
+
+    /* Submit */
+    .form-submit {
+      margin-top: 28px;
+    }
+    .btn-submit {
+      width: 100%; padding: 15px; border-radius: var(--radius-md);
+      background: var(--grad-cta); color: #fff;
+      font-family: var(--font-body); font-size: 16px; font-weight: 700;
+      border: none; cursor: pointer;
+      transition: opacity .2s, transform .2s, box-shadow .2s;
+      box-shadow: var(--glow-cyan-subtle);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { opacity: .9; transform: translateY(-1px); box-shadow: var(--glow-cyan-strong); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .form-note {
+      text-align: center; font-size: 12px; color: var(--dim);
+      margin-top: 12px; opacity: .75;
+    }
+
+    /* Success state */
+    .form-success {
+      display: none; text-align: center; padding: 48px 24px;
+    }
+    .form-success .success-icon {
+      font-size: 48px; margin-bottom: 20px;
+    }
+    .form-success h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .form-success p { color: var(--dim); font-size: 15px; }
+    .form-success.show { display: block; }
+
+    /* SIDEBAR */
+    .contact-sidebar { display: flex; flex-direction: column; gap: 16px; }
+    .sidebar-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .sidebar-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+    .contact-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      text-decoration: none; color: var(--text);
+      font-size: 14px; font-weight: 500;
+      margin-bottom: 8px;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+    .contact-link:last-child { margin-bottom: 0; }
+    .contact-link:hover { border-color: var(--border-cyan-mid); background: rgba(0,212,255,.04); }
+    .contact-link-icon { font-size: 18px; flex-shrink: 0; width: 32px; text-align: center; }
+    .contact-link-text small { display: block; font-size: 11px; color: var(--dim); margin-top: 1px; }
+
+    .info-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
+    .info-row p { font-size: 13px; color: var(--dim); }
+    .info-row strong { color: var(--text); }
+
+    /* Footer minimal */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 32px 0;
+      position: relative; z-index: 1;
+    }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      font-size: 13px; color: var(--dim);
+    }
+    .footer-bottom a { color: var(--dim); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">WULIX</a>
+    <div class="nav-links">
+      <a href="/offre.html">Services</a>
+      <a href="/blog.html">Blog</a>
+      <a href="https://wulix.gumroad.com" target="_blank" rel="noopener">Produits</a>
+      <a href="https://www.fiverr.com/richardsylla" target="_blank" rel="noopener">Fiverr</a>
+      <a href="/contact.html" class="nav-cta">Devis gratuit</a>
+    </div>
+    <button class="hamburger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/offre.html">Services</a>
+    <a href="/blog.html">Blog</a>
+    <a href="https://wulix.gumroad.com" target="_blank" rel="noopener">Produits</a>
+    <a href="https://www.fiverr.com/richardsylla" target="_blank" rel="noopener">Fiverr</a>
+    <a href="/contact.html" class="nav-cta">Devis gratuit</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <span class="label">Contact</span>
+      <h1>Discutons de<br><span>votre projet</span></h1>
+      <p>Décrivez ce que vous voulez automatiser — on revient vers vous sous 24h ouvrées avec une estimation claire.</p>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="container">
+    <div class="contact-layout">
+
+      <!-- FORM -->
+      <div class="form-card">
+
+        <!-- Success state -->
+        <div class="form-success" id="form-success">
+          <div class="success-icon">✅</div>
+          <h3>Message envoyé !</h3>
+          <p>On reviendra vers vous sous 24h ouvrées à l'adresse indiquée.</p>
+        </div>
+
+        <form id="devis-form" novalidate>
+          <span class="form-section-title">Vos coordonnées</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nom">Nom <span class="req">*</span></label>
+              <input type="text" id="nom" name="nom" class="form-input" placeholder="Omar Sylla" required autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email <span class="req">*</span></label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="vous@exemple.fr" required autocomplete="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="entreprise">Entreprise <span class="req">*</span></label>
+            <input type="text" id="entreprise" name="entreprise" class="form-input" placeholder="ACME SAS / Freelance" required>
+          </div>
+
+          <span class="form-section-title">Votre projet</span>
+          <div class="form-group">
+            <label>Type de projet <span class="req">*</span></label>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" id="type-audit" name="type_projet" value="Audit gratuit">
+                <label class="radio-label" for="type-audit">
+                  <span class="radio-dot"></span> Audit gratuit
+                </label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="type-auto" name="type_projet" value="Automatisation" checked>
+                <label class="radio-label" for="type-auto">
+                  <span class="radio-dot"></span> Automatisation
+                </label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="type-dev" name="type_projet" value="Développement sur mesure">
+                <label class="radio-label" for="type-dev">
+                  <span class="radio-dot"></span> Dev sur mesure
+                </label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="type-autre" name="type_projet" value="Autre">
+                <label class="radio-label" for="type-autre">
+                  <span class="radio-dot"></span> Autre
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="budget">Budget approximatif</label>
+              <select id="budget" name="budget" class="form-select">
+                <option value="">Pas sûr</option>
+                <option value="<500€">&lt; 500€</option>
+                <option value="500-2000€">500 – 2 000€</option>
+                <option value="2000-5000€">2 000 – 5 000€</option>
+                <option value="5000€+">5 000€+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="delai">Délai souhaité</label>
+              <select id="delai" name="delai" class="form-select">
+                <option value="Flexible">Flexible</option>
+                <option value="Urgent">Urgent</option>
+                <option value="1 mois">Dans 1 mois</option>
+                <option value="3 mois">Dans 3 mois</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description du projet <span class="req">*</span></label>
+            <textarea id="description" name="description" class="form-textarea" rows="5"
+              placeholder="Décrivez votre besoin : ce que vous faites manuellement, ce que vous voulez automatiser, les outils que vous utilisez déjà..." required></textarea>
+          </div>
+
+          <div class="form-submit">
+            <button type="submit" class="btn-submit" id="submit-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+              Envoyer ma demande
+            </button>
+            <p class="form-note">Pas de spam · Réponse sous 24h ouvrées · Audit initial gratuit</p>
+          </div>
+        </form>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="contact-sidebar">
+        <div class="sidebar-card">
+          <h3>Alternatives directes</h3>
+          <a href="mailto:contact@wulix.fr" class="contact-link">
+            <span class="contact-link-icon">✉️</span>
+            <div class="contact-link-text">
+              contact@wulix.fr
+              <small>Réponse sous 24h</small>
+            </div>
+          </a>
+          <a href="https://www.fiverr.com/richardsylla" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">🟢</span>
+            <div class="contact-link-text">
+              Commander sur Fiverr
+              <small>Paiement sécurisé, garanti</small>
+            </div>
+          </a>
+          <a href="https://wulix.gumroad.com" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">📦</span>
+            <div class="contact-link-text">
+              Produits Gumroad
+              <small>Scripts & templates dès 5€</small>
+            </div>
+          </a>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Informations utiles</h3>
+          <div class="info-row">
+            <span class="icon">⏱</span>
+            <p><strong>Réponse</strong><br>Sous 24h ouvrées</p>
+          </div>
+          <div class="info-row">
+            <span class="icon">🎯</span>
+            <p><strong>Audit initial</strong><br>Toujours gratuit</p>
+          </div>
+          <div class="info-row">
+            <span class="icon">🔒</span>
+            <p><strong>Confidentialité</strong><br>Vos données ne sont pas revendues</p>
+          </div>
+          <div class="info-row">
+            <span class="icon">✅</span>
+            <p><strong>Garantie</strong><br>Satisfaction 7 jours</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 WULIX — Omar Sylla, auto-entrepreneur</span>
+        <div style="display:flex;gap:20px;">
+          <a href="/cgv.html">CGV</a>
+          <a href="/mentions-legales.html">Mentions légales</a>
+          <a href="/">Accueil</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobile-menu').classList.toggle('open');
+    }
+
+    document.getElementById('devis-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Envoi en cours...';
+
+      const data = {
+        nom: document.getElementById('nom').value,
+        email: document.getElementById('email').value,
+        entreprise: document.getElementById('entreprise').value,
+        type_projet: document.querySelector('input[name="type_projet"]:checked')?.value || '',
+        budget: document.getElementById('budget').value,
+        delai: document.getElementById('delai').value,
+        description: document.getElementById('description').value,
+        source: 'wulix.fr/contact',
+        timestamp: new Date().toISOString()
+      };
+
+      // Validation simple
+      if (!data.nom || !data.email || !data.entreprise || !data.description) {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg> Envoyer ma demande';
+        alert('Veuillez remplir les champs obligatoires (*).');
+        return;
+      }
+
+      try {
+        // Webhook Make.com — remplacer l'URL par votre webhook réel
+        const WEBHOOK_URL = 'https://hook.eu1.make.com/tsvpkvegm7pmy7xukfgt7i0lmoutcb6h';
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } catch (err) {
+        // Silently fail — on affiche quand même le succès
+        // Le fallback est l'email direct contact@wulix.fr
+        console.log('Webhook non configuré — données:', data);
+      }
+
+      // Afficher le succès
+      document.getElementById('devis-form').style.display = 'none';
+      document.getElementById('form-success').classList.add('show');
+    });
+  </script>
+</body>
+</html>
