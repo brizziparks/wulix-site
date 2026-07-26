@@ -2,9 +2,19 @@ from .web_search import search_web
 from .memory_tool import remember, recall, forget, load_memory
 from .system_tools import (
     open_application, open_url,
-    volume_up, volume_down, volume_mute_toggle,
-    youtube_search_play, open_youtube_url,
 )
+# volume + youtube — fonctions optionnelles (pyautogui requis)
+try:
+    from .system_tools import (
+        volume_up, volume_down, volume_mute_toggle,
+        youtube_search_play, open_youtube_url,
+    )
+except ImportError:
+    def volume_up(s=2): return "pyautogui non installé"
+    def volume_down(s=2): return "pyautogui non installé"
+    def volume_mute_toggle(): return "pyautogui non installé"
+    def youtube_search_play(q): return "pyautogui non installé"
+    def open_youtube_url(u): return "pyautogui non installé"
 from .file_tools import read_file, write_file, list_files
 from .datetime_tool import get_datetime
 from .notify import notify, remind

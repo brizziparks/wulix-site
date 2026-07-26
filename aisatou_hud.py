@@ -430,6 +430,229 @@ async def agents_blog(user: str = Depends(verify_auth)):
     return {"items": items if isinstance(items, list) else [], "count": len(items) if isinstance(items, list) else 0}
 
 
+@app.get("/memory/stats")
+async def memory_stats(user: str = Depends(verify_auth)):
+    """Retourne les stats agrégées des fichiers memory/ pour le widget HUD."""
+    import re
+    memory_dir = BASE_DIR / "memory"
+
+    def count_lines(filename: str, prefix: str = "- ") -> int:
+        p = memory_dir / filename
+        if not p.exists(): return 0
+        return sum(1 for l in p.read_text(encoding="utf-8", errors="replace").splitlines() if l.startswith(prefix))
+
+    def last_lines(filename: str, n: int = 3) -> list:
+        p = memory_dir / filename
+        if not p.exists(): return []
+        lines = [l for l in p.read_text(encoding="utf-8", errors="replace").splitlines() if l.startswith("- [")]
+        return lines[-n:]
+
+    leads    = count_lines("leads.md", "- **[")
+    articles = count_lines("blog_posts.md", "- [")
+    veille   = count_lines("veille.md", "- [")
+    devis    = count_lines("devis.md", "- [")
+    activity = last_lines("activity_log.md", 4)
+
+    return {
+        "leads": leads,
+        "articles": articles,
+        "veille": veille,
+        "devis": devis,
+        "last_activity": activity
+    }
+
+
+@app.post("/webhook/demba")
+async def webhook_demba(request: Request):
+    """
+    Webhook DEMBA intégré — reçoit les demandes Make.com,
+    génère un devis IA et l'envoie par email au prospect.
+    Route publique (pas d'auth) pour que Make.com puisse POSTer.
+    """
+    import smtplib, re
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    import logging as _log
+    try:
+        data = await request.json()
+    except Exception:
+        return {"success": False, "error": "JSON invalide"}
+
+    nom         = data.get("nom", "")
+    email_dest  = data.get("email", "")
+    entreprise  = data.get("entreprise", "")
+    type_projet = data.get("type_projet", "Automatisation")
+    budget      = data.get("budget", "Non précisé")
+    delai       = data.get("delai", "Flexible")
+    description = data.get("description", "")
+
+    if not email_dest or not nom:
+        return {"success": False, "error": "email ou nom manquant"}
+
+    prenom = nom.split()[0] if nom else "là"
+
+    TARIFS = {
+        "Audit gratuit":              {"prix": "Gratuit",   "delai": "48h"},
+        "Automatisation":             {"prix": "200–500€",  "delai": "5–10 j"},
+        "Développement sur mesure":   {"prix": "800€+",     "delai": "2–4 sem"},
+        "Autre":                      {"prix": "À définir", "delai": "À définir"},
+    }
+    tarif = TARIFS.get(type_projet, TARIFS["Autre"])
+
+    # ── Score prospect ────────────────────────────────────────────────
+    score = 5
+    if "2000" in budget or "5000" in budget: score += 3
+    elif "500" in budget: score += 2
+    if delai == "Urgent": score += 2
+    if len(description) > 100: score += 1
+    score = min(score, 10)
+    niveau = "🔥 Chaud" if score >= 8 else ("🟡 Tiède" if score >= 5 else "❄️ Froid")
+
+    # ── Génération du corps email ─────────────────────────────────────
+    corps_html = ""
+    objet      = f"Votre projet {type_projet} — WULIX"
+
+    # Essai Gemini
+    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    groq_key   = os.environ.get("GROQ_API_KEY", "")
+
+    if gemini_key:
+        try:
+            import google.generativeai as genai
+            genai.configure(api_key=gemini_key)
+            model = genai.GenerativeModel("gemini-2.0-flash-lite")
+            prompt = f"""Tu es DEMBA, agent devis WULIX (automatisation IA Python/n8n, Omar Sylla).
+Rédige un email de réponse professionnel à cette demande. Ton direct, chaleureux, pas corporate.
+- Nom : {nom} | Entreprise : {entreprise} | Projet : {type_projet}
+- Budget : {budget} | Délai : {delai}
+- Description : {description}
+Tarif référence : {tarif['prix']} · Délai : {tarif['delai']}
+Rédige UNIQUEMENT le corps HTML (balises <p>,<ul>,<strong>).
+Inclure : salutation, résumé besoin, estimation, 2-3 questions, CTA audit 30min gratuit, signature Omar WULIX."""
+            resp = model.generate_content(prompt)
+            corps_html = resp.text.strip()
+        except Exception as e:
+            _log.warning(f"[DEMBA] Gemini error: {e}")
+
+    # Fallback Groq
+    if not corps_html and groq_key:
+        try:
+            import requests as _r
+            payload = {"model": "llama-3.3-70b-versatile", "messages": [
+                {"role": "system", "content": "Tu es DEMBA, agent devis WULIX. Rédige des emails professionnels et directs."},
+                {"role": "user", "content": f"Email de réponse (HTML) pour : {nom}, {type_projet}, budget {budget}, description: {description[:300]}. Tarif: {tarif['prix']}."}
+            ], "max_tokens": 600}
+            r = _r.post("https://api.groq.com/openai/v1/chat/completions",
+                        headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                        json=payload, timeout=15)
+            if r.ok:
+                corps_html = r.json()["choices"][0]["message"]["content"].strip()
+        except Exception as e:
+            _log.warning(f"[DEMBA] Groq error: {e}")
+
+    # Fallback template
+    if not corps_html:
+        corps_html = f"""<p>Bonjour {prenom},</p>
+<p>Merci pour votre demande concernant un projet de <strong>{type_projet}</strong>.</p>
+<p>Voici une première estimation :</p>
+<ul>
+  <li><strong>Tarif indicatif :</strong> {tarif['prix']}</li>
+  <li><strong>Délai estimé :</strong> {tarif['delai']}</li>
+  <li><strong>Acompte :</strong> 50% à la commande</li>
+</ul>
+<p>Pour affiner ce devis, proposez-moi 2-3 créneaux pour un audit gratuit de 30 min.</p>"""
+
+    # ── Email pro HTML ────────────────────────────────────────────────
+    email_html = f"""
+<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f4f4f8;font-family:Inter,Arial,sans-serif">
+<div style="max-width:580px;margin:32px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+  <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:28px 32px">
+    <div style="font-family:Arial Black,sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:3px">WULIX</div>
+    <div style="color:rgba(255,255,255,.75);font-size:13px;margin-top:4px">Automatisation IA · Python · n8n</div>
+  </div>
+  <div style="padding:32px;color:#1a1a2e;line-height:1.7;font-size:15px">
+    {corps_html}
+    <div style="margin-top:32px;padding-top:20px;border-top:1px solid #eee;font-size:13px;color:#555">
+      <strong>Omar Sylla</strong> — Fondateur WULIX<br>
+      <a href="mailto:contact@wulix.fr" style="color:#7c3aed">contact@wulix.fr</a> ·
+      <a href="https://wulix.fr" style="color:#7c3aed">wulix.fr</a> ·
+      <a href="https://www.fiverr.com/richardsylla" style="color:#7c3aed">Fiverr</a>
+    </div>
+  </div>
+  <div style="background:#f8f7ff;padding:12px 32px;text-align:center;font-size:11px;color:#999">
+    Vous recevez cet email car vous avez soumis une demande sur wulix.fr
+  </div>
+</div>
+</body></html>"""
+
+    # ── Envoi email prospect ──────────────────────────────────────────
+    gmail_user = os.environ.get("GMAIL_USER", "omarichard284@gmail.com")
+    gmail_pwd  = os.environ.get("GMAIL_APP_PASSWORD", "")
+    succes = False
+
+    if gmail_pwd:
+        try:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = objet
+            msg["From"]    = f"Omar · WULIX <{gmail_user}>"
+            msg["To"]      = email_dest
+            msg["Reply-To"] = "contact@wulix.fr"
+            msg.attach(MIMEText(email_html, "html", "utf-8"))
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+                s.login(gmail_user, gmail_pwd)
+                s.sendmail(gmail_user, email_dest, msg.as_string())
+            succes = True
+            _log.info(f"[DEMBA] Devis envoyé → {email_dest}")
+        except Exception as e:
+            _log.error(f"[DEMBA] Erreur email: {e}")
+
+        # Notification Omar
+        if succes:
+            try:
+                notif = MIMEMultipart("alternative")
+                notif["Subject"] = f"[DEMBA] {niveau} — {nom} · {type_projet} · score {score}/10"
+                notif["From"]    = gmail_user
+                notif["To"]      = gmail_user
+                notif_html = f"""<h3>🔔 Nouveau devis envoyé</h3>
+<table style="border-collapse:collapse;font-size:14px">
+<tr><td style="padding:4px 12px 4px 0;color:#666">Nom</td><td><strong>{nom}</strong></td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#666">Email</td><td>{email_dest}</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#666">Entreprise</td><td>{entreprise}</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#666">Projet</td><td>{type_projet}</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#666">Budget</td><td>{budget}</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#666">Score</td><td><strong style="color:{'#e74c3c' if score>=8 else '#f39c12'}">{niveau} ({score}/10)</strong></td></tr>
+</table>
+<h4>Description :</h4><p>{description}</p>"""
+                notif.attach(MIMEText(notif_html, "html", "utf-8"))
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+                    s.login(gmail_user, gmail_pwd)
+                    s.sendmail(gmail_user, gmail_user, notif.as_string())
+            except Exception:
+                pass
+
+    # ── Memory log ───────────────────────────────────────────────────
+    sys.path.insert(0, str(BASE_DIR / "tools"))
+    try:
+        from memory_logger import log_devis
+        log_devis(email_dest, nom, montant=0)
+    except Exception:
+        pass
+
+    # ── Log JSON ─────────────────────────────────────────────────────
+    log_path = BASE_DIR / "memory" / "demba_log.json"
+    logs = []
+    if log_path.exists():
+        try: logs = json.loads(log_path.read_text(encoding="utf-8"))
+        except Exception: pass
+    logs.append({"date": datetime.now().isoformat(), "nom": nom, "email": email_dest,
+                 "type": type_projet, "score": score, "succes": succes})
+    log_path.write_text(json.dumps(logs[-200:], ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return {"success": succes, "score": score, "niveau": niveau, "message": f"Devis {'envoyé' if succes else 'erreur'} → {email_dest}"}
+
+
 @app.get("/agents/crowdsec")
 async def agents_crowdsec(user: str = Depends(verify_auth)):
     """Statut CrowdSec depuis le NAS (192.168.1.4:8080) — fallback donnees statiques."""

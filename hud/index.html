@@ -997,6 +997,35 @@
       </div>
     </div>
 
+    <!-- Memory Stats Widget -->
+    <div class="rp-section" id="memory-widget">
+      <div class="rp-title" style="display:flex;align-items:center;gap:6px">
+        🧠 Second Cerveau
+        <button onclick="refreshMemory()" style="margin-left:auto;background:none;border:none;color:var(--accent2);cursor:pointer;font-size:13px" title="Rafraîchir">↻</button>
+      </div>
+      <div id="memory-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <div style="background:rgba(0,0,20,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px;text-align:center">
+          <div id="mem-leads" style="font-size:18px;font-weight:bold;color:var(--green)">—</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">Leads THIERNO</div>
+        </div>
+        <div style="background:rgba(0,0,20,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px;text-align:center">
+          <div id="mem-articles" style="font-size:18px;font-weight:bold;color:var(--accent)">—</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">Articles SAMBA</div>
+        </div>
+        <div style="background:rgba(0,0,20,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px;text-align:center">
+          <div id="mem-veille" style="font-size:18px;font-weight:bold;color:var(--accent2)">—</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">Veille KOFI</div>
+        </div>
+        <div style="background:rgba(0,0,20,.4);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px;text-align:center">
+          <div id="mem-devis" style="font-size:18px;font-weight:bold;color:var(--gold)">—</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">Devis DEMBA</div>
+        </div>
+      </div>
+      <div id="mem-last-activity" style="margin-top:8px;font-size:10px;color:var(--muted);padding:6px 8px;background:rgba(0,0,20,.3);border-radius:6px;border:1px solid rgba(255,255,255,.04)">
+        Chargement...
+      </div>
+    </div>
+
     <!-- CrowdSec Security Widget -->
     <div class="rp-section" id="crowdsec-widget">
       <div class="rp-title" style="display:flex;align-items:center;gap:6px">
@@ -1457,6 +1486,29 @@ async function runAllAgents(btn) {
 }
 
 // ── CrowdSec widget ───────────────────────────────────────────────────────
+async function refreshMemory() {
+  try {
+    const r = await fetch('/memory/stats', { headers: AUTH });
+    if (!r.ok) return;
+    const d = await r.json();
+    document.getElementById('mem-leads').textContent    = d.leads    ?? '—';
+    document.getElementById('mem-articles').textContent = d.articles ?? '—';
+    document.getElementById('mem-veille').textContent   = d.veille   ?? '—';
+    document.getElementById('mem-devis').textContent    = d.devis    ?? '—';
+    const actEl = document.getElementById('mem-last-activity');
+    if (d.last_activity && d.last_activity.length) {
+      actEl.innerHTML = d.last_activity.slice(-2).map(l =>
+        `<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l}</div>`
+      ).join('');
+    } else {
+      actEl.textContent = 'Aucune activité récente';
+    }
+  } catch(e) { /* silencieux */ }
+}
+// Charge au démarrage + refresh toutes les 2 min
+refreshMemory();
+setInterval(refreshMemory, 120000);
+
 async function refreshCrowdSec(btn) {
   // Feedback visuel sur le bouton si déclenché manuellement
   if (btn) {
