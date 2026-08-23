@@ -15,6 +15,7 @@ from pathlib import Path
 
 import subprocess
 import threading
+import psutil
 import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Request, Depends, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
@@ -26,6 +27,7 @@ BASE_DIR = Path(__file__).parent
 sys.path.insert(0, str(BASE_DIR))
 
 import requests as _req
+import time as _time
 from dotenv import load_dotenv
 load_dotenv(BASE_DIR / ".env", override=True)  # Charge .env avant tout
 
@@ -34,7 +36,7 @@ from aisatou import (
     run_turn_ollama, run_turn_claude, run_turn_gemini,
     get_gemini_client, GEMINI_MODELS,
     get_groq_client, run_turn_groq, GROQ_MODELS,
-    OLLAMA_MODEL, execute_tool,
+    OLLAMA_MODEL, execute_tool, MEMORY_FILE,
 )
 
 # ── Voix (optionnel — si edge-tts + pygame installés) ───────────────────────
@@ -49,6 +51,101 @@ except Exception as _ve:
 
 # Modèle par défaut — lit AISATOU_MODEL depuis .env
 _default_model = OLLAMA_MODEL
+
+# ── Modules AISATOU ──────────────────────────────────────────────────────────
+# ── Mémoire persistante (memory_tool.py local) ───────────────────────────────
+from tools.memory_tool import load_memory, remember as mem_remember
+try:
+    from tools.vision_screen import vision_screenshot_describe as _vision_describe
+    _VISION_AVAILABLE = True
+except Exception:
+    _VISION_AVAILABLE = False
+
+def mem0_get_context() -> str:
+    try:
+        ctx = load_memory(MEMORY_FILE)
+        return f"\n\nMémoire (faits sur Omar) :\n{ctx}" if ctx else ""
+    except Exception:
+        return ""
+
+async def mem0_add(text: str):
+    try:
+        await asyncio.to_thread(lambda: mem_remember(text, MEMORY_FILE))
+    except Exception:
+        pass
+
+SYSTEM_PROMPTS = {
+    "hud": """Tu es AISATOU, l'assistante IA personnelle d'Omar Sylla.
+Intelligente, directe, chaleureuse. Réponses courtes et orientées action.
+Tu peux contrôler les modules (GRIOT, GAMING), donner des infos système, lancer des outils.
+Réponds en français, max 3 paragraphes.""",
+
+    "griot": """Tu es GRIOT, gardien de la mémoire et de la culture d'Afrique de l'Ouest.
+Tu connais l'histoire des empires (Mali, Songhaï, Ghana, Ashanti, Kongo),
+les langues (Wolof, Bambara, Mandinka, Fula, Hausa, Yoruba, Twi),
+les proverbes, la musique (Mande, Afrobeats, Sabar, Kora), les figures historiques.
+Style : poétique et précis, comme un griot qui raconte. Commence toujours par un fait ou proverbe lié.
+Réponds en français, avec passion et profondeur.""",
+
+    "gaming": """Tu es GAMING, l'overlay IA pour jeux vidéo d'Omar.
+Tu analyses les situations de jeu, donnes des tips stratégiques, analyses les stats.
+Tu connais Valorant, CS2, League of Legends, FIFA, Minecraft, et les FPS/MOBA en général.
+Réponses courtes et actionnables : max 3 bullet points. Direct, comme un coach gamer."""
+}
+
+# ── Météo (wttr.in, sans clé API) ────────────────────────────────────────────
+_WEATHER_CITY  = os.environ.get("WEATHER_DEFAULT_CITY", "Paris")
+_weather_cache: dict = {"data": None, "ts": 0.0}
+_WEATHER_ICONS = {
+    "sunny": "☀️", "clear": "☀️", "cloud": "⛅", "overcast": "☁️",
+    "rain": "🌧️", "drizzle": "🌦️", "snow": "❄️", "thunder": "⛈️",
+    "fog": "🌫️", "mist": "🌫️", "haze": "🌫️"
+}
+
+async def _fetch_weather() -> dict | None:
+    if _time.time() - _weather_cache["ts"] < 600 and _weather_cache["data"]:
+        return _weather_cache["data"]
+    try:
+        r = await asyncio.to_thread(
+            lambda: _req.get(f"https://wttr.in/{_WEATHER_CITY}?format=j1", timeout=6)
+        )
+        j = r.json()
+        c = j["current_condition"][0]
+        temp = int(c["temp_C"])
+        desc = c["weatherDesc"][0]["value"]
+        icon = next((v for k, v in _WEATHER_ICONS.items() if k in desc.lower()), "🌡️")
+        data = {"type": "weather", "temp": temp, "desc": desc, "icon": icon, "city": _WEATHER_CITY}
+        _weather_cache["data"] = data
+        _weather_cache["ts"]   = _time.time()
+        return data
+    except Exception as e:
+        print(f"[Weather] {e}")
+        return None
+
+try:
+    import pynvml as _nvml
+    _nvml.nvmlInit()
+    _nvml_handle = _nvml.nvmlDeviceGetHandleByIndex(0)
+    _GPU_AVAILABLE = True
+except Exception:
+    _GPU_AVAILABLE = False
+
+def _get_sys_stats() -> dict:
+    try:
+        cpu = psutil.cpu_percent(interval=0.1)
+        ram = psutil.virtual_memory().percent
+        gpu = gpu_vram = gpu_temp = 0
+        if _GPU_AVAILABLE:
+            util = _nvml.nvmlDeviceGetUtilizationRates(_nvml_handle)
+            mem  = _nvml.nvmlDeviceGetMemoryInfo(_nvml_handle)
+            temp = _nvml.nvmlDeviceGetTemperature(_nvml_handle, 0)
+            gpu      = util.gpu
+            gpu_vram = round(mem.used / mem.total * 100)
+            gpu_temp = temp
+        return {"type": "system_stats", "cpu": round(cpu), "ram": round(ram),
+                "gpu": gpu, "gpu_vram": gpu_vram, "gpu_temp": gpu_temp}
+    except Exception:
+        return {"type": "system_stats", "cpu": 0, "ram": 0, "gpu": 0, "gpu_vram": 0, "gpu_temp": 0}
 
 # ── Pool WebSocket pour broadcast voix ──────────────────────────────────────
 _ws_pool: set = set()   # toutes les connexions actives
@@ -161,7 +258,7 @@ async def download_history(filename: str, user: str = Depends(verify_auth)):
 @app.get("/status")
 async def status(user: str = Depends(verify_auth)):
     claude = get_claude_client() is not None
-    ollama = is_ollama_running()
+    ollama = await asyncio.to_thread(is_ollama_running)
     model  = f"Ollama/{_default_model}" if ollama else ("Claude API" if claude else "Aucun")
     return {"backend": model, "ollama": ollama, "claude": claude}
 
@@ -818,6 +915,30 @@ if VOICE_AVAILABLE:
     set_ws_broadcaster(_voice_state_broadcaster)
 
 
+async def _broadcast_stats_loop():
+    """Broadcast CPU/RAM toutes les 5s et météo toutes les ~2 min."""
+    tick = 0
+    while True:
+        await asyncio.sleep(5)
+        tick += 1
+        if not _ws_pool:
+            continue
+        payload = [_get_sys_stats()]
+        if tick % 24 == 0:
+            w = await _fetch_weather()
+            if w:
+                payload.append(w)
+        for data in payload:
+            await _broadcast_all(data)
+
+
+@app.on_event("startup")
+async def _on_startup():
+    asyncio.create_task(_broadcast_stats_loop())
+    print("[AISATOU HUD] Serveur prêt — http://localhost:7777")
+
+
+
 
 
 async def _morning_briefing(send_fn) -> None:
@@ -880,10 +1001,11 @@ async def ws_endpoint(websocket: WebSocket):
     # ── État par session (multi-utilisateur) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
     conversation: list = []
     session_model: str = _default_model
+    session_module: str = "hud"
     claude_client  = get_claude_client()
     gemini_client  = get_gemini_client()
     groq_client    = get_groq_client()
-    use_ollama     = is_ollama_running()
+    use_ollama     = await asyncio.to_thread(is_ollama_running)
 
     async def send(data: dict):
         try:
@@ -891,23 +1013,58 @@ async def ws_endpoint(websocket: WebSocket):
         except Exception:
             pass
 
-    async def get_ai_response(user_text: str) -> str:
+    # Envoie stats + météo à la connexion
+    asyncio.ensure_future(send(_get_sys_stats()))
+    async def _send_weather_on_connect():
+        w = await _fetch_weather()
+        if w:
+            await send(w)
+    asyncio.ensure_future(_send_weather_on_connect())
+
+    async def get_ai_response(user_text: str, module: str = "hud") -> str:
+        mem_ctx = mem0_get_context()
+
+        # HUD : AISATOU normale avec outils + mémoire injectée
+        if module == "hud":
+            try:
+                # Injecter la mémoire dans le premier message système via conversation
+                mem_injection = [{"role": "user", "content": f"[MÉMOIRE]{mem_ctx}\n[MESSAGE]{user_text}"}] if mem_ctx else None
+                actual_text = user_text
+                if session_model in GEMINI_MODELS and gemini_client:
+                    return await run_turn_gemini(gemini_client, conversation, actual_text, model_name=session_model)
+                elif session_model in GROQ_MODELS and groq_client:
+                    return await run_turn_groq(groq_client, conversation, actual_text, model=session_model)
+                elif use_ollama:
+                    return await run_turn_ollama(conversation, actual_text, model=session_model)
+                elif claude_client:
+                    return await run_turn_claude(claude_client, conversation, actual_text)
+                elif groq_client:
+                    return await run_turn_groq(groq_client, conversation, actual_text)
+                else:
+                    return "Aucun backend IA disponible."
+            except Exception as e:
+                return f"Erreur : {e}"
+
+        # GRIOT / GAMING : appel direct sans outils, system prompt + mémoire
+        sys_prompt = SYSTEM_PROMPTS.get(module, SYSTEM_PROMPTS["hud"]) + mem_ctx
         try:
-            if session_model in GEMINI_MODELS and gemini_client:
-                return await run_turn_gemini(gemini_client, conversation, user_text, model_name=session_model)
-            elif session_model in GROQ_MODELS and groq_client:
-                return await run_turn_groq(groq_client, conversation, user_text, model=session_model)
-            elif use_ollama:
-                return await run_turn_ollama(conversation, user_text, model=session_model)
-            elif claude_client:
-                return await run_turn_claude(claude_client, conversation, user_text)
-            elif groq_client:
-                # Fallback Groq si rien d'autre dispo
-                return await run_turn_groq(groq_client, conversation, user_text)
+            if groq_client:
+                resp = await asyncio.get_event_loop().run_in_executor(None, lambda: groq_client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[{"role": "system", "content": sys_prompt}, {"role": "user", "content": user_text}],
+                    max_tokens=512, temperature=0.7
+                ))
+                return resp.choices[0].message.content.strip()
+            elif gemini_client:
+                resp = await asyncio.to_thread(lambda: gemini_client.models.generate_content(
+                    model="gemini-2.0-flash-lite",
+                    contents=f"{sys_prompt}\n\nUtilisateur: {user_text}\nRéponse:"
+                ))
+                return resp.text.strip()
             else:
-                return "Aucun backend IA disponible (Gemini, Groq, Ollama, Claude)."
+                return f"[{module.upper()}] Aucun backend IA disponible."
         except Exception as e:
-            return f"Erreur : {e}"
+            return f"Erreur {module} : {e}"
 
     try:
         while True:
@@ -947,16 +1104,40 @@ async def ws_endpoint(websocket: WebSocket):
                 await send({"type": "voice_state", "state": "idle"})
                 continue
 
+            # Vision écran
+            if msg_type == "vision":
+                if not _VISION_AVAILABLE:
+                    await send({"type": "response", "text": "Vision non disponible (pyautogui/Pillow manquant)."})
+                    continue
+                question = data.get("question", "")
+                prompts = {
+                    "hud":    question or "Décris ce que tu vois sur mon écran. Sois concis.",
+                    "griot":  question or "Décris l'écran. Y a-t-il des éléments liés à la culture africaine ?",
+                    "gaming": question or "Analyse ce screen de jeu : situation actuelle, conseils tactiques immédiats, erreurs visibles."
+                }
+                await send({"type": "thinking"})
+                result = await asyncio.to_thread(_vision_describe, prompts.get(session_module, prompts["hud"]))
+                await send({"type": "response", "text": f"**Vision écran**\n\n{result}"})
+                continue
+
+            # Changement de module
+            if msg_type == "module_change":
+                session_module = data.get("module", "hud")
+                await send({"type": "module_ok", "module": session_module})
+                continue
+
             # Message texte principal
             if msg_type == "message":
                 user_text = data.get("text", "").strip()
                 if not user_text:
                     continue
+                session_module = data.get("module", session_module)
 
                 await send({"type": "thinking"})
-                response = await get_ai_response(user_text)
+                response = await get_ai_response(user_text, module=session_module)
                 await send({"type": "response", "text": response})
                 _save_exchange(str(id(websocket)), user_text, response)
+                asyncio.ensure_future(mem0_add(f"Omar a dit : {user_text}"))
 
                 # TTS si mode voix actif
                 if _voice_mode and VOICE_AVAILABLE:
