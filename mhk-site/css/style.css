@@ -493,11 +493,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 /* ============================================
    SCROLLBAR
    ============================================ */
-html { scrollbar-width: thin; scrollbar-color: var(--cyan) var(--bg); }
-::-webkit-scrollbar        { width: 4px; }
-::-webkit-scrollbar-track  { background: var(--bg); }
-::-webkit-scrollbar-thumb  { background: var(--cyan); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--lime); }
+html { scrollbar-width: thin; scrollbar-color: var(--cyan) var(--bg-3); }
+::-webkit-scrollbar        { width: 5px; }
+::-webkit-scrollbar-track  { background: var(--bg-3); }
+::-webkit-scrollbar-thumb  {
+  background: linear-gradient(180deg, var(--lime) 0%, var(--cyan) 100%);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffffff 0%, var(--lime) 100%);
+}
 
 /* ============================================
    MARQUEE TICKER

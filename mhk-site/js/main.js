@@ -60,39 +60,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Intersection Observer — animate on scroll ──
-  const observerOpts = { threshold: 0.12, rootMargin: '0px 0px -40px 0px' };
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        observer.unobserve(entry.target);
-      }
+  // ── Scroll reveal system ──
+  const revealCSS = document.createElement('style');
+  revealCSS.textContent = `
+    .rv  { opacity:0; transform:translateY(30px);  transition:opacity .65s ease, transform .65s cubic-bezier(.22,.68,0,1.2); }
+    .rvL { opacity:0; transform:translateX(-40px); transition:opacity .65s ease, transform .65s cubic-bezier(.22,.68,0,1.2); }
+    .rvR { opacity:0; transform:translateX(40px);  transition:opacity .65s ease, transform .65s cubic-bezier(.22,.68,0,1.2); }
+    .rvS { opacity:0; transform:scale(.93);        transition:opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1); }
+    .rv.vi,.rvL.vi,.rvR.vi,.rvS.vi { opacity:1; transform:none; }
+  `;
+  document.head.appendChild(revealCSS);
+
+  const ro = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('vi'); ro.unobserve(e.target); }
     });
-  }, observerOpts);
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
+  // Bas → haut
   document.querySelectorAll(
-    '.style-card, .cours-card, .prof-card, .event-item, .value-card, .tarif-card, .info-card, .prof-full-card, .event-full-card, .bitg-cat, ' +
-    '.text-center, .section-head, .about-text, .about-visual, .cta-inner, .events-header, .sidebar-card, .form-card, .bitg-cat-card, .bitg-hero-text, ' +
-    '.prof-row, .galerie-item, .story-grid, .partenaire-badge'
-  ).forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
-    observer.observe(el);
-  });
+    '.style-card, .cours-card, .prof-card, .prof-row, .event-item, .event-card, ' +
+    '.value-card, .tarif-card, .info-card, .sidebar-card, .form-card, ' +
+    '.partenaire-badge, .chiffre-item, .galerie-item, .yt-card, ' +
+    '.bitg-cat-card, .prof-full-card, .event-full-card, .bitg-cat'
+  ).forEach(el => { el.classList.add('rv'); ro.observe(el); });
 
-  // Add .in-view styles globally
-  const style = document.createElement('style');
-  style.textContent = `.in-view { opacity: 1 !important; transform: translateY(0) !important; }`;
-  document.head.appendChild(style);
-
-  // ── Stagger children ──
+  // Gauche → droite
   document.querySelectorAll(
-    '.styles-grid, .cours-grid, .profs-preview, .values-grid, .tarifs-grid, .chiffres-grid, .yt-grid'
+    '.story-text, .bitg-hero-text, .about-text, .events-header, .cta-inner'
+  ).forEach(el => { el.classList.add('rvL'); ro.observe(el); });
+
+  // Droite → gauche
+  document.querySelectorAll(
+    '.story-img, .about-visual'
+  ).forEach(el => { el.classList.add('rvR'); ro.observe(el); });
+
+  // Scale (badges, titres, hero cards)
+  document.querySelectorAll(
+    '.badge, .hero-card, .text-center, .section-title, .section-sub'
+  ).forEach(el => { el.classList.add('rvS'); ro.observe(el); });
+
+  // ── Stagger grilles ──
+  document.querySelectorAll(
+    '.styles-grid, .cours-grid, .profs-preview, .values-grid, .tarifs-grid, ' +
+    '.chiffres-grid, .yt-grid, .events-grid, .galerie-grid'
   ).forEach(grid => {
     Array.from(grid.children).forEach((child, i) => {
-      child.style.transitionDelay = `${i * 0.08}s`;
+      child.style.transitionDelay = `${i * 0.07}s`;
     });
   });
 
