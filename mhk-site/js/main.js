@@ -73,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll(
     '.style-card, .cours-card, .prof-card, .event-item, .value-card, .tarif-card, .info-card, .prof-full-card, .event-full-card, .bitg-cat, ' +
-    '.text-center, .section-head, .about-text, .about-visual, .cta-inner, .events-header, .sidebar-card, .form-card, .bitg-cat-card, .bitg-hero-text'
+    '.text-center, .section-head, .about-text, .about-visual, .cta-inner, .events-header, .sidebar-card, .form-card, .bitg-cat-card, .bitg-hero-text, ' +
+    '.prof-row, .galerie-item, .story-grid, .partenaire-badge'
   ).forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(24px)';
