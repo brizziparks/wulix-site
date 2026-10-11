@@ -183,22 +183,26 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   flex-wrap: wrap;
 }
 .footer-socials a {
-  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid var(--bg-3);
+  border-radius: 99px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: var(--gray);
-  transition: color var(--transition);
-  width: auto;
-  height: auto;
-  background: none;
-  border-radius: 0;
-  display: inline;
+  transition: all var(--transition);
+  background: var(--bg-2);
 }
+.footer-socials a svg { flex-shrink: 0; }
 .footer-socials a:hover {
   color: var(--cyan);
-  background: none;
-  transform: none;
+  border-color: var(--cyan);
+  background: rgba(29,125,212,0.08);
+  transform: translateY(-2px);
 }
 .footer-col h4 {
   font-size: 0.8rem;
@@ -489,6 +493,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 /* ============================================
    SCROLLBAR
    ============================================ */
+html { scrollbar-width: thin; scrollbar-color: var(--cyan) var(--bg); }
 ::-webkit-scrollbar        { width: 4px; }
 ::-webkit-scrollbar-track  { background: var(--bg); }
 ::-webkit-scrollbar-thumb  { background: var(--cyan); border-radius: 99px; }
