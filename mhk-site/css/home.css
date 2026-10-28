@@ -201,6 +201,14 @@
   .hst-bottom { flex-direction: column; align-items: flex-start; }
   .hst-stats  { text-align: left; }
   .hst-bg-num { right: -10vw; bottom: 5%; }
+  /* titre : empêche le débordement */
+  .hst-t1, .hst-t2 { font-size: clamp(2.6rem, 10vw, 4rem); }
+  .hst-t3 { font-size: clamp(1.1rem, 4.5vw, 2rem); letter-spacing: 2px; }
+  /* tags : retour à la ligne, masquer les règles */
+  .hst-tags { flex-wrap: wrap; gap: 6px 12px; }
+  .hst-rule { display: none; }
+  /* scroll hint chevauche le contenu bas */
+  .hero-scroll { display: none; }
 }
 
 /* STYLES GRID */
