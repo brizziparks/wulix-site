@@ -198,6 +198,9 @@
 
 /* responsive */
 @media (max-width: 640px) {
+  /* centrer verticalement au lieu de flex-end */
+  .hero { justify-content: center; }
+  .hst-wrap { padding: calc(var(--nav-h) + 24px) 24px 48px; }
   .hst-bottom { flex-direction: column; align-items: flex-start; }
   .hst-stats  { text-align: left; }
   .hst-bg-num { right: -10vw; bottom: 5%; }
@@ -207,7 +210,6 @@
   /* tags : retour à la ligne, masquer les règles */
   .hst-tags { flex-wrap: wrap; gap: 6px 12px; }
   .hst-rule { display: none; }
-  /* scroll hint chevauche le contenu bas */
   .hero-scroll { display: none; }
 }
 
