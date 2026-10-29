@@ -134,7 +134,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     flex-direction: column;
     padding: 24px 20px 32px;
     gap: 4px;
-    transform: translateY(-110%);
+    transform: translateY(calc(-100% - var(--nav-h)));
     transition: transform 0.4s cubic-bezier(.4,0,.2,1);
     border-bottom: 2px solid var(--cyan);
     box-shadow: 0 8px 40px rgba(0,0,0,0.5);
