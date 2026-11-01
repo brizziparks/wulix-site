@@ -310,6 +310,62 @@ async def models(user: str = Depends(verify_auth)):
 
 # â"€â"€â"€ Fichiers JSON des agents â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 AGENTS_DIR     = BASE_DIR / "agents"
+
+# ── Registre WULIX — 14 agents par défaut ─────────────────────────────────────
+_WULIX_DEFAULT = [
+    {"id":"aisatou",  "name":"AISATOU",  "role":"Coordinatrice",     "color":"#7C3AFF", "status":"online",  "model":"gemini-3.5-flash-lite"},
+    {"id":"mariama",  "name":"MARIAMA",  "role":"Make / n8n",        "color":"#9B5FFF", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"thierno",  "name":"THIERNO",  "role":"Scout Leads",       "color":"#00D4FF", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"demba",    "name":"DEMBA",    "role":"Devis / Factures",  "color":"#C9933A", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"samba",    "name":"SAMBA",    "role":"GitHub CI/CD",      "color":"#00DC82", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"ndeye",    "name":"NDEYE",    "role":"Rédaction Contenu", "color":"#FF6B6B", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"kofi",     "name":"KOFI",     "role":"Analytics",         "color":"#FFD93D", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"lamine",   "name":"LAMINE",   "role":"Veille IA",         "color":"#6BCB77", "status":"idle",    "model":"gemini-3.5-flash-lite"},
+    {"id":"maguette", "name":"MAGUETTE", "role":"Boutique E-com",    "color":"#FF9A3C", "status":"offline", "model":"gemini-3.5-flash-lite"},
+    {"id":"faktour",  "name":"FAKTOUR",  "role":"Finance",           "color":"#4ECDC4", "status":"offline", "model":"gemini-3.5-flash-lite"},
+    {"id":"aminata",  "name":"AMINATA",  "role":"Ressources Hum.",   "color":"#FF6BAB", "status":"offline", "model":"gemini-3.5-flash-lite"},
+    {"id":"modibo",   "name":"MODIBO",   "role":"DevOps",            "color":"#8B9FFF", "status":"offline", "model":"gemini-3.5-flash-lite"},
+    {"id":"adama",    "name":"ADAMA",    "role":"SEO / Web",         "color":"#FFA6C1", "status":"offline", "model":"gemini-3.5-flash-lite"},
+    {"id":"djeneba",  "name":"DJENEBA",  "role":"UI/UX Design",      "color":"#A78BFA", "status":"offline", "model":"gemini-3.5-flash-lite"},
+]
+REGISTRY_FILE = AGENTS_DIR / "registry.json"
+
+def _load_registry() -> list:
+    if REGISTRY_FILE.exists():
+        try:
+            with open(REGISTRY_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return list(_WULIX_DEFAULT)
+
+def _save_registry(agents: list) -> None:
+    REGISTRY_FILE.parent.mkdir(exist_ok=True)
+    with open(REGISTRY_FILE, "w", encoding="utf-8") as f:
+        json.dump(agents, f, ensure_ascii=False, indent=2)
+
+@app.get("/agents")
+async def get_agents(user: str = Depends(verify_auth)):
+    return {"agents": _load_registry()}
+
+@app.post("/agents")
+async def create_agent_endpoint(req: Request, user: str = Depends(verify_auth)):
+    body = await req.json()
+    if not body.get("name"):
+        raise HTTPException(400, "name required")
+    agents = _load_registry()
+    agent = {
+        "id":     body.get("id") or body["name"].lower().replace(" ", "_"),
+        "name":   body["name"].upper(),
+        "role":   body.get("role", "Agent"),
+        "color":  body.get("color", "#7C3AFF"),
+        "status": "idle",
+        "model":  body.get("model", "gemini-3.5-flash-lite"),
+    }
+    agents.append(agent)
+    _save_registry(agents)
+    return {"agent": agent}
+
 CONTENT_QUEUE  = AGENTS_DIR / "content_queue.json"
 PROSPECTS_FILE = AGENTS_DIR / "prospects.json"
 OUTREACH_FILE  = AGENTS_DIR / "outreach_queue.json"
