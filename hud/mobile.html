@@ -512,8 +512,9 @@ body::before {
 </div>
 
 <script>
-const WS_URL = (location.protocol === 'https:' ? 'wss' : 'ws') + '://' + location.host + '/ws';
-const AUTH_HEADER = 'Basic ' + btoa('aisatou:3eAeq9k!hk!H4SFK');
+const _WS_TOKEN = btoa('aisatou:3eAeq9k!hk!H4SFK');
+const WS_URL = (location.protocol === 'https:' ? 'wss' : 'ws') + '://' + location.host + '/ws?token=' + _WS_TOKEN;
+const AUTH_HEADER = 'Basic ' + _WS_TOKEN;
 
 const MODULES = {
   hud:    { label:'HUD',    desc:'Assistant personnel AISATOU — conversation, commandes, outils', accent:'var(--vib)' },

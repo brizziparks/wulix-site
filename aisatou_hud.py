@@ -17,7 +17,8 @@ import subprocess
 import threading
 import psutil
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Request, Depends, HTTPException
+import base64
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Request, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -986,7 +987,16 @@ async def _morning_briefing(send_fn) -> None:
 
 
 @app.websocket("/ws")
-async def ws_endpoint(websocket: WebSocket):
+async def ws_endpoint(websocket: WebSocket, token: str = Query(default="")):
+    try:
+        u, _, p = base64.b64decode(token + "==").decode().partition(":")
+    except Exception:
+        u = p = ""
+    if not (secrets.compare_digest(u.encode(), HUD_USER.encode()) and
+            secrets.compare_digest(p.encode(), HUD_PASSWORD.encode())):
+        await websocket.accept()
+        await websocket.close(code=1008)
+        return
     await websocket.accept()
     _ws_pool.add(websocket)
 
