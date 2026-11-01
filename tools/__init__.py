@@ -23,10 +23,20 @@ from .system_advanced import (
     take_screenshot,
     set_volume, mute,
 )
-from .outlook import (
-    get_unread_emails, search_emails, send_email, draft_email,
-    get_calendar_today, get_calendar_range, create_meeting,
-)
+try:
+    from .outlook import (
+        get_unread_emails, search_emails, send_email, draft_email,
+        get_calendar_today, get_calendar_range, create_meeting,
+    )
+except Exception as _e:
+    print(f"[tools] Outlook non disponible : {_e}")
+    def get_unread_emails(*a, **kw): return "Outlook non disponible"
+    def search_emails(*a, **kw): return "Outlook non disponible"
+    def send_email(*a, **kw): return "Outlook non disponible"
+    def draft_email(*a, **kw): return "Outlook non disponible"
+    def get_calendar_today(*a, **kw): return "Outlook non disponible"
+    def get_calendar_range(*a, **kw): return "Outlook non disponible"
+    def create_meeting(*a, **kw): return "Outlook non disponible"
 from .gmail import (
     gmail_unread, gmail_search, gmail_send,
     gcal_today, gcal_range, gcal_create,
