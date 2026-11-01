@@ -360,6 +360,7 @@ body::after {
 </style>
 </head>
 <body>
+<canvas id="px-burst" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55"></canvas>
 <div id="app">
 
   <!-- TOPBAR -->
@@ -827,6 +828,68 @@ function toggleHistory() {
 // ── Init ───────────────────────────────────────────────────────────────────
 connectWS();
 loadModels();
+</script>
+
+<script>
+// ── Pixel Burst — Vantage-inspired ambient background ──────────────────────
+(function() {
+  const cv = document.getElementById('px-burst');
+  const ctx = cv.getContext('2d');
+  const COLS = ['#7C3AFF','#9B5FFF','#00D4FF','#C9933A','#4A1ABA','#0099BB'];
+  const PX = 6;          // taille d'un pixel
+  const DENSITY = 0.35;  // probabilité qu'un pixel soit actif à un instant t
+
+  let W, H, cols, rows;
+  const pixels = [];     // {x, y, alpha, speed, color, phase}
+
+  function resize() {
+    W = cv.width  = window.innerWidth;
+    H = cv.height = window.innerHeight;
+    cols = Math.ceil(W / PX);
+    rows = Math.ceil(H / PX);
+    pixels.length = 0;
+    // centre de la nébuleuse
+    const cx = W / 2, cy = H / 2;
+    const maxR = Math.min(W, H) * 0.48;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const dx = c * PX - cx, dy = r * PX - cy;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist > maxR) continue;
+        // densité gaussienne : fort au centre, presque nul au bord
+        const prob = DENSITY * Math.exp(-(dist*dist) / (2*(maxR*0.38)**2));
+        if (Math.random() < prob) {
+          pixels.push({
+            x: c * PX, y: r * PX,
+            alpha: Math.random(),
+            speed: 0.004 + Math.random() * 0.012,
+            color: COLS[Math.floor(Math.random() * COLS.length)],
+            phase: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+    }
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.016;
+    for (const p of pixels) {
+      const a = (Math.sin(t * p.speed * 60 + p.phase) + 1) / 2;  // 0‥1
+      if (a < 0.05) continue;
+      ctx.globalAlpha = a * 0.8;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, PX - 1, PX - 1);
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
 </script>
 </body>
 </html>
