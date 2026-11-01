@@ -715,6 +715,7 @@ document.getElementById('model-sel').addEventListener('change', e => applyModel(
 
 // ── Agents WULIX ───────────────────────────────────────────────────────────
 const _AGENT_COLORS = ['#7C3AFF','#9B5FFF','#00D4FF','#C9933A','#00DC82','#FF6B6B','#FFD93D','#6BCB77','#FF9A3C','#4ECDC4','#FF6BAB','#8B9FFF','#FFA6C1','#A78BFA'];
+const _SAFE_COLOR = /^#[0-9A-Fa-f]{6}$/;
 
 async function loadAgents() {
   try {
@@ -730,22 +731,48 @@ function renderAgents(agents) {
   const list = document.getElementById('agents-list');
   list.innerHTML = '';
   agents.forEach((a, i) => {
-    const color = a.color || _AGENT_COLORS[i % _AGENT_COLORS.length];
+    const color = _SAFE_COLOR.test(a.color) ? a.color : _AGENT_COLORS[i % _AGENT_COLORS.length];
     const dotClass = a.status === 'online' ? 'online' : a.status === 'idle' ? 'idle' : '';
-    const card = document.createElement('div');
+
+    const card    = document.createElement('div');
     card.className = 'agent-card';
     card.style.setProperty('--agent-color', color);
-    card.innerHTML = `
-      <div class="agent-avatar">${a.name.slice(0,2)}</div>
-      <div class="agent-info">
-        <div class="agent-name">${a.name}</div>
-        <div class="agent-role">${a.role}</div>
-      </div>
-      <div class="agent-dot ${dotClass}"></div>`;
+
+    const avatar  = document.createElement('div');
+    avatar.className = 'agent-avatar';
+    avatar.textContent = a.name.slice(0, 2);
+
+    const info = document.createElement('div');
+    info.className = 'agent-info';
+    const nm = document.createElement('div');
+    nm.className = 'agent-name';
+    nm.textContent = a.name;
+    const rl = document.createElement('div');
+    rl.className = 'agent-role';
+    rl.textContent = a.role;
+    info.append(nm, rl);
+
+    const dot = document.createElement('div');
+    dot.className = `agent-dot ${dotClass}`;
+
+    card.append(avatar, info, dot);
     card.addEventListener('click', () => {
       document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('active'));
       card.classList.add('active');
-      addMsg('system', `Agent <strong style="color:${color}">${a.name}</strong> sélectionné — ${a.role}`);
+      // build system message with DOM to avoid innerHTML injection
+      const frag = document.createDocumentFragment();
+      frag.append('Agent ');
+      const strong = document.createElement('strong');
+      strong.style.color = color;          // color already validated against #rrggbb
+      strong.textContent = a.name;
+      frag.append(strong, ' sélectionné — ' + a.role);
+      const div = document.createElement('div');
+      div.className = 'msg ai';
+      div.style.cssText = 'align-self:center;max-width:100%;background:transparent;border:none;border-left:none;font-size:11px;color:var(--muted2);padding:4px 0;';
+      div.appendChild(frag);
+      const chat = document.getElementById('chat');
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
       if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({type:'settings', agent: a.id}));
     });
     list.appendChild(card);

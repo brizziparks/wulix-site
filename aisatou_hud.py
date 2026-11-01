@@ -6,6 +6,7 @@ Serveur FastAPI + WebSocket + interface web holographique
 
 import asyncio
 import json
+import re
 from datetime import datetime
 import os
 import sys
@@ -348,19 +349,35 @@ def _save_registry(agents: list) -> None:
 async def get_agents(user: str = Depends(verify_auth)):
     return {"agents": _load_registry()}
 
+_ALLOWED_MODELS = {"gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro",
+                   "llama-3.3-70b-versatile", "llama3-8b-8192"}
+_NAME_RE  = re.compile(r'^[A-Za-zÀ-ÿ0-9 _-]{1,32}$')
+_COLOR_RE = re.compile(r'^#[0-9A-Fa-f]{6}$')
+
 @app.post("/agents")
 async def create_agent_endpoint(req: Request, user: str = Depends(verify_auth)):
+    ct = req.headers.get("content-type", "")
+    if "application/json" not in ct:
+        raise HTTPException(415, "application/json required")
     body = await req.json()
-    if not body.get("name"):
-        raise HTTPException(400, "name required")
+    name = str(body.get("name", "")).strip()
+    if not name or not _NAME_RE.match(name):
+        raise HTTPException(400, "name invalid (1-32 alphanumeric chars)")
+    role  = str(body.get("role", "Agent")).strip()[:64].translate(str.maketrans("", "", "<>\"'"))
+    color = body.get("color", "#7C3AFF")
+    if not isinstance(color, str) or not _COLOR_RE.match(color):
+        color = "#7C3AFF"
+    model = body.get("model", "gemini-3.5-flash-lite")
+    if model not in _ALLOWED_MODELS:
+        model = "gemini-3.5-flash-lite"
     agents = _load_registry()
     agent = {
-        "id":     body.get("id") or body["name"].lower().replace(" ", "_"),
-        "name":   body["name"].upper(),
-        "role":   body.get("role", "Agent"),
-        "color":  body.get("color", "#7C3AFF"),
+        "id":     re.sub(r'[^a-z0-9_]', '_', name.lower())[:32],
+        "name":   name.upper(),
+        "role":   role or "Agent",
+        "color":  color,
         "status": "idle",
-        "model":  body.get("model", "gemini-3.5-flash-lite"),
+        "model":  model,
     }
     agents.append(agent)
     _save_registry(agents)
