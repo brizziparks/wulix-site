@@ -512,9 +512,13 @@ body::before {
 </div>
 
 <script>
-const _WS_TOKEN = btoa('aisatou:3eAeq9k!hk!H4SFK');
-const WS_URL = (location.protocol === 'https:' ? 'wss' : 'ws') + '://' + location.host + '/ws?token=' + _WS_TOKEN;
-const AUTH_HEADER = 'Basic ' + _WS_TOKEN;
+const AUTH_HEADER = 'Basic ' + btoa('aisatou:3eAeq9k!hk!H4SFK');
+const _WS_BASE = (location.protocol === 'https:' ? 'wss' : 'ws') + '://' + location.host + '/ws';
+async function getWsUrl() {
+  const r = await fetch('/ws-ticket', { headers: { Authorization: AUTH_HEADER } });
+  const { ticket } = await r.json();
+  return `${_WS_BASE}?token=${ticket}`;
+}
 
 const MODULES = {
   hud:    { label:'HUD',    desc:'Assistant personnel AISATOU — conversation, commandes, outils', accent:'var(--vib)' },
@@ -623,8 +627,9 @@ function setWsStatus(connected) {
   document.querySelector('.header-dot').style.background = connected ? 'var(--cyan)' : 'var(--red)';
 }
 
-function connectWS() {
-  ws = new WebSocket(WS_URL);
+async function connectWS() {
+  const wsUrl = await getWsUrl();
+  ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
     setWsStatus(true);

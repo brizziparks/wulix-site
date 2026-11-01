@@ -17,7 +17,6 @@ import subprocess
 import threading
 import psutil
 import uvicorn
-import base64
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Request, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -170,6 +169,22 @@ def verify_auth(credentials: HTTPBasicCredentials = Depends(security)):
         )
     return credentials.username
 
+# Tickets éphémères pour le WebSocket — {token: expiry_timestamp}
+_ws_tickets: dict[str, float] = {}
+
+def _issue_ws_ticket() -> str:
+    ticket = secrets.token_urlsafe(32)
+    _ws_tickets[ticket] = _time.time() + 30  # valide 30s
+    return ticket
+
+def _consume_ws_ticket(ticket: str) -> bool:
+    expiry = _ws_tickets.pop(ticket, None)
+    if expiry is None:
+        return False
+    if _time.time() > expiry:
+        return False
+    return True
+
 # â"€â"€â"€ App FastAPI â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 app = FastAPI(title="AISATOU HUD", docs_url=None, redoc_url=None)  # Désactive /docs public
 app.mount("/ui", StaticFiles(directory=BASE_DIR / "ui"), name="ui")
@@ -182,6 +197,11 @@ _NO_CACHE_HEADERS = {
     "Expires": "0",
 }
 
+
+@app.get("/ws-ticket")
+async def ws_ticket(user: str = Depends(verify_auth)):
+    """Émet un ticket éphémère (30s, usage unique) pour ouvrir le WebSocket."""
+    return {"ticket": _issue_ws_ticket()}
 
 @app.get("/")
 async def root(user: str = Depends(verify_auth)):
@@ -988,12 +1008,7 @@ async def _morning_briefing(send_fn) -> None:
 
 @app.websocket("/ws")
 async def ws_endpoint(websocket: WebSocket, token: str = Query(default="")):
-    try:
-        u, _, p = base64.b64decode(token + "==").decode().partition(":")
-    except Exception:
-        u = p = ""
-    if not (secrets.compare_digest(u.encode(), HUD_USER.encode()) and
-            secrets.compare_digest(p.encode(), HUD_PASSWORD.encode())):
+    if not _consume_ws_ticket(token):
         await websocket.accept()
         await websocket.close(code=1008)
         return
