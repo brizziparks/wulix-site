@@ -173,8 +173,13 @@ def verify_auth(credentials: HTTPBasicCredentials = Depends(security)):
 _ws_tickets: dict[str, float] = {}
 
 def _issue_ws_ticket() -> str:
+    now = _time.time()
+    # shortcut: purge linéaire O(n), acceptable car tickets très rares (une connexion à la fois)
+    expired = [k for k, exp in _ws_tickets.items() if exp < now]
+    for k in expired:
+        del _ws_tickets[k]
     ticket = secrets.token_urlsafe(32)
-    _ws_tickets[ticket] = _time.time() + 30  # valide 30s
+    _ws_tickets[ticket] = now + 30  # valide 30s
     return ticket
 
 def _consume_ws_ticket(ticket: str) -> bool:

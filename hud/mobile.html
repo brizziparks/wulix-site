@@ -515,7 +515,7 @@ body::before {
 const AUTH_HEADER = 'Basic ' + btoa('aisatou:3eAeq9k!hk!H4SFK');
 const _WS_BASE = (location.protocol === 'https:' ? 'wss' : 'ws') + '://' + location.host + '/ws';
 async function getWsUrl() {
-  const r = await fetch('/ws-ticket', { headers: { Authorization: AUTH_HEADER } });
+  const r = await fetch('/ws-ticket', { credentials: 'include' });
   const { ticket } = await r.json();
   return `${_WS_BASE}?token=${ticket}`;
 }
