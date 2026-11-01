@@ -66,19 +66,56 @@ from tools import (
     gmail_unread, gmail_search, gmail_send,
     gcal_today, gcal_range, gcal_create,
 )
-from voice.stt import listen
-from voice.tts import speak
+try:
+    from voice.stt import listen
+    from voice.tts import speak
+except Exception:
+    def listen(*a, **kw): return ""
+    def speak(*a, **kw): pass
+
 from tools.n8n_tool import trigger_webhook, list_workflows, activate_workflow
-from tools.clipboard_history import (
-    get_clipboard_history, get_last_clipboard, restore_clipboard,
-    clear_clipboard_history, start_clipboard_watcher, ClipboardHistory,
-)
-from tools.file_watcher import start_watching, stop_watching, get_recent_files, list_watchers
-from tools.ocr_screen import extract_text_from_screen, extract_text_from_image, find_text_on_screen
-from tools.google_workspace import (
-    create_doc, append_to_doc, read_doc,
-    create_sheet, append_to_sheet, read_sheet, list_drive_files,
-)
+
+try:
+    from tools.clipboard_history import (
+        get_clipboard_history, get_last_clipboard, restore_clipboard,
+        clear_clipboard_history, start_clipboard_watcher, ClipboardHistory,
+    )
+except Exception:
+    def get_clipboard_history(*a, **kw): return "Non disponible sur NAS"
+    def get_last_clipboard(*a, **kw): return "Non disponible sur NAS"
+    def restore_clipboard(*a, **kw): return "Non disponible sur NAS"
+    def clear_clipboard_history(*a, **kw): return "Non disponible sur NAS"
+    def start_clipboard_watcher(*a, **kw): pass
+    class ClipboardHistory: pass
+
+try:
+    from tools.file_watcher import start_watching, stop_watching, get_recent_files, list_watchers
+except Exception:
+    def start_watching(*a, **kw): return "Non disponible sur NAS"
+    def stop_watching(*a, **kw): return "Non disponible sur NAS"
+    def get_recent_files(*a, **kw): return []
+    def list_watchers(*a, **kw): return []
+
+try:
+    from tools.ocr_screen import extract_text_from_screen, extract_text_from_image, find_text_on_screen
+except Exception:
+    def extract_text_from_screen(*a, **kw): return "Non disponible sur NAS"
+    def extract_text_from_image(*a, **kw): return "Non disponible sur NAS"
+    def find_text_on_screen(*a, **kw): return "Non disponible sur NAS"
+
+try:
+    from tools.google_workspace import (
+        create_doc, append_to_doc, read_doc,
+        create_sheet, append_to_sheet, read_sheet, list_drive_files,
+    )
+except Exception:
+    def create_doc(*a, **kw): return "Google Workspace non configuré"
+    def append_to_doc(*a, **kw): return "Google Workspace non configuré"
+    def read_doc(*a, **kw): return "Google Workspace non configuré"
+    def create_sheet(*a, **kw): return "Google Workspace non configuré"
+    def append_to_sheet(*a, **kw): return "Google Workspace non configuré"
+    def read_sheet(*a, **kw): return "Google Workspace non configuré"
+    def list_drive_files(*a, **kw): return []
 
 # ─── Setup ───────────────────────────────────────────────────────────────────
 
@@ -402,12 +439,6 @@ Outils disponibles :
 - http_request(url, method?, body?)        : faire une requete HTTP
 - think(thought)                           : raisonner etape par etape
 
-── Outils WULIX (gestion agence) ──
-- run_wulix_agent(name)                    : lancer un agent WULIX (samba/ndeye/kofi/crew/lamine/faktour)
-- get_today_leads()                        : leads qualifies du jour (Reddit/web)
-- deploy_wulix()                           : deployer wulix.fr sur Cloudflare Pages
-- wulix_status()                           : statut general WULIX (leads, logs, sites)
-
 Apres avoir vu le resultat d'un outil, reponds normalement a l'utilisateur.
 N'utilise les outils que quand c'est utile.
 """
@@ -430,9 +461,9 @@ OLLAMA_MODEL = os.getenv("AISATOU_MODEL", "mistral")
 # ─── Backend Gemini ───────────────────────────────────────────────────────────
 
 GEMINI_MODELS = {
-    "gemini-2.5-flash", "gemini-2.5-pro",
-    "gemini-2.0-flash", "gemini-2.0-flash-lite",
-    "gemini-1.5-flash", "gemini-1.5-pro",
+    "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.5-pro",
+    "gemini-flash-latest", "gemini-flash-lite-latest",
 }
 
 def get_gemini_client():
@@ -454,7 +485,7 @@ async def run_turn_gemini(client, conversation: list, user_input: str, model_nam
     from google.genai import types as _gtypes
 
     if not model_name:
-        model_name = OLLAMA_MODEL if OLLAMA_MODEL in GEMINI_MODELS else "gemini-2.0-flash"
+        model_name = OLLAMA_MODEL if OLLAMA_MODEL in GEMINI_MODELS else "gemini-3.5-flash-lite"
     system = get_system_prompt()
 
     # Construire l'historique au format Gemini
@@ -744,7 +775,7 @@ async def main():
         sys.exit(1)
 
     if use_gemini:
-        backend_name = f"Gemini ({os.getenv('AISATOU_MODEL', 'gemini-2.0-flash-lite')})"
+        backend_name = f"Gemini ({os.getenv('AISATOU_MODEL', 'gemini-3.5-flash-lite')})"
     elif use_groq:
         backend_name = "Groq (llama-3.3-70b-versatile)"
     elif use_ollama:

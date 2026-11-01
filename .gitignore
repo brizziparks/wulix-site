@@ -37,3 +37,4 @@ agents/tasks_log.json
 # Temporaire
 *.tmp
 *.bak
+graphify-out/

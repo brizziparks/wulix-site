@@ -170,7 +170,7 @@ Format HTML simple (h2, p, ul, li, strong). Pas de CSS inline. En francais."""
         import urllib.request
         import json as _json
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={GEMINI_API_KEY}"
         payload = _json.dumps({
             "contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"maxOutputTokens": 1500, "temperature": 0.7}
@@ -461,7 +461,7 @@ def _call_llm(prompt: str, max_tokens: int = 2000) -> str:
 
     if GEMINI_API_KEY:
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
             req = urllib.request.Request(url,
                 data=json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8"),
                 headers={"Content-Type": "application/json"})

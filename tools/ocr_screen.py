@@ -54,7 +54,7 @@ def _gemini_ocr(img_path: str, instruction: str = "") -> str:
             "Réponds uniquement avec le texte extrait, rien d'autre."
         )
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=[prompt, img]
         )
         return response.text.strip()

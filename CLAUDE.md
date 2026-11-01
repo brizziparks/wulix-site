@@ -50,6 +50,22 @@ projet jarvis/
 └── .env                 ← Clés API (Gemini, Groq, Gumroad, Cloudflare, etc.)
 ```
 
+## Outils Claude Code installés
+
+- **graphify** : carte du code dans `graphify-out/` (code seul, docs exclues). Pour une question d'architecture, utiliser d'abord `graphify query "..."`, `graphify explain "X"` ou `graphify affected "X"`. Après de gros changements : `graphify update .`
+- **ponytail** : solution la plus courte qui marche. `/ponytail-audit` pour auditer tout le repo.
+- **pyright-lsp** (types Python), **context7** (doc à jour des librairies), **frontend-design** (sites/HUD), **security-guidance**, **commit-commands**, **find-skills**
+- **MCP Cloudflare** (OAuth) : Pages, DNS, tunnels de rosmedia.fr / wulix.fr
+- `~/.claude/settings.json` : barre d'état, notification Windows en fin de tâche, lecture de `.env`/`*.key`/`*.pem` interdite, garde-fou NAS (`~/.claude/nas_guard.js`)
+- Bilan santé sites + NAS : `scripts/healthcheck.ps1` (notifie seulement en cas de problème)
+
+## Infrastructure & règles NAS
+
+- **NAS UGREEN DH2300** : `192.168.1.4`, UGOS Pro, interface `:9999`, alias SSH `nas` (compte `Omar.S`). Données sur `/volume1`. Docker data-root : `/volume1/docker/docker-data`, stack principale `/volume1/docker/arr-stack/docker-compose.yaml`
+- **Interdit sur le NAS** : tuer des processus UGOS (`pkill`/`kill`), `chmod 000`, `systemctl stop|disable|mask` sur un service UGOS, toucher `/etc/cron.d`. Le 11/10/2026, un cron de `pkill` + `chmod 000 gateway_serv` a paralysé le NAS (panneau de configuration, SSH, Docker, sync), et il a fallu un reset usine. Si le NAS rame, diagnostiquer et proposer, ne jamais neutraliser un service.
+- **Ne jamais saisir ni stocker de mot de passe** (pas de `-pwfile`, pas de `echo pw | sudo -S`). Utiliser la clé SSH ; pour `sudo`, c'est l'utilisateur qui tape dans son terminal.
+- wulix.fr → Cloudflare Pages (indépendant du NAS). rosmedia.fr et aisatou.rosmedia.fr → tunnel Cloudflare vers le NAS ou le PC.
+
 ## Comportement en session Claude Code
 
 1. **Au démarrage** : Lis `memory/facts.md` pour te mettre en contexte

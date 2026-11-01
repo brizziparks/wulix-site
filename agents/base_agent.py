@@ -57,7 +57,7 @@ Réponds toujours en français. Sois précis, concis et orienté résultat."""
             try:
                 from google.genai import types as _gtypes
                 resp = client.models.generate_content(
-                    model="gemini-2.0-flash-lite",
+                    model="gemini-3.5-flash-lite",
                     contents=prompt,
                     config=_gtypes.GenerateContentConfig(
                         system_instruction=system,

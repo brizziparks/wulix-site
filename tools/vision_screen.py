@@ -57,7 +57,7 @@ def _ask_gemini_for_box(img_path: str, prompt: str) -> list:
     try:
         from google.genai import types
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=[prompt, img]
         )
     except Exception as e:
@@ -175,7 +175,7 @@ def vision_screenshot_describe(question: str = "") -> str:
         img = Image.open(path)
         q = question or "Décris brièvement ce que tu vois sur cet écran."
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=[q, img]
         )
         try:

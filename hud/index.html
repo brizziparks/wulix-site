@@ -537,7 +537,9 @@ body::after {
 </div>
 
 <script>
-const WS_URL = location.host ? `ws://${location.host}/ws` : 'ws://localhost:7777/ws';
+const WS_URL = location.host
+  ? `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`
+  : 'ws://localhost:7777/ws';
 const AUTH_HEADER = 'Basic ' + btoa('aisatou:3eAeq9k!hk!H4SFK');
 
 const MODULES = {
@@ -569,10 +571,10 @@ async function loadModels() {
     sel.innerHTML = (d.models || []).map(m =>
       `<option value="${m}">${m}</option>`
     ).join('');
-    // Priorité : llama-3.3-70b ou gemini-2.0-flash
-    const preferred = ['llama-3.3-70b-versatile', 'gemini-2.0-flash-lite', 'gemini-2.0-flash'];
+    // Priorité : Gemini (Groq bloqué par VPN)
+    const preferred = ['gemini-3.5-flash-lite', 'gemini-2.5-flash'];
     for (const p of preferred) {
-      const opt = [...sel.options].find(o => o.value.includes(p.split('-')[0]) || o.value === p);
+      const opt = [...sel.options].find(o => o.value === p);
       if (opt) { sel.value = opt.value; break; }
     }
     if (sel.value) {

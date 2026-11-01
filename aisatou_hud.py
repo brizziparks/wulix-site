@@ -49,8 +49,8 @@ except Exception as _ve:
     VOICE_AVAILABLE = False
     print(f"[HUD] Mode voix non disponible : {_ve}")
 
-# Modèle par défaut — lit AISATOU_MODEL depuis .env
-_default_model = OLLAMA_MODEL
+# Modèle par défaut — Gemini prioritaire, Ollama en fallback
+_default_model = "gemini-3.5-flash-lite"
 
 # ── Modules AISATOU ──────────────────────────────────────────────────────────
 # ── Mémoire persistante (memory_tool.py local) ───────────────────────────────
@@ -149,7 +149,6 @@ def _get_sys_stats() -> dict:
 
 # ── Pool WebSocket pour broadcast voix ──────────────────────────────────────
 _ws_pool: set = set()   # toutes les connexions actives
-_voice_mode: bool = False  # voix activée globalement
 
 # ── Sécurité — Authentification HTTP Basic ─────────────────────────────────
 security = HTTPBasic()
@@ -277,7 +276,7 @@ async def models(user: str = Depends(verify_auth)):
         names = [OLLAMA_MODEL]
     # ModÃ¨les Gemini si clÃ© disponible
     if get_gemini_client():
-        names += ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash"]
+        names += ["gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
     if get_groq_client():
         names += ["llama-3.3-70b-versatile", "llama3-8b-8192", "mixtral-8x7b-32768", "gemma2-9b-it"]
     return {"models": names}
@@ -618,7 +617,7 @@ async def webhook_demba(request: Request):
         try:
             import google.generativeai as genai
             genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel("gemini-2.0-flash-lite")
+            model = genai.GenerativeModel("gemini-3.5-flash-lite")
             prompt = f"""Tu es DEMBA, agent devis WULIX (automatisation IA Python/n8n, Omar Sylla).
 Rédige un email de réponse professionnel à cette demande. Ton direct, chaleureux, pas corporate.
 - Nom : {nom} | Entreprise : {entreprise} | Projet : {type_projet}
@@ -988,20 +987,19 @@ async def _morning_briefing(send_fn) -> None:
 
 @app.websocket("/ws")
 async def ws_endpoint(websocket: WebSocket):
-    global _voice_mode
     await websocket.accept()
     _ws_pool.add(websocket)
 
     # Briefing auto au demarrage de session
     asyncio.ensure_future(_morning_briefing(
-        lambda d: websocket.send_json(d),
-        None
+        lambda d: websocket.send_json(d)
     ))
 
-    # ── État par session (multi-utilisateur) â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+    # ── État par session (multi-utilisateur) ────────────────────────────────────
     conversation: list = []
     session_model: str = _default_model
     session_module: str = "hud"
+    _voice_mode: bool = False  # voix par session
     claude_client  = get_claude_client()
     gemini_client  = get_gemini_client()
     groq_client    = get_groq_client()
@@ -1038,6 +1036,8 @@ async def ws_endpoint(websocket: WebSocket):
                     return await run_turn_ollama(conversation, actual_text, model=session_model)
                 elif claude_client:
                     return await run_turn_claude(claude_client, conversation, actual_text)
+                elif gemini_client:
+                    return await run_turn_gemini(gemini_client, conversation, actual_text, model_name="gemini-3.5-flash-lite")
                 elif groq_client:
                     return await run_turn_groq(groq_client, conversation, actual_text)
                 else:
@@ -1048,19 +1048,19 @@ async def ws_endpoint(websocket: WebSocket):
         # GRIOT / GAMING : appel direct sans outils, system prompt + mémoire
         sys_prompt = SYSTEM_PROMPTS.get(module, SYSTEM_PROMPTS["hud"]) + mem_ctx
         try:
-            if groq_client:
+            if gemini_client:
+                resp = await asyncio.to_thread(lambda: gemini_client.models.generate_content(
+                    model="gemini-3.5-flash-lite",
+                    contents=f"{sys_prompt}\n\nUtilisateur: {user_text}\nRéponse:"
+                ))
+                return resp.text.strip()
+            elif groq_client:
                 resp = await asyncio.get_event_loop().run_in_executor(None, lambda: groq_client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[{"role": "system", "content": sys_prompt}, {"role": "user", "content": user_text}],
                     max_tokens=512, temperature=0.7
                 ))
                 return resp.choices[0].message.content.strip()
-            elif gemini_client:
-                resp = await asyncio.to_thread(lambda: gemini_client.models.generate_content(
-                    model="gemini-2.0-flash-lite",
-                    contents=f"{sys_prompt}\n\nUtilisateur: {user_text}\nRéponse:"
-                ))
-                return resp.text.strip()
             else:
                 return f"[{module.upper()}] Aucun backend IA disponible."
         except Exception as e:
@@ -1137,8 +1137,6 @@ async def ws_endpoint(websocket: WebSocket):
                 response = await get_ai_response(user_text, module=session_module)
                 await send({"type": "response", "text": response})
                 _save_exchange(str(id(websocket)), user_text, response)
-                asyncio.ensure_future(mem0_add(f"Omar a dit : {user_text}"))
-
                 # TTS si mode voix actif
                 if _voice_mode and VOICE_AVAILABLE:
                     async def _vol_cb(vol: float, _ws=websocket):
@@ -1173,6 +1171,7 @@ async def ws_endpoint(websocket: WebSocket):
         pass
     finally:
         _ws_pool.discard(websocket)
+        _session_file.pop(str(id(websocket)), None)
 
 
 # â"€â"€â"€ Lancement â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
