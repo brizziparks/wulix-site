@@ -688,9 +688,12 @@ async function loadModels() {
     const r = await fetch('/models', {headers: {Authorization: AUTH_HEADER}});
     const d = await r.json();
     const sel = document.getElementById('model-sel');
-    sel.innerHTML = (d.models || []).map(m =>
-      `<option value="${m}">${m}</option>`
-    ).join('');
+    const geminiNames = ['gemini-3.5-flash-lite','gemini-2.5-flash','gemini-2.5-pro'];
+    const groqNames = ['llama-3.3-70b-versatile','llama3-8b-8192','mixtral-8x7b-32768','gemma2-9b-it'];
+    sel.innerHTML = (d.models || []).map(m => {
+      const prefix = geminiNames.includes(m) ? '☁ ' : groqNames.includes(m) ? '⚡ ' : '🖥 ';
+      return `<option value="${m}">${prefix}${m}</option>`;
+    }).join('');
     // Priorité : Gemini (Groq bloqué par VPN)
     const preferred = ['gemini-3.5-flash-lite', 'gemini-2.5-flash'];
     for (const p of preferred) {

@@ -1100,7 +1100,6 @@ async def ws_endpoint(websocket: WebSocket, token: str = Query(default="")):
     claude_client  = get_claude_client()
     gemini_client  = get_gemini_client()
     groq_client    = get_groq_client()
-    use_ollama     = await asyncio.to_thread(is_ollama_running)
 
     async def send(data: dict):
         try:
@@ -1125,11 +1124,12 @@ async def ws_endpoint(websocket: WebSocket, token: str = Query(default="")):
                 # Injecter la mémoire dans le premier message système via conversation
                 mem_injection = [{"role": "user", "content": f"[MÉMOIRE]{mem_ctx}\n[MESSAGE]{user_text}"}] if mem_ctx else None
                 actual_text = user_text
+                ollama_ok = await asyncio.to_thread(is_ollama_running)
                 if session_model in GEMINI_MODELS and gemini_client:
                     return await run_turn_gemini(gemini_client, conversation, actual_text, model_name=session_model)
                 elif session_model in GROQ_MODELS and groq_client:
                     return await run_turn_groq(groq_client, conversation, actual_text, model=session_model)
-                elif use_ollama:
+                elif ollama_ok and session_model not in GEMINI_MODELS and session_model not in GROQ_MODELS:
                     return await run_turn_ollama(conversation, actual_text, model=session_model)
                 elif claude_client:
                     return await run_turn_claude(claude_client, conversation, actual_text)
