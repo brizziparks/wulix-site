@@ -211,13 +211,15 @@ async def ws_ticket(user: str = Depends(verify_auth)):
 
 @app.get("/")
 async def root(user: str = Depends(verify_auth)):
-    return FileResponse(BASE_DIR / "hud" / "index.html", headers=_NO_CACHE_HEADERS)
+    content = (BASE_DIR / "hud" / "index.html").read_text(encoding="utf-8")
+    return HTMLResponse(content=content, headers=_NO_CACHE_HEADERS)
 
 
 @app.get("/mobile")
 async def mobile(user: str = Depends(verify_auth)):
     """Interface mobile optimisée — accessible depuis téléphone via aisatou.rosmedia.fr/mobile"""
-    return FileResponse(BASE_DIR / "hud" / "mobile.html", headers=_NO_CACHE_HEADERS)
+    content = (BASE_DIR / "hud" / "mobile.html").read_text(encoding="utf-8")
+    return HTMLResponse(content=content, headers=_NO_CACHE_HEADERS)
 
 # ── Historique conversations ─────────────────────────────────────────────────
 _HISTORY_DIR = BASE_DIR / "memory" / "conversations"
