@@ -1,0 +1,55 @@
+backend:
+  name: git-gateway
+  branch: main
+
+locale: fr
+
+media_folder: "assets/images"
+public_folder: "/assets/images"
+
+collections:
+  - name: "profs"
+    label: "Professeurs"
+    files:
+      - name: "liste"
+        label: "Modifier les profils des professeurs"
+        file: "data/profs.json"
+        fields:
+          - name: "profs"
+            label: "Professeurs"
+            label_singular: "Professeur"
+            widget: "list"
+            fields:
+              - name: "id"
+                label: "ID interne"
+                widget: "hidden"
+              - name: "nom"
+                label: "Nom"
+                widget: "string"
+                hint: "Prénom ou pseudo du professeur"
+              - name: "style"
+                label: "Style de danse"
+                widget: "string"
+                hint: "Ex : Hip-hop, House Dance, Waacking..."
+              - name: "bio"
+                label: "Présentation"
+                widget: "text"
+                hint: "2-3 phrases pour présenter le professeur"
+              - name: "cours"
+                label: "Horaires et infos pratiques"
+                label_singular: "Ligne"
+                widget: "list"
+                fields:
+                  - name: "ico"
+                    label: "Icône"
+                    widget: "select"
+                    options:
+                      - {label: "📅 Horaire", value: "📅"}
+                      - {label: "📍 Lieu", value: "📍"}
+                      - {label: "⚡ Info", value: "⚡"}
+                      - {label: "🗓 Dates", value: "🗓"}
+                      - {label: "💰 Tarif", value: "💰"}
+                  - name: "text"
+                    label: "Texte"
+                    widget: "string"
+                    hint: "Ex : Mercredi 18h–19h · Hip-hop 8–12 ans"

@@ -1,0 +1,68 @@
+{
+  "profs": [
+    {
+      "id": "monna",
+      "nom": "Monna Lisa",
+      "style": "Hip-hop",
+      "bio": "Monna encadre tous les cours Hip-hop enfants de l'asso — le mercredi et le samedi matin. Elle sait comment faire bouger les enfants avec exigence et bonne humeur.",
+      "cours": [
+        {"ico": "📅", "text": "Mercredi 18h–19h · Hip-hop 8–12 ans"},
+        {"ico": "📅", "text": "Mercredi 19h–20h · Hip-hop 12–15 ans"},
+        {"ico": "📅", "text": "Samedi 11h–12h · Hip-hop 6–10 ans"},
+        {"ico": "📍", "text": "Espace Marc Lanvin · 22 rue Blaise Pascal · Bagneux"}
+      ]
+    },
+    {
+      "id": "sp-sunny",
+      "nom": "SP Sunny",
+      "style": "House Dance",
+      "bio": "SP Sunny dispense le cours de House Dance du mardi. Musicalité, footwork, feeling — elle amène l'esprit des clubs dans la salle.",
+      "cours": [
+        {"ico": "📅", "text": "Mardi · 20h30 – 22h00 · House Dance"},
+        {"ico": "📍", "text": "Espace Marc Lanvin · Bagneux"}
+      ]
+    },
+    {
+      "id": "spider",
+      "nom": "Spider",
+      "style": "Hip-hop",
+      "bio": "Spider anime le Hip-hop du jeudi. Technique pointue, exigence de compétiteur — pour les intermédiaires et confirmés qui veulent progresser.",
+      "cours": [
+        {"ico": "📅", "text": "Jeudi · 20h00 – 21h30 · Hip-hop Inter / Confirmés"},
+        {"ico": "📍", "text": "Espace Marc Lanvin · Bagneux"}
+      ]
+    },
+    {
+      "id": "mutekirena",
+      "nom": "Mutekirena",
+      "style": "Waacking",
+      "bio": "Mutekirena anime des workshops Waacking d'une demi-journée, une fois par mois. 4h de technique, d'histoire du style et de battle spirit — une session à part.",
+      "cours": [
+        {"ico": "⚡", "text": "Workshop Waacking · 1×/mois · Samedi 13h30–17h30"},
+        {"ico": "🗓", "text": "Dates 2026 à confirmer — contactez-nous"},
+        {"ico": "💰", "text": "30€ / session · Places limitées"}
+      ]
+    },
+    {
+      "id": "steve",
+      "nom": "Steve",
+      "style": "Hip-hop",
+      "bio": "Steve encadre le cours Hip-hop du mercredi soir — niveau débutants et intermédiaires.",
+      "cours": [
+        {"ico": "📅", "text": "Mercredi · 20h00 – 21h30 · Hip-hop Débutant / Intermédiaire"},
+        {"ico": "📍", "text": "Espace Marc Lanvin · Bagneux"}
+      ]
+    },
+    {
+      "id": "gwoka",
+      "nom": "Élodie & Fanny",
+      "style": "Gwoka",
+      "bio": "Élodie et Fanny animent les cours de Gwoka — danse traditionnelle de Guadeloupe. 2 vendredis par mois, ouverts à tous.",
+      "cours": [
+        {"ico": "📅", "text": "Vendredi · 20h00 – 22h00 · 2×/mois"},
+        {"ico": "💰", "text": "15€ / cours · Cours à l'unité"},
+        {"ico": "📍", "text": "Espace Marc Lanvin · Bagneux"}
+      ]
+    }
+  ]
+}

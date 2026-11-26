@@ -236,7 +236,7 @@
   <section style="background: var(--bg);">
 
     <!-- 01 · MONNA -->
-    <div class="prof-row" id="prof-monna">
+    <div class="prof-row" id="prof-monna" data-prof="monna">
       <div class="prof-row-photo">
         <img src="assets/images/MONNA.avif" alt="Monna — Hip-hop" loading="lazy" />
         <div class="prof-row-photo-overlay"></div>
@@ -278,7 +278,7 @@
     </div>
 
     <!-- 02 · SP SUNNY -->
-    <div class="prof-row" id="prof-sp-sunny">
+    <div class="prof-row" id="prof-sp-sunny" data-prof="sp-sunny">
       <div class="prof-row-photo">
         <img src="assets/images/STEPHANIE_JPG.avif" alt="SP Sunny — House Dance" loading="lazy" />
         <div class="prof-row-photo-overlay"></div>
@@ -312,7 +312,7 @@
     </div>
 
     <!-- 03 · SPIDER -->
-    <div class="prof-row" id="prof-spider">
+    <div class="prof-row" id="prof-spider" data-prof="spider">
       <div class="prof-row-photo">
         <img src="assets/images/SPIDER 2.avif" alt="Spider — Hip-hop Avancé" loading="lazy" />
         <div class="prof-row-photo-overlay"></div>
@@ -346,7 +346,7 @@
     </div>
 
     <!-- 04 · MUTEKIRENA -->
-    <div class="prof-row" id="prof-mutekirena">
+    <div class="prof-row" id="prof-mutekirena" data-prof="mutekirena">
       <div class="prof-row-photo">
         <img src="assets/images/MUTEKI 2.avif" alt="Mutekirena — Waacking" loading="lazy" />
         <div class="prof-row-photo-overlay"></div>
@@ -385,7 +385,7 @@
 
 
     <!-- 05 · STEVE -->
-    <div class="prof-row" id="prof-steve">
+    <div class="prof-row" id="prof-steve" data-prof="steve">
       <div class="prof-row-photo">
         <img src="assets/images/STEVE.png" alt="Steve — Hip-hop" loading="lazy" />
         <div class="prof-row-photo-overlay"></div>
@@ -419,7 +419,7 @@
     </div>
 
     <!-- 06 · ÉLODIE & FANNY -->
-    <div class="prof-row" id="prof-gwoka">
+    <div class="prof-row" id="prof-gwoka" data-prof="gwoka">
       <div class="prof-row-photo">
         <div class="prof-photo-ph">
           <span>👥</span>
@@ -515,5 +515,19 @@
 
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
+  <script>
+  fetch('/data/profs.json').then(r=>r.json()).then(({profs})=>{
+    profs.forEach(p=>{
+      const row=document.querySelector(`[data-prof="${p.id}"]`);
+      if(!row)return;
+      const name=row.querySelector('.prof-row-name');
+      const bio=row.querySelector('.prof-row-bio');
+      const cours=row.querySelector('.prof-row-cours');
+      if(name)name.textContent=p.nom;
+      if(bio)bio.textContent=p.bio;
+      if(cours&&p.cours)cours.innerHTML=p.cours.map(c=>`<div class="prof-cours-item"><span class="ico">${c.ico}</span><span>${c.text}</span></div>`).join('');
+    });
+  }).catch(()=>{});
+  </script>
 </body>
 </html>
