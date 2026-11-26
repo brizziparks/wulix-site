@@ -525,7 +525,7 @@
       const cours=row.querySelector('.prof-row-cours');
       if(name)name.textContent=p.nom;
       if(bio)bio.textContent=p.bio;
-      if(cours&&p.cours)cours.innerHTML=p.cours.map(c=>`<div class="prof-cours-item"><span class="ico">${c.ico}</span><span>${c.text}</span></div>`).join('');
+      if(cours&&p.cours){cours.replaceChildren(...p.cours.map(c=>{const d=document.createElement('div');d.className='prof-cours-item';const i=document.createElement('span');i.className='ico';i.textContent=c.ico;const t=document.createElement('span');t.textContent=c.text;d.append(i,t);return d;}));}
     });
   }).catch(()=>{});
   </script>
