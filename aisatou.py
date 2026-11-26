@@ -12,6 +12,7 @@ des Taches et l'Organisation Universelle
 """
 
 import asyncio
+import html as _html
 import json
 import os
 import re
@@ -244,8 +245,10 @@ TOOL_MAP["gdrive_list"]        = lambda i: list_drive_files(i.get("query",""), i
 # ── Telegram ─────────────────────────────────────────────────────────────────
 try:
     from tools.telegram_tool import send_telegram as _tg_send, send_telegram_alert as _tg_alert
-    TOOL_MAP["telegram_send"]  = lambda i: str(_tg_send(i["message"]))
-    TOOL_MAP["telegram_alert"] = lambda i: str(_tg_alert(i["title"], i["body"]))
+    TOOL_MAP["telegram_send"]  = lambda i: "OK" if _tg_send(i["message"]).get("ok") else "Échec de l'envoi Telegram."
+    TOOL_MAP["telegram_alert"] = lambda i: "OK" if _tg_send(
+        f"<b>{_html.escape(str(i['title']))}</b>\n\n{_html.escape(str(i['body']))}"
+    ).get("ok") else "Échec de l'alerte Telegram."
 except Exception:
     pass
 
@@ -257,8 +260,13 @@ try:
     )
     TOOL_MAP["docker_list"]    = lambda i: _dc_list(i.get("all", False))
     TOOL_MAP["docker_status"]  = lambda i: _dc_status(i["name"])
-    TOOL_MAP["docker_logs"]    = lambda i: _dc_logs(i["name"], int(i.get("lines", 30)))
-    TOOL_MAP["docker_restart"] = lambda i: _dc_restart(i["name"])
+    TOOL_MAP["docker_logs"]    = lambda i: _dc_logs(i["name"], min(int(i.get("lines", 30)), 100))
+    # shortcut: allowlist vide = refus par défaut, à étendre selon l'environnement
+    _DOCKER_RESTART_ALLOW: frozenset[str] = frozenset()
+    TOOL_MAP["docker_restart"] = lambda i: (
+        _dc_restart(i["name"]) if i["name"] in _DOCKER_RESTART_ALLOW
+        else f"Redémarrage de '{i['name']}' refusé (non dans la liste autorisée)."
+    )
 except Exception:
     pass
 
