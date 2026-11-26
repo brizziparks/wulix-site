@@ -2,6 +2,7 @@
 KOFI — Agent Veille IA & Automatisation
 Surveille les tendances IA chaque matin, genere un digest et l'envoie par email
 """
+import html
 import os
 import json
 import datetime
@@ -201,7 +202,7 @@ def generate_digest_simple(articles: list[dict]) -> str:
         link = a.get("link", "#")
         title = a.get("title", "")
         source = a.get("source", "")
-        lines.append(f'<li><strong>[{source}]</strong> <a href="{link}">{title}</a></li>')
+        lines.append(f'<li><strong>[{html.escape(source)}]</strong> <a href="{link}">{html.escape(title)}</a></li>')
     lines.append("</ul>")
     lines.append("<p><em>— Agent KOFI, WULIX</em></p>")
     return NL.join(lines)
@@ -388,7 +389,7 @@ def generate_app_ideas_report(pain_points: list[dict]) -> str:
         # Fallback simple
         lines = ["<h2>Pain points detectes (top 10)</h2>", "<ul>"]
         for p in pain_points[:10]:
-            lines.append(f'<li><strong>[{p["source"]}]</strong> <a href="{p["link"]}">{p["title"]}</a></li>')
+            lines.append(f'<li><strong>[{html.escape(p["source"])}]</strong> <a href="{p["link"]}">{html.escape(p["title"])}</a></li>')
         lines.append("</ul>")
         return "\n".join(lines)
 
@@ -430,7 +431,7 @@ Termine par <p><em>Selectionnees parmi {len(pain_points)} pain points detectes.<
 def generate_app_ideas_report_fallback(pain_points):
     lines = ["<h2>Pain points detectes (top 10)</h2>", "<ul>"]
     for p in pain_points[:10]:
-        lines.append(f'<li><strong>[{p["source"]}]</strong> <a href="{p["link"]}">{p["title"]}</a></li>')
+        lines.append(f'<li><strong>[{html.escape(p["source"])}]</strong> <a href="{p["link"]}">{html.escape(p["title"])}</a></li>')
     lines.append("</ul>")
     return "\n".join(lines)
 

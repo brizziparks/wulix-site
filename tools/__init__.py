@@ -54,6 +54,17 @@ from .google_workspace import (
     create_sheet, append_to_sheet, read_sheet,
     list_drive_files,
 )
+from .telegram_tool import send_telegram, send_telegram_alert
+try:
+    from .docker_monitor import (
+        list_containers, get_container_status,
+        get_container_logs, restart_container,
+    )
+except Exception:
+    def list_containers(*a, **kw): return "Docker socket non monté"
+    def get_container_status(*a, **kw): return "Docker socket non monté"
+    def get_container_logs(*a, **kw): return "Docker socket non monté"
+    def restart_container(*a, **kw): return "Docker socket non monté"
 
 __all__ = [
     "search_web",

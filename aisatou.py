@@ -241,6 +241,27 @@ TOOL_MAP["gsheets_append"]     = lambda i: append_to_sheet(i["values"], i.get("s
 TOOL_MAP["gsheets_read"]       = lambda i: read_sheet(i["sheet_id"], i.get("range","A1:Z100"))
 TOOL_MAP["gdrive_list"]        = lambda i: list_drive_files(i.get("query",""), int(i.get("max",10)))
 
+# ── Telegram ─────────────────────────────────────────────────────────────────
+try:
+    from tools.telegram_tool import send_telegram as _tg_send, send_telegram_alert as _tg_alert
+    TOOL_MAP["telegram_send"]  = lambda i: str(_tg_send(i["message"]))
+    TOOL_MAP["telegram_alert"] = lambda i: str(_tg_alert(i["title"], i["body"]))
+except Exception:
+    pass
+
+# ── Docker monitoring ─────────────────────────────────────────────────────────
+try:
+    from tools.docker_monitor import (
+        list_containers as _dc_list, get_container_status as _dc_status,
+        get_container_logs as _dc_logs, restart_container as _dc_restart,
+    )
+    TOOL_MAP["docker_list"]    = lambda i: _dc_list(i.get("all", False))
+    TOOL_MAP["docker_status"]  = lambda i: _dc_status(i["name"])
+    TOOL_MAP["docker_logs"]    = lambda i: _dc_logs(i["name"], int(i.get("lines", 30)))
+    TOOL_MAP["docker_restart"] = lambda i: _dc_restart(i["name"])
+except Exception:
+    pass
+
 # ── Hermes Agent (NousResearch) — délégation tâches techniques lourdes ──────
 try:
     from tools.hermes_tool import hermes_run, hermes_status, hermes_skills
@@ -438,6 +459,12 @@ Outils disponibles :
 - code_interpreter(code)                   : executer du code Python
 - http_request(url, method?, body?)        : faire une requete HTTP
 - think(thought)                           : raisonner etape par etape
+- telegram_send(message)                   : envoyer un message Telegram a Omar
+- telegram_alert(title, body)              : envoyer une alerte formatee sur Telegram
+- docker_list(all?)                        : lister tous les containers Docker et leur etat
+- docker_status(name)                      : etat detaille d'un container specifique
+- docker_logs(name, lines?)               : voir les derniers logs d'un container
+- docker_restart(name)                     : redemarrer un container Docker
 
 Apres avoir vu le resultat d'un outil, reponds normalement a l'utilisateur.
 N'utilise les outils que quand c'est utile.

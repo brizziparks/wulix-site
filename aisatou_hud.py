@@ -18,6 +18,7 @@ import subprocess
 import threading
 import psutil
 import uvicorn
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Request, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -184,7 +185,13 @@ def _consume_ws_ticket(ticket: str) -> bool:
     return True
 
 # â"€â"€â"€ App FastAPI â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-app = FastAPI(title="AISATOU HUD", docs_url=None, redoc_url=None)  # Désactive /docs public
+@asynccontextmanager
+async def lifespan(app):
+    asyncio.create_task(_broadcast_stats_loop())
+    print("[AISATOU HUD] Serveur prêt — http://localhost:7777")
+    yield
+
+app = FastAPI(title="AISATOU HUD", docs_url=None, redoc_url=None, lifespan=lifespan)  # Désactive /docs public
 app.mount("/ui", StaticFiles(directory=BASE_DIR / "ui"), name="ui")
 app.mount("/hud", StaticFiles(directory=BASE_DIR / "hud"), name="hud")
 
@@ -1024,10 +1031,6 @@ async def _broadcast_stats_loop():
             await _broadcast_all(data)
 
 
-@app.on_event("startup")
-async def _on_startup():
-    asyncio.create_task(_broadcast_stats_loop())
-    print("[AISATOU HUD] Serveur prêt — http://localhost:7777")
 
 
 
