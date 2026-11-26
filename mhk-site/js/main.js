@@ -118,21 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (currentPage === '' && href === 'index.html') link.classList.add('active');
   });
 
-  // ── Hero card hover parallax ──
-  const heroCards = document.querySelectorAll('.hero-card');
-  if (heroCards.length) {
-    document.addEventListener('mousemove', (e) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;
-      const dy = (e.clientY - cy) / cy;
-      heroCards.forEach((card, i) => {
-        const depth = (i + 1) * 6;
-        card.style.transform += ` translate(${dx * depth}px, ${dy * depth}px)`;
-      });
-    });
-  }
-
   // ── Form feedback ──
   document.querySelectorAll('form').forEach(form => {
     form.addEventListener('submit', (e) => {
@@ -156,14 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
           form.reset();
         }, 3000);
       }
-    });
-  });
-
-  // ── Galerie filter (simple) ──
-  document.querySelectorAll('.galerie-filters .filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.galerie-filters .filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
     });
   });
 
