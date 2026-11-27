@@ -106,9 +106,9 @@
           </div>
         </div>
         <div class="hst-stats">
-          <div class="hst-stat"><strong>6</strong><span>Profs actifs</span></div>
-          <div class="hst-stat"><strong>4</strong><span>Styles</span></div>
-          <div class="hst-stat"><strong>Tous</strong><span>Niveaux</span></div>
+          <div class="hst-stat"><strong id="stat-profs">6</strong><span>Profs actifs</span></div>
+          <div class="hst-stat"><strong id="stat-styles">4</strong><span>Styles</span></div>
+          <div class="hst-stat"><strong id="stat-niveaux">Tous</strong><span>Niveaux</span></div>
         </div>
       </div>
 
@@ -405,6 +405,17 @@
 
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
+  <script>
+  fetch('/data/site.json').then(r=>r.json()).then(d=>{
+    const s=d.stats||{};
+    const p=document.getElementById('stat-profs');
+    const st=document.getElementById('stat-styles');
+    const n=document.getElementById('stat-niveaux');
+    if(p&&s.nb_profs)p.textContent=s.nb_profs;
+    if(st&&s.nb_styles)st.textContent=s.nb_styles;
+    if(n&&s.nb_niveaux)n.textContent=s.nb_niveaux;
+  }).catch(()=>{});
+  </script>
 </body>
 </html>
 

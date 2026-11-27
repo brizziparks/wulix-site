@@ -1,0 +1,76 @@
+{
+  "evenements": [
+    {
+      "id": "bitg",
+      "titre": "Le B in the Game",
+      "description": "Battle -18 ans, all style, avec contraintes artistiques tirées au sort. Les danseurs sont jugés autant sur la créativité que la technique. Organisé par MHK à Bagneux depuis 2015.",
+      "image": "assets/images/IMG_8556-A.jpg",
+      "label": "Événement phare",
+      "tags": "Battle · -18 ans · International",
+      "lien": "b-in-the-game.html",
+      "lien_texte": "En savoir plus",
+      "featured": true,
+      "passe": false
+    },
+    {
+      "id": "mhk-on-stage",
+      "titre": "MHK on Stage",
+      "description": "Gala de fin d'année 2026. Tous les élèves sur scène au Théâtre Victor Hugo, Bagneux. Prochain gala : saison 2026–2027.",
+      "image": "assets/images/MHK on Stage.avif",
+      "label": "Édition 2026 — passée",
+      "tags": "Gala · Fin d'année",
+      "lien": "contact.html",
+      "lien_texte": "Nous contacter",
+      "featured": false,
+      "passe": true
+    },
+    {
+      "id": "paris-danse-cypher",
+      "titre": "Paris Danse Cypher",
+      "description": "Afterwork dansé avec jam, shows et soul train. Ouvert à tout le monde — danseurs MHK et passants curieux.",
+      "image": "assets/images/Paris Danse Cypher.avif",
+      "label": "",
+      "tags": "Jam · Afterwork",
+      "lien": "contact.html",
+      "lien_texte": "Infos",
+      "featured": false,
+      "passe": false
+    },
+    {
+      "id": "le-meeting",
+      "titre": "Le Meeting",
+      "description": "Soirée de partage artistique avec restitutions, défis et feedback public. Un espace pour progresser ensemble.",
+      "image": "assets/images/le meeting.avif",
+      "label": "",
+      "tags": "Partage · Artistique",
+      "lien": "contact.html",
+      "lien_texte": "Infos",
+      "featured": false,
+      "passe": false
+    },
+    {
+      "id": "le-shuffle",
+      "titre": "Le Shuffle",
+      "description": "Concert dansé participatif avec improvisations pluridisciplinaires. La frontière entre scène et public s'efface.",
+      "image": "assets/images/le shuffle.avif",
+      "label": "",
+      "tags": "Concert · Impro",
+      "lien": "contact.html",
+      "lien_texte": "Infos",
+      "featured": false,
+      "passe": false
+    },
+    {
+      "id": "lets-funk",
+      "titre": "Let's Funk About!",
+      "description": "Soirée funk et danse à l'Espace Marc Lanvin de Bagneux. Une invitation à bouger, partager et célébrer la culture funk.",
+      "image": "",
+      "label": "9 Novembre",
+      "tags": "Funk · Danse · Gratuit",
+      "lien": "contact.html",
+      "lien_texte": "Infos",
+      "featured": false,
+      "passe": false
+    }
+  ]
+}

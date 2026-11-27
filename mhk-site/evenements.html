@@ -159,7 +159,7 @@
       <div class="events-grid">
 
         <!-- B IN THE GAME — featured -->
-        <div class="event-card featured">
+        <div class="event-card featured" data-event="bitg">
           <div class="event-card-img">
             <img src="assets/images/IMG_8556-A.jpg" alt="B IN THE GAME" loading="lazy" />
             <span class="event-card-label">Événement phare</span>
@@ -179,7 +179,7 @@
         </div>
 
         <!-- MHK ON STAGE -->
-        <div class="event-card" style="opacity:0.75;">
+        <div class="event-card" data-event="mhk-on-stage" style="opacity:0.75;">
           <div class="event-card-img">
             <img src="assets/images/MHK on Stage.avif" alt="MHK on Stage" loading="lazy" />
             <span class="event-card-label" style="background:var(--bg-3);color:var(--gray);">Édition 2026 — passée</span>
@@ -198,7 +198,7 @@
         </div>
 
         <!-- PARIS DANSE CYPHER -->
-        <div class="event-card">
+        <div class="event-card" data-event="paris-danse-cypher">
           <div class="event-card-img">
             <img src="assets/images/Paris Danse Cypher.avif" alt="Paris Danse Cypher" loading="lazy" />
           </div>
@@ -216,7 +216,7 @@
         </div>
 
         <!-- LE MEETING -->
-        <div class="event-card">
+        <div class="event-card" data-event="le-meeting">
           <div class="event-card-img">
             <img src="assets/images/le meeting.avif" alt="Le Meeting" loading="lazy" />
           </div>
@@ -234,7 +234,7 @@
         </div>
 
         <!-- LE SHUFFLE -->
-        <div class="event-card">
+        <div class="event-card" data-event="le-shuffle">
           <div class="event-card-img">
             <img src="assets/images/le shuffle.avif" alt="Le Shuffle" loading="lazy" />
           </div>
@@ -252,7 +252,7 @@
         </div>
 
         <!-- LET'S FUNK ABOUT! -->
-        <div class="event-card">
+        <div class="event-card" data-event="lets-funk">
           <div class="event-card-img" style="background: var(--bg-3); display:flex; align-items:center; justify-content:center;">
             <div style="text-align:center; padding:32px;">
               <div style="font-family:'Bebas Neue', var(--font-display); font-size:2.2rem; letter-spacing:4px; color:var(--lime); line-height:1;">LET'S FUNK<br>ABOUT!</div>
@@ -321,6 +321,25 @@
 
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
+  <script>
+  fetch('/data/evenements.json').then(r=>r.json()).then(({evenements})=>{
+    evenements.forEach(e=>{
+      const card=document.querySelector(`[data-event="${e.id}"]`);
+      if(!card)return;
+      const h3=card.querySelector('h3');
+      const p=card.querySelector('p');
+      const img=card.querySelector('img');
+      const label=card.querySelector('.event-card-label');
+      const btn=card.querySelector('.btn');
+      if(h3)h3.textContent=e.titre;
+      if(p)p.textContent=e.description;
+      if(img&&e.image){img.src=e.image;img.alt=e.titre;}
+      if(label&&e.label)label.textContent=e.label;
+      if(btn){btn.textContent=e.lien_texte;btn.href=e.lien;}
+      if(e.passe)card.style.opacity='0.75';
+    });
+  }).catch(()=>{});
+  </script>
 </body>
 </html>
 

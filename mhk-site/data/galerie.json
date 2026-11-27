@@ -1,0 +1,31 @@
+{
+  "photos": [
+    {"src": "assets/images/photo-danseurs.avif", "alt": "MHK — Showcase scène"},
+    {"src": "assets/images/MHK on Stage.avif", "alt": "MHK on Stage"},
+    {"src": "assets/images/3bc75c_3a78adfbcb3e46ce956571d254d4c67e~mv2.avif", "alt": "MHK — Danseurs sur scène"},
+    {"src": "assets/images/Paris Danse Cypher.avif", "alt": "Paris Danse Cypher"},
+    {"src": "assets/images/le meeting.avif", "alt": "Le Meeting"},
+    {"src": "assets/images/le shuffle.avif", "alt": "Le Shuffle"},
+    {"src": "assets/images/IMG_8279-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8476-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8579-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8556-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8637-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8641-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8618-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8670-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_9279-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/IMG_8450-A.jpg", "alt": "B IN THE GAME"},
+    {"src": "assets/images/GALERIE_coach-cours.jpg", "alt": "MHK — Transmission"},
+    {"src": "assets/images/GALERIE_dj-platines.jpg", "alt": "MHK — DJ"},
+    {"src": "assets/images/GALERIE_bboy-spin.jpg", "alt": "MHK — Bboy"},
+    {"src": "assets/images/GALERIE_bboy-handstand.jpg", "alt": "MHK — Bboy freeze"},
+    {"src": "assets/images/GALERIE_portrait-duo.jpg", "alt": "MHK — Portrait"},
+    {"src": "assets/images/GALERIE_danseuse-rehearsal.jpg", "alt": "MHK — Répétition"},
+    {"src": "assets/images/GALERIE_street-element.jpg", "alt": "MHK — Street Element"},
+    {"src": "assets/images/GALERIE_pose-attitude.jpg", "alt": "MHK — Attitude"},
+    {"src": "assets/images/GALERIE_danseur-hoodie.jpg", "alt": "MHK — Danseur"},
+    {"src": "assets/images/GALERIE_sneakers-cypher.jpg", "alt": "MHK — Cypher"},
+    {"src": "assets/images/GALERIE_cypher-groupe.jpg", "alt": "MHK — Cypher groupe"}
+  ]
+}

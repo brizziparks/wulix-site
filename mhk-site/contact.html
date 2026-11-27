@@ -220,21 +220,21 @@
               <div class="ico">📧</div>
               <div>
                 <h4>Email</h4>
-                <p><a href="mailto:infos.mhk.asso@gmail.com">infos.mhk.asso@gmail.com</a></p>
+                <p><a id="contact-email" href="mailto:infos.mhk.asso@gmail.com">infos.mhk.asso@gmail.com</a></p>
               </div>
             </div>
             <div class="info-card">
               <div class="ico">📞</div>
               <div>
                 <h4>Téléphone</h4>
-                <p><a href="tel:+33641232179">06 41 23 21 79</a></p>
+                <p><a id="contact-tel" href="tel:+33641232179">06 41 23 21 79</a></p>
               </div>
             </div>
             <div class="info-card">
               <div class="ico">📍</div>
               <div>
                 <h4>Adresse</h4>
-                <p>Espace Marc Lanvin · 22 rue Blaise Pascal<br>92220 Bagneux</p>
+                <p id="contact-adresse">Espace Marc Lanvin · 22 rue Blaise Pascal<br>92220 Bagneux</p>
               </div>
             </div>
             <div class="info-card">
@@ -400,6 +400,16 @@
         item.classList.toggle('open');
       });
     });
+  </script>
+  <script>
+  fetch('/data/contact.json').then(r=>r.json()).then(d=>{
+    const email=document.getElementById('contact-email');
+    const tel=document.getElementById('contact-tel');
+    const adr=document.getElementById('contact-adresse');
+    if(email){email.textContent=d.email;email.href='mailto:'+d.email;}
+    if(tel){tel.textContent=d.telephone;tel.href='tel:'+d.telephone.replace(/\s/g,'');}
+    if(adr)adr.innerHTML=d.adresse.replace(/\n/g,'<br>');
+  }).catch(()=>{});
   </script>
 </body>
 </html>

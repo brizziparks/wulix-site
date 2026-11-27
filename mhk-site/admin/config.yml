@@ -8,8 +8,9 @@ media_folder: "mhk-site/assets/images"
 public_folder: "/assets/images"
 
 collections:
+
   - name: "profs"
-    label: "Professeurs"
+    label: "👩‍🏫 Professeurs"
     files:
       - name: "liste"
         label: "Modifier les profils des professeurs"
@@ -20,21 +21,10 @@ collections:
             label_singular: "Professeur"
             widget: "list"
             fields:
-              - name: "id"
-                label: "ID interne"
-                widget: "hidden"
-              - name: "nom"
-                label: "Nom"
-                widget: "string"
-                hint: "Prénom ou pseudo du professeur"
-              - name: "style"
-                label: "Style de danse"
-                widget: "string"
-                hint: "Ex : Hip-hop, House Dance, Waacking..."
-              - name: "bio"
-                label: "Présentation"
-                widget: "text"
-                hint: "2-3 phrases pour présenter le professeur"
+              - {name: "id", label: "ID interne", widget: "hidden"}
+              - {name: "nom", label: "Nom", widget: "string", hint: "Prénom ou pseudo du professeur"}
+              - {name: "style", label: "Style de danse", widget: "string"}
+              - {name: "bio", label: "Présentation", widget: "text", hint: "2-3 phrases pour présenter le professeur"}
               - name: "cours"
                 label: "Horaires et infos pratiques"
                 label_singular: "Ligne"
@@ -49,7 +39,91 @@ collections:
                       - {label: "⚡ Info", value: "⚡"}
                       - {label: "🗓 Dates", value: "🗓"}
                       - {label: "💰 Tarif", value: "💰"}
-                  - name: "text"
-                    label: "Texte"
-                    widget: "string"
-                    hint: "Ex : Mercredi 18h–19h · Hip-hop 8–12 ans"
+                  - {name: "text", label: "Texte", widget: "string", hint: "Ex : Mercredi 18h–19h · Hip-hop 8–12 ans"}
+
+  - name: "evenements"
+    label: "📅 Événements"
+    files:
+      - name: "liste"
+        label: "Modifier les événements"
+        file: "mhk-site/data/evenements.json"
+        fields:
+          - name: "evenements"
+            label: "Événements"
+            label_singular: "Événement"
+            widget: "list"
+            fields:
+              - {name: "id", label: "ID interne", widget: "hidden"}
+              - {name: "titre", label: "Titre", widget: "string"}
+              - {name: "description", label: "Description", widget: "text"}
+              - {name: "image", label: "Photo", widget: "image", required: false, hint: "Choisir dans la médiathèque ou laisser vide"}
+              - {name: "label", label: "Étiquette", widget: "string", required: false, hint: "Ex : Événement phare, Édition 2026 — passée"}
+              - {name: "tags", label: "Tags", widget: "string", hint: "Ex : Battle · -18 ans · International"}
+              - {name: "lien", label: "Lien du bouton", widget: "string", hint: "Ex : b-in-the-game.html ou contact.html"}
+              - {name: "lien_texte", label: "Texte du bouton", widget: "string", hint: "Ex : En savoir plus"}
+              - {name: "featured", label: "Événement phare (grand format)", widget: "boolean", default: false}
+              - {name: "passe", label: "Événement passé (grisé)", widget: "boolean", default: false}
+
+  - name: "galerie"
+    label: "🖼 Galerie photos"
+    files:
+      - name: "photos"
+        label: "Gérer les photos de la galerie"
+        file: "mhk-site/data/galerie.json"
+        fields:
+          - name: "photos"
+            label: "Photos"
+            label_singular: "Photo"
+            widget: "list"
+            fields:
+              - {name: "src", label: "Photo", widget: "image"}
+              - {name: "alt", label: "Description (pour accessibilité)", widget: "string", hint: "Ex : MHK — B in the Game 2026"}
+
+  - name: "contact"
+    label: "📞 Coordonnées"
+    files:
+      - name: "infos"
+        label: "Modifier les coordonnées"
+        file: "mhk-site/data/contact.json"
+        fields:
+          - {name: "email", label: "Email", widget: "string"}
+          - {name: "telephone", label: "Téléphone", widget: "string"}
+          - {name: "adresse", label: "Adresse", widget: "text"}
+          - {name: "horaires", label: "Horaires", widget: "text"}
+          - {name: "instagram", label: "Lien Instagram", widget: "string"}
+          - {name: "facebook", label: "Lien Facebook", widget: "string"}
+          - {name: "youtube", label: "Lien YouTube", widget: "string"}
+
+  - name: "apropos"
+    label: "📖 À propos"
+    files:
+      - name: "textes"
+        label: "Modifier les textes À propos"
+        file: "mhk-site/data/apropos.json"
+        fields:
+          - name: "histoire"
+            label: "Section Histoire (paragraphes)"
+            label_singular: "Paragraphe"
+            widget: "list"
+            field: {name: "texte", label: "Paragraphe", widget: "text"}
+          - name: "mission"
+            label: "Section Mission (paragraphes)"
+            label_singular: "Paragraphe"
+            widget: "list"
+            field: {name: "texte", label: "Paragraphe", widget: "text"}
+
+  - name: "site"
+    label: "⚙️ Paramètres du site"
+    files:
+      - name: "general"
+        label: "Chiffres clés & annonce"
+        file: "mhk-site/data/site.json"
+        fields:
+          - name: "stats"
+            label: "Chiffres clés"
+            widget: "object"
+            fields:
+              - {name: "nb_profs", label: "Nombre de profs", widget: "string"}
+              - {name: "nb_styles", label: "Nombre de styles", widget: "string"}
+              - {name: "nb_niveaux", label: "Niveaux", widget: "string", hint: "Ex : Tous"}
+          - {name: "annonce", label: "Annonce bandeau (laisser vide pour désactiver)", widget: "text", required: false}

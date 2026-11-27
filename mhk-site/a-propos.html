@@ -167,7 +167,7 @@
         <div class="story-img" style="background:var(--bg-3); border-radius:20px; overflow:hidden; padding:0;">
           <img src="assets/images/IMG_8624-A.jpg" alt="MHK — Association" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
         </div>
-        <div class="story-text">
+        <div class="story-text" id="apropos-histoire">
           <div class="badge">L'origine</div>
           <h2 class="section-title">Née de la <span class="gradient-text">passion</span></h2>
           <div class="divider"></div>
@@ -180,7 +180,7 @@
         <div class="story-img" style="background:var(--bg-3); border-radius:20px; overflow:hidden; padding:0;">
           <img src="assets/images/IMG_8581-A.jpg" alt="MHK — Danse pour tous" style="width:100%;height:100%;object-fit:cover;object-position:center top;" loading="lazy" />
         </div>
-        <div class="story-text">
+        <div class="story-text" id="apropos-mission">
           <div class="badge">La mission</div>
           <h2 class="section-title">Danse pour <span class="gradient-text">tous</span></h2>
           <div class="divider"></div>
@@ -365,6 +365,18 @@
 
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
+  <script>
+  fetch('/data/apropos.json').then(r=>r.json()).then(d=>{
+    function hydrateParagraphs(containerId,texts){
+      const el=document.getElementById(containerId);
+      if(!el||!texts||!texts.length)return;
+      const ps=el.querySelectorAll('p');
+      texts.forEach((t,i)=>{if(ps[i])ps[i].textContent=typeof t==='string'?t:(t.texte||t);});
+    }
+    hydrateParagraphs('apropos-histoire',d.histoire);
+    hydrateParagraphs('apropos-mission',d.mission);
+  }).catch(()=>{});
+  </script>
 </body>
 </html>
 

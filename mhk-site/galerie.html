@@ -419,41 +419,42 @@
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
   <script>
-    (function () {
-      const lb      = document.getElementById('lightbox');
-      const lbImg   = document.getElementById('lb-img');
-      const lbCtr   = document.getElementById('lb-counter');
-      const imgs    = Array.from(document.querySelectorAll('.galerie-item img'));
-      let cur = 0;
+  /* Galerie — hydration JSON + lightbox event-delegation */
+  (function(){
+    const lb=document.getElementById('lightbox');
+    const lbImg=document.getElementById('lb-img');
+    const lbCtr=document.getElementById('lb-counter');
+    let cur=0;
+    function allImgs(){return Array.from(document.querySelectorAll('.galerie-item img'));}
+    function show(i){const a=allImgs();cur=(i+a.length)%a.length;lbImg.src=a[cur].src;lbImg.alt=a[cur].alt;lbCtr.textContent=(cur+1)+' / '+a.length;}
+    function open(i){show(i);lb.classList.add('lb-open');document.body.style.overflow='hidden';}
+    function close(){lb.classList.remove('lb-open');document.body.style.overflow='';}
+    document.querySelector('.galerie-grid').addEventListener('click',e=>{
+      const item=e.target.closest('.galerie-item');
+      if(!item)return;
+      open(allImgs().indexOf(item.querySelector('img')));
+    });
+    document.getElementById('lb-close').addEventListener('click',close);
+    document.getElementById('lb-prev').addEventListener('click',e=>{e.stopPropagation();show(cur-1);});
+    document.getElementById('lb-next').addEventListener('click',e=>{e.stopPropagation();show(cur+1);});
+    lb.addEventListener('click',e=>{if(e.target===lb)close();});
+    document.addEventListener('keydown',e=>{
+      if(!lb.classList.contains('lb-open'))return;
+      if(e.key==='Escape')close();
+      if(e.key==='ArrowLeft')show(cur-1);
+      if(e.key==='ArrowRight')show(cur+1);
+    });
+  })();
 
-      function show(i) {
-        cur = (i + imgs.length) % imgs.length;
-        lbImg.src = imgs[cur].src;
-        lbImg.alt = imgs[cur].alt;
-        lbCtr.textContent = (cur + 1) + ' / ' + imgs.length;
-      }
-      function open(i) {
-        show(i);
-        lb.classList.add('lb-open');
-        document.body.style.overflow = 'hidden';
-      }
-      function close() {
-        lb.classList.remove('lb-open');
-        document.body.style.overflow = '';
-      }
-
-      imgs.forEach((img, i) => img.closest('.galerie-item').addEventListener('click', () => open(i)));
-      document.getElementById('lb-close').addEventListener('click', close);
-      document.getElementById('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); show(cur - 1); });
-      document.getElementById('lb-next').addEventListener('click', (e) => { e.stopPropagation(); show(cur + 1); });
-      lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
-      document.addEventListener('keydown', (e) => {
-        if (!lb.classList.contains('lb-open')) return;
-        if (e.key === 'Escape')     close();
-        if (e.key === 'ArrowLeft')  show(cur - 1);
-        if (e.key === 'ArrowRight') show(cur + 1);
-      });
-    })();
+  fetch('/data/galerie.json').then(r=>r.json()).then(({photos})=>{
+    const grid=document.querySelector('.galerie-grid');
+    if(!photos||!photos.length)return;
+    grid.innerHTML=photos.map(p=>{
+      const img=document.createElement('img');
+      img.src=p.src;img.alt=p.alt;img.loading='lazy';
+      return `<div class="galerie-item"><img src="${p.src}" alt="${p.alt}" loading="lazy"><div class="galerie-overlay"></div></div>`;
+    }).join('');
+  }).catch(()=>{});
   </script>
 </body>
 </html>
