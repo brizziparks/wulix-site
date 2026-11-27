@@ -4,7 +4,7 @@ backend:
 
 locale: fr
 
-media_folder: "assets/images"
+media_folder: "mhk-site/assets/images"
 public_folder: "/assets/images"
 
 collections:
@@ -13,7 +13,7 @@ collections:
     files:
       - name: "liste"
         label: "Modifier les profils des professeurs"
-        file: "data/profs.json"
+        file: "mhk-site/data/profs.json"
         fields:
           - name: "profs"
             label: "Professeurs"
