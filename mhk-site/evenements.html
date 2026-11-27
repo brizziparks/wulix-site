@@ -335,7 +335,7 @@
       if(p)p.textContent=e.description;
       if(img&&e.image){img.src=e.image;img.alt=e.titre;}
       if(label&&e.label)label.textContent=e.label;
-      if(btn){btn.textContent=e.lien_texte;btn.href=e.lien;}
+      if(btn){btn.textContent=e.lien_texte;try{const u=new URL(e.lien,location.href);if(u.protocol==='http:'||u.protocol==='https:'||!e.lien.includes(':'))btn.href=e.lien;}catch(_){}}
       if(e.passe)card.style.opacity='0.75';
     });
   }).catch(()=>{});

@@ -449,11 +449,7 @@
   fetch('/data/galerie.json').then(r=>r.json()).then(({photos})=>{
     const grid=document.querySelector('.galerie-grid');
     if(!photos||!photos.length)return;
-    grid.innerHTML=photos.map(p=>{
-      const img=document.createElement('img');
-      img.src=p.src;img.alt=p.alt;img.loading='lazy';
-      return `<div class="galerie-item"><img src="${p.src}" alt="${p.alt}" loading="lazy"><div class="galerie-overlay"></div></div>`;
-    }).join('');
+    grid.replaceChildren(...photos.map(p=>{const d=document.createElement('div');d.className='galerie-item';const img=document.createElement('img');img.src=p.src;img.alt=p.alt;img.loading='lazy';const o=document.createElement('div');o.className='galerie-overlay';d.append(img,o);return d;}));
   }).catch(()=>{});
   </script>
 </body>

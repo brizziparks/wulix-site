@@ -408,7 +408,7 @@
     const adr=document.getElementById('contact-adresse');
     if(email){email.textContent=d.email;email.href='mailto:'+d.email;}
     if(tel){tel.textContent=d.telephone;tel.href='tel:'+d.telephone.replace(/\s/g,'');}
-    if(adr)adr.innerHTML=d.adresse.replace(/\n/g,'<br>');
+    if(adr){adr.textContent='';d.adresse.split('\n').forEach((line,i)=>{if(i)adr.appendChild(document.createElement('br'));adr.appendChild(document.createTextNode(line));});}
   }).catch(()=>{});
   </script>
 </body>
