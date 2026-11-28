@@ -373,8 +373,6 @@ def _oj_exec(tool_name: str, **kwargs) -> str:
 # Outils OpenJarvis dans TOOL_MAP
 _OJ_MAP = {
     "calculator":       lambda i: _oj_exec("calculator",       expression=i["expression"]),
-    "shell_exec":       lambda i: _oj_exec("shell_exec",       command=i["command"]),
-    "code_interpreter": lambda i: _oj_exec("code_interpreter", code=i["code"]),
     "http_request":     lambda i: _oj_exec("http_request",     url=i["url"], method=i.get("method","GET"), body=i.get("body","")),
     "think":            lambda i: _oj_exec("think",            thought=i["thought"]),
 }
@@ -568,7 +566,7 @@ async def run_turn_gemini(client, conversation: list, user_input: str, model_nam
             return "⚠️ Quota Gemini épuisé pour aujourd'hui et Ollama n'est pas disponible. Réessaie demain ou change de modèle dans les paramètres."
         raise
 
-    return response_text
+    return "Désolé, j'ai atteint la limite d'itérations outils. Reformule ta demande."
 
 def is_ollama_running() -> bool:
     try:

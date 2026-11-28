@@ -160,8 +160,16 @@ HUD_USER     = os.environ.get("HUD_USER", "aisatou")
 HUD_PASSWORD = os.environ.get("HUD_PASSWORD", "WULIX2026")
 
 def verify_auth(request: Request):
-    # shortcut: auth disabled, re-enable once setup is complete
-    return "aisatou"
+    import base64 as _b64
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Basic "):
+        try:
+            user, pwd = _b64.b64decode(auth[6:]).decode().split(":", 1)
+            if secrets.compare_digest(user, HUD_USER) and secrets.compare_digest(pwd, HUD_PASSWORD):
+                return user
+        except Exception:
+            pass
+    raise HTTPException(401, "Non autorisé", headers={"WWW-Authenticate": 'Basic realm="AISATOU"'})
 
 # Tickets éphémères pour le WebSocket — {token: expiry_timestamp}
 _ws_tickets: dict[str, float] = {}
@@ -210,7 +218,10 @@ async def ws_ticket(user: str = Depends(verify_auth)):
 
 @app.get("/")
 async def root(user: str = Depends(verify_auth)):
+    import base64 as _b64
     content = (BASE_DIR / "hud" / "index.html").read_text(encoding="utf-8")
+    creds = _b64.b64encode(f"{HUD_USER}:{HUD_PASSWORD}".encode()).decode()
+    content = content.replace("const AUTH_HEADER = '';", f"const AUTH_HEADER = 'Basic {creds}';")
     return HTMLResponse(content=content, headers=_NO_CACHE_HEADERS)
 
 
@@ -473,10 +484,12 @@ async def run_agent(agent_name: str, background_tasks: BackgroundTasks, user: st
         except Exception as e:
             _agent_tasks[task_id] = {"status": "error", "agent": agent_name, "output": str(e)}
         finally:
-            # Nettoie les vieilles tÃ¢ches terminÃ©es (garde les 5 derniÃ¨res)
             done = [(k, v) for k, v in _agent_tasks.items() if v["status"] != "running"]
             for k, _ in done[:-5]:
                 _agent_tasks.pop(k, None)
+            # Cap total — évite la fuite si des tâches restent bloquées en "running"
+            while len(_agent_tasks) > 50:
+                _agent_tasks.pop(next(iter(_agent_tasks)))
 
     background_tasks.add_task(_run)
     return {"task_id": task_id, "status": "started", "agent": agent_name}
@@ -509,6 +522,8 @@ async def run_pipeline(background_tasks: BackgroundTasks, user: str = Depends(ve
             done = [(k, v) for k, v in _agent_tasks.items() if v["status"] != "running"]
             for k, _ in done[:-5]:
                 _agent_tasks.pop(k, None)
+            while len(_agent_tasks) > 50:
+                _agent_tasks.pop(next(iter(_agent_tasks)))
 
     background_tasks.add_task(_run)
     return {"task_id": task_id, "status": "started", "mode": mode}
@@ -748,16 +763,19 @@ Inclure : salutation, résumé besoin, estimation, 2-3 questions, CTA audit 30mi
             _log.warning(f"[DEMBA] Groq error: {e}")
 
     # Fallback template
+    import html as _html_esc
     if not corps_html:
-        corps_html = f"""<p>Bonjour {prenom},</p>
-<p>Merci pour votre demande concernant un projet de <strong>{type_projet}</strong>.</p>
+        corps_html = f"""<p>Bonjour {_html_esc.escape(prenom)},</p>
+<p>Merci pour votre demande concernant un projet de <strong>{_html_esc.escape(type_projet)}</strong>.</p>
 <p>Voici une première estimation :</p>
 <ul>
-  <li><strong>Tarif indicatif :</strong> {tarif['prix']}</li>
-  <li><strong>Délai estimé :</strong> {tarif['delai']}</li>
+  <li><strong>Tarif indicatif :</strong> {_html_esc.escape(tarif['prix'])}</li>
+  <li><strong>Délai estimé :</strong> {_html_esc.escape(tarif['delai'])}</li>
   <li><strong>Acompte :</strong> 50% à la commande</li>
 </ul>
 <p>Pour affiner ce devis, proposez-moi 2-3 créneaux pour un audit gratuit de 30 min.</p>"""
+    # Strip script tags from AI-generated HTML
+    corps_html = re.sub(r'<script[\s\S]*?</script>', '', corps_html, flags=re.IGNORECASE)
 
     # ── Email pro HTML ────────────────────────────────────────────────
     email_html = f"""
@@ -784,7 +802,7 @@ Inclure : salutation, résumé besoin, estimation, 2-3 questions, CTA audit 30mi
 </body></html>"""
 
     # ── Envoi email prospect ──────────────────────────────────────────
-    gmail_user = os.environ.get("GMAIL_USER", "omarichard284@gmail.com")
+    gmail_user = os.environ.get("GMAIL_USER", "")
     gmail_pwd  = os.environ.get("GMAIL_APP_PASSWORD", "")
     succes = False
 
@@ -977,17 +995,17 @@ async def run_agent_task(
             status = "error"
             _agent_tasks[full_id] = {"status": "error", "agent": agent_id, "task": task_id, "output": str(e)}
         finally:
-            # Sauvegarde le dernier run dans le log
             log = _load_tasks_log()
             log[run_key] = {
                 "last_run": __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M"),
                 "status": _agent_tasks.get(full_id, {}).get("status", "?")
             }
             _save_tasks_log(log)
-            # Nettoyage
             done = [(k, v) for k, v in _agent_tasks.items() if v["status"] != "running"]
             for k, _ in done[:-10]:
                 _agent_tasks.pop(k, None)
+            while len(_agent_tasks) > 50:
+                _agent_tasks.pop(next(iter(_agent_tasks)))
 
     background_tasks.add_task(_run)
     return {"task_id": full_id, "status": "started", "agent": agent_id, "task": task_id}
@@ -1125,8 +1143,7 @@ async def ws_endpoint(websocket: WebSocket, token: str = Query(default="")):
         if module == "hud":
             try:
                 # Injecter la mémoire dans le premier message système via conversation
-                mem_injection = [{"role": "user", "content": f"[MÉMOIRE]{mem_ctx}\n[MESSAGE]{user_text}"}] if mem_ctx else None
-                actual_text = user_text
+                actual_text = f"[MÉMOIRE]{mem_ctx}\n\n{user_text}" if mem_ctx else user_text
                 ollama_ok = await asyncio.to_thread(is_ollama_running)
                 if session_model in GEMINI_MODELS and gemini_client:
                     return await run_turn_gemini(gemini_client, conversation, actual_text, model_name=session_model)
