@@ -112,6 +112,36 @@ collections:
             widget: "list"
             field: {name: "texte", label: "Paragraphe", widget: "text"}
 
+  - name: "bitg"
+    label: "⚔️ B IN THE GAME"
+    files:
+      - name: "edition"
+        label: "Infos de l'édition"
+        file: "mhk-site/data/bitg.json"
+        fields:
+          - {name: "edition", label: "Numéro d'édition", widget: "string", hint: "Ex : 9ème"}
+          - {name: "tagline", label: "Accroche", widget: "string", hint: "Ex : Battle All Style · All Music · -18 ans"}
+          - {name: "date", label: "Date", widget: "string", hint: "Ex : 15 mars 2027"}
+          - {name: "date_detail", label: "Détail date/lieu (sous-titre)", widget: "string"}
+          - {name: "lieu", label: "Lieu (nom)", widget: "string", hint: "Ex : PPCM · Bagneux"}
+          - {name: "adresse", label: "Adresse complète", widget: "string"}
+          - {name: "ages", label: "Tranches d'âge", widget: "string", hint: "Ex : 8–18 ans"}
+          - {name: "prix_danseur", label: "Prix inscription danseur", widget: "string", hint: "Ex : 7€"}
+          - {name: "prix_public", label: "Prix entrée public", widget: "string", hint: "Ex : 10€"}
+          - {name: "lien_inscription", label: "Lien d'inscription", widget: "string", hint: "Ex : contact.html ou lien Eventbrite"}
+          - {name: "youtube", label: "Lien chaîne YouTube", widget: "string"}
+
+  - name: "cours"
+    label: "🕺 Nos cours"
+    files:
+      - name: "infos"
+        label: "Infos de la saison"
+        file: "mhk-site/data/cours.json"
+        fields:
+          - {name: "saison", label: "Saison en cours", widget: "string", hint: "Ex : 2026 – 2027"}
+          - {name: "inscriptions", label: "Statut des inscriptions", widget: "select", options: ["Ouvertes", "Fermées", "Bientôt ouvertes", "Sur liste d'attente"]}
+          - {name: "lieu", label: "Lieu des cours", widget: "string", hint: "Ex : Espace Marc Lanvin · 22 rue Blaise Pascal, 92220 Bagneux"}
+
   - name: "site"
     label: "⚙️ Paramètres du site"
     files:

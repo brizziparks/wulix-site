@@ -492,8 +492,8 @@
       <div class="bitg-logo-wrap">
         <img src="assets/images/logo-b-in-the-game.avif" alt="B IN THE GAME" />
       </div>
-      <span class="bitg-year">9ème</span>
-      <p class="bitg-tagline">Battle All Style · All Music · -18 ans</p>
+      <span class="bitg-year" id="bitg-edition">9ème</span>
+      <p class="bitg-tagline" id="bitg-tagline">Battle All Style · All Music · -18 ans</p>
       <p class="bitg-sub">Depuis 2015, MHK réunit la jeune communauté de danseurs européens pour se rencontrer, se challenger et partager. Un battle unique — contrainte artistique tirée au sort, musique live, valeurs de transmission et d'inclusion.</p>
       <div class="bitg-hero-actions">
         <a href="#inscription-battle" class="btn btn-gradient">Participer</a>
@@ -509,17 +509,17 @@
   <!-- INFOS CLÉS -->
   <section class="bitg-info-section">
     <div class="container">
-      <div class="badge">9ème Édition</div>
+      <div class="badge" id="bitg-badge-edition">9ème Édition</div>
       <h2 class="section-title">Le battle <span class="gradient-text">en chiffres</span></h2>
       <div class="divider"></div>
       <div class="bitg-info-grid">
         <div class="bitg-info-item">
-          <h4>Date à confirmer</h4>
-          <p>PPCM · Bagneux · Restez connectés</p>
+          <h4 id="bitg-date">Date à confirmer</h4>
+          <p id="bitg-date-detail">PPCM · Bagneux · Restez connectés</p>
         </div>
         <div class="bitg-info-item">
-          <h4>PPCM · Bagneux</h4>
-          <p>Impasse de la Renardière, 92220</p>
+          <h4 id="bitg-lieu">PPCM · Bagneux</h4>
+          <p id="bitg-adresse">Impasse de la Renardière, 92220</p>
         </div>
         <div class="bitg-info-item">
           <h4>8–18 ans</h4>
@@ -570,11 +570,11 @@
           <p>Le B IN THE GAME est ouvert à tous les danseurs de moins de 18 ans, adhérents MHK ou non. Inscris-toi et viens relever le défi artistique.</p>
           <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px;">
             <div class="bitg-price">
-              <span class="bitg-price-amount">7€</span>
+              <span class="bitg-price-amount" id="bitg-prix-danseur">7€</span>
               <span class="bitg-price-label">Inscription danseur<br><span style="color:var(--teal);">8 à 18 ans · Tous niveaux</span></span>
             </div>
             <div class="bitg-price">
-              <span class="bitg-price-amount">10€</span>
+              <span class="bitg-price-amount" id="bitg-prix-public">10€</span>
               <span class="bitg-price-label">Entrée public<br><span style="color:var(--teal);">Ouvert à tous · 14h–19h</span></span>
             </div>
           </div>
@@ -743,6 +743,21 @@
 
   <button class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</button>
   <script src="js/main.js"></script>
+  <script>
+    fetch('/data/bitg.json').then(r=>r.json()).then(d=>{
+      const set=(id,v)=>{const el=document.getElementById(id);if(el&&v)el.textContent=v;};
+      set('bitg-edition',d.edition);
+      set('bitg-tagline',d.tagline);
+      set('bitg-badge-edition',(d.edition||'')+'e Édition');
+      set('bitg-date',d.date);
+      set('bitg-date-detail',d.date_detail);
+      set('bitg-lieu',d.lieu);
+      set('bitg-adresse',d.adresse);
+      set('bitg-prix-danseur',d.prix_danseur);
+      set('bitg-prix-public',d.prix_public);
+      if(d.youtube){const yt=document.querySelector('a[href*="youtube"]');if(yt){try{const u=new URL(d.youtube);if(u.protocol==='https:')yt.href=d.youtube;}catch(_){}}}
+    }).catch(()=>{});
+  </script>
 </body>
 </html>
 
